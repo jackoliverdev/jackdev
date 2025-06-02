@@ -1,0 +1,469 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Modern Dark Theme - Jack Oliver Development */
+    /* Enhanced Deep Blues & Navy */
+    --navy-950: 225 35% 7%;          /* #0E1A2E - Deep cosmic navy */
+    --navy-900: 225 32% 10%;         /* #152038 - Darkest navy */
+    --navy-800: 225 28% 14%;         /* #1E2B45 - Dark navy */
+    --navy-700: 225 25% 18%;         /* #283652 - Medium navy */
+    --navy-600: 225 22% 24%;         /* #34445F - Light navy */
+    --navy-500: 225 20% 30%;         /* #42526C - Lighter navy */
+    
+    /* Enhanced Royal & Midnight Blues */
+    --blue-950: 235 45% 12%;         /* #12204C - Ultra deep blue */
+    --blue-900: 235 42% 16%;         /* #1A2B5F - Deep midnight */
+    --blue-800: 235 40% 22%;         /* #263A75 - Midnight blue */
+    --blue-700: 238 38% 28%;         /* #32498B - Royal blue dark */
+    --blue-600: 240 42% 35%;         /* #405BA1 - Royal blue */
+    --blue-500: 242 48% 45%;         /* #4F6FBF - Bright royal */
+    --blue-400: 244 52% 58%;         /* #6B88E3 - Light blue */
+    --blue-300: 246 60% 70%;         /* #8FA7F0 - Very light blue */
+    
+    /* Enhanced Deep Purples & Violets */
+    --purple-950: 265 40% 8%;        /* #0F0B1F - Ultra dark purple */
+    --purple-900: 265 38% 12%;       /* #181030 - Darkest purple */
+    --purple-800: 268 36% 18%;       /* #241A42 - Deep purple */
+    --purple-700: 270 38% 25%;       /* #322054 - Medium purple */
+    --purple-600: 272 42% 35%;       /* #4A2D70 - Violet */
+    --purple-500: 275 48% 45%;       /* #653E95 - Bright purple */
+    --purple-400: 278 55% 58%;       /* #8B5FC7 - Light purple */
+    --purple-300: 280 65% 70%;       /* #B084E8 - Very light purple */
+    
+    /* Enhanced Whites & Greys */
+    --white: 0 0% 100%;              /* #FFFFFF - Pure white */
+    --grey-50: 222 15% 98%;          /* #FAFAFC - Off white */
+    --grey-100: 222 12% 95%;         /* #F2F3F6 - Light grey */
+    --grey-200: 222 10% 88%;         /* #DEE1E6 - Medium light grey */
+    --grey-300: 222 8% 75%;          /* #BCC0C7 - Medium grey */
+    --grey-400: 222 6% 60%;          /* #969CA6 - Dark grey */
+    --grey-500: 222 5% 45%;          /* #707885 - Darker grey */
+    --grey-600: 222 5% 35%;          /* #555C68 - Very dark grey */
+    
+    /* Enhanced Accent Colours */
+    --emerald-500: 160 50% 55%;      /* #4ABAD5 - Modern emerald */
+    --emerald-400: 160 55% 65%;      /* #6BC9E8 - Light emerald */
+    --cyan-500: 190 70% 60%;         /* #22D3EE - Bright cyan */
+    --cyan-400: 190 75% 70%;         /* #67E8F9 - Light cyan */
+    --yellow-500: 48 95% 65%;        /* #F59E0B - Modern yellow */
+    --yellow-400: 48 100% 75%;       /* #FBC02D - Bright yellow */
+    --orange-500: 25 95% 60%;        /* #F97316 - Modern orange */
+    --orange-400: 25 100% 70%;       /* #FB923C - Light orange */
+    
+    /* Enhanced Gradient Stops */
+    --gradient-blue-start: 242 48% 45%;     /* Bright royal blue */
+    --gradient-blue-mid: 260 55% 50%;       /* Blue-purple transition */
+    --gradient-blue-end: 275 48% 45%;       /* Bright purple */
+    --gradient-purple-start: 275 48% 45%;   /* Bright purple */
+    --gradient-purple-mid: 290 45% 50%;     /* Purple-pink transition */
+    --gradient-purple-end: 320 40% 55%;     /* Purple-pink end */
+    
+    /* Star Colors - Dark Theme Default */
+    --star-color-1: #ffffff;
+    --star-color-2: rgba(255,255,255,0.8);
+    --star-color-3: rgba(255,255,255,0.9);
+    --star-color-4: rgba(255,255,255,0.7);
+    --star-color-5: rgba(255,255,255,0.6);
+    --star-opacity: 0.3;
+    
+    /* Design System Variables - Dark Theme Default */
+    --background: var(--navy-950);
+    --foreground: var(--white);
+    --background-secondary: var(--navy-900);
+    --background-tertiary: var(--navy-800);
+    
+    --card: var(--navy-900);
+    --card-foreground: var(--white);
+    --card-border: var(--navy-600);
+    
+    --primary: var(--blue-600);
+    --primary-foreground: var(--white);
+    --primary-hover: var(--blue-500);
+    
+    --secondary: var(--purple-600);
+    --secondary-foreground: var(--white);
+    --secondary-hover: var(--purple-500);
+    
+    --accent: var(--cyan-500);
+    --accent-foreground: var(--navy-950);
+    --accent-secondary: var(--emerald-500);
+    
+    --muted: var(--navy-700);
+    --muted-foreground: var(--grey-300);
+    
+    --border: var(--navy-600);
+    --input: var(--navy-800);
+    --ring: var(--blue-500);
+    
+    --radius: 0.75rem;
+    --radius-sm: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+  }
+
+  /* Light Theme */
+  .light {
+    /* Light Mode Colours */
+    --light-50: 0 0% 100%;           /* #FFFFFF - Pure white */
+    --light-100: 210 40% 98%;        /* #F8FAFC - Off white */
+    --light-200: 214 32% 91%;        /* #E2E8F0 - Very light grey */
+    --light-300: 213 27% 84%;        /* #CBD5E1 - Light grey */
+    --light-400: 215 20% 65%;        /* #94A3B8 - Medium grey */
+    --light-500: 215 16% 47%;        /* #64748B - Dark grey */
+    --light-600: 215 19% 35%;        /* #475569 - Darker grey */
+    --light-700: 215 25% 27%;        /* #334155 - Very dark grey */
+    --light-800: 217 33% 17%;        /* #1E293B - Almost black */
+    --light-900: 222 84% 5%;         /* #0F172A - Deep black */
+
+    /* Star Colors - Light Theme */
+    --star-color-1: #405BA1;
+    --star-color-2: rgba(64,91,161,0.8);
+    --star-color-3: rgba(50,73,139,0.9);
+    --star-color-4: rgba(64,91,161,0.7);
+    --star-color-5: rgba(64,91,161,0.6);
+    --star-opacity: 0.4;
+
+    /* Design System Variables - Light Theme */
+    --background: var(--light-50);
+    --foreground: var(--light-900);
+    --background-secondary: var(--light-100);
+    --background-tertiary: var(--light-200);
+    
+    --card: var(--light-100);
+    --card-foreground: var(--light-900);
+    --card-border: var(--light-300);
+    
+    --primary: var(--blue-600);
+    --primary-foreground: var(--white);
+    --primary-hover: var(--blue-500);
+    
+    --secondary: var(--purple-600);
+    --secondary-foreground: var(--white);
+    --secondary-hover: var(--purple-500);
+    
+    --accent: var(--cyan-500);
+    --accent-foreground: var(--light-50);
+    --accent-secondary: var(--emerald-500);
+    
+    --muted: var(--light-200);
+    --muted-foreground: var(--light-500);
+    
+    --border: var(--light-300);
+    --input: var(--light-200);
+    --ring: var(--blue-500);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    position: relative;
+  }
+  
+  /* Star Background - Default (Dark) */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(2px 2px at 73px 157px, #ffffff, transparent),
+      radial-gradient(1.5px 1.5px at 347px 92px, rgba(255,255,255,0.8), transparent),
+      radial-gradient(3px 3px at 891px 234px, #ffffff, transparent),
+      radial-gradient(2px 2px at 156px 41px, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1.5px 1.5px at 623px 178px, #ffffff, transparent),
+      radial-gradient(3px 3px at 234px 289px, rgba(255,255,255,0.9), transparent),
+      radial-gradient(2px 2px at 789px 63px, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1.5px 1.5px at 456px 201px, #ffffff, transparent),
+      radial-gradient(2px 2px at 92px 312px, rgba(255,255,255,0.8), transparent),
+      radial-gradient(3px 3px at 567px 127px, #ffffff, transparent),
+      radial-gradient(1.5px 1.5px at 834px 345px, rgba(255,255,255,0.7), transparent),
+      radial-gradient(2px 2px at 298px 189px, #ffffff, transparent),
+      radial-gradient(1.5px 1.5px at 145px 278px, rgba(255,255,255,0.6), transparent),
+      radial-gradient(2px 2px at 678px 95px, #ffffff, transparent),
+      radial-gradient(3px 3px at 423px 334px, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1.5px 1.5px at 756px 223px, rgba(255,255,255,0.7), transparent);
+    background-repeat: repeat;
+    background-size: 1000px 400px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.3;
+    animation: gentleFloat 40s ease-in-out infinite;
+  }
+  
+  /* Star Background - Light Mode Override */
+  .light body::before {
+    background: 
+      radial-gradient(2px 2px at 73px 157px, #1E293B, transparent),
+      radial-gradient(1.5px 1.5px at 347px 92px, rgba(30,41,59,0.8), transparent),
+      radial-gradient(3px 3px at 891px 234px, #0F172A, transparent),
+      radial-gradient(2px 2px at 156px 41px, rgba(30,41,59,0.7), transparent),
+      radial-gradient(1.5px 1.5px at 623px 178px, #1E293B, transparent),
+      radial-gradient(3px 3px at 234px 289px, rgba(15,23,42,0.9), transparent),
+      radial-gradient(2px 2px at 789px 63px, rgba(30,41,59,0.6), transparent),
+      radial-gradient(1.5px 1.5px at 456px 201px, #1E293B, transparent),
+      radial-gradient(2px 2px at 92px 312px, rgba(30,41,59,0.8), transparent),
+      radial-gradient(3px 3px at 567px 127px, #0F172A, transparent),
+      radial-gradient(1.5px 1.5px at 834px 345px, rgba(30,41,59,0.7), transparent),
+      radial-gradient(2px 2px at 298px 189px, #1E293B, transparent),
+      radial-gradient(1.5px 1.5px at 145px 278px, rgba(30,41,59,0.6), transparent),
+      radial-gradient(2px 2px at 678px 95px, #1E293B, transparent),
+      radial-gradient(3px 3px at 423px 334px, rgba(15,23,42,0.8), transparent),
+      radial-gradient(1.5px 1.5px at 756px 223px, rgba(30,41,59,0.7), transparent);
+    opacity: 0.8;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Enhanced Gradient Backgrounds */
+  .gradient-blue-purple {
+    background: linear-gradient(135deg, 
+      hsl(var(--gradient-blue-start)) 0%, 
+      hsl(var(--gradient-blue-mid)) 50%,
+      hsl(var(--gradient-blue-end)) 100%);
+  }
+  
+  .gradient-purple-blue {
+    background: linear-gradient(135deg, 
+      hsl(var(--gradient-purple-start)) 0%, 
+      hsl(var(--gradient-blue-mid)) 50%,
+      hsl(var(--gradient-blue-start)) 100%);
+  }
+  
+  .gradient-radial {
+    background: radial-gradient(ellipse at center, 
+      hsl(var(--blue-950)) 0%, 
+      hsl(var(--navy-950)) 65%,
+      hsl(var(--background)) 100%);
+  }
+  
+  .gradient-mesh {
+    background: 
+      radial-gradient(at 40% 20%, hsl(var(--blue-900) / 0.3) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--purple-900) / 0.3) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--blue-800) / 0.2) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsl(var(--purple-800) / 0.2) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsl(var(--cyan-900) / 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 100%, hsl(var(--blue-900) / 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 0%, hsl(var(--purple-900) / 0.1) 0px, transparent 50%);
+  }
+  
+  /* Enhanced Text Gradients */
+  .text-gradient-blue {
+    background: linear-gradient(135deg, 
+      hsl(var(--blue-400)) 0%, 
+      hsl(var(--cyan-400)) 50%,
+      hsl(var(--purple-400)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-gradient-purple {
+    background: linear-gradient(135deg, 
+      hsl(var(--purple-400)) 0%, 
+      hsl(var(--blue-400)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-gradient-accent {
+    background: linear-gradient(135deg, 
+      hsl(var(--cyan-400)) 0%, 
+      hsl(var(--emerald-400)) 50%,
+      hsl(var(--yellow-400)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Enhanced Glass Effects */
+  .glass {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .glass-card {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.15) 0%, 
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+  
+  /* Animation Classes */
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+  
+  .animate-slide-in-left {
+    animation: slideInLeft 0.8s ease-out forwards;
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInRight 0.8s ease-out forwards;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  /* Enhanced Glow Effects */
+  .glow-blue {
+    box-shadow: 
+      0 0 20px hsl(var(--blue-500) / 0.4),
+      0 0 40px hsl(var(--blue-600) / 0.2);
+  }
+  
+  .glow-purple {
+    box-shadow: 
+      0 0 20px hsl(var(--purple-500) / 0.4),
+      0 0 40px hsl(var(--purple-600) / 0.2);
+  }
+  
+  .glow-accent {
+    box-shadow: 
+      0 0 15px hsl(var(--cyan-500) / 0.5),
+      0 0 30px hsl(var(--cyan-600) / 0.3);
+  }
+  
+  .shadow-glow-blue {
+    box-shadow: 
+      0 4px 14px 0 hsl(var(--blue-600) / 0.15),
+      0 0 20px hsl(var(--blue-500) / 0.2);
+  }
+  
+  .shadow-glow-purple {
+    box-shadow: 
+      0 4px 14px 0 hsl(var(--purple-600) / 0.15),
+      0 0 20px hsl(var(--purple-500) / 0.2);
+  }
+}
+
+@layer utilities {
+  /* Custom animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  @keyframes gentleFloat {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+  
+  @keyframes typewriter {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+  
+  @keyframes blink {
+    50% {
+      border-color: transparent;
+    }
+  }
+  
+  /* Typewriter Effect */
+  .typewriter {
+    overflow: hidden;
+    border-right: 2px solid hsl(var(--blue-500));
+    white-space: nowrap;
+    animation: typewriter 2s steps(30, end), blink 1s step-end infinite;
+  }
+  
+  .typewriter-2 {
+    overflow: hidden;
+    border-right: 2px solid hsl(var(--purple-400));
+    white-space: nowrap;
+    animation: typewriter 2s steps(20, end) 3.2s both, blink 1s step-end infinite 3.2s;
+  }
+  
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
