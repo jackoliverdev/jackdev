@@ -1,7 +1,7 @@
 {
-  "name": "venefish",
-  "description": "Boilerplate & template for Vercel projects using Next.js, Firebase and shadcn/ui.",
-  "author": "Enesien Software <contact@enesien.com> (https://enesien.com)",
+  "name": "jackoliverdev-portfolio",
+  "description": "Professional portfolio website for Jack Oliver - Full-Stack Developer & AI Solutions Specialist",
+  "author": "Jack Oliver <contact@jackoliverdev.co.uk> (https://jackoliverdev.co.uk)",
   "version": "0.1.0",
   "private": true,
   "scripts": {

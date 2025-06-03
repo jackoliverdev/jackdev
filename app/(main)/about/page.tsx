@@ -1,10 +1,15 @@
 import { About } from '@/components/website/about'
 
-export default function AboutPage() {
-  return <About />
+export const metadata = {
+  title: 'About Jack Oliver | Full-Stack Developer & AI Solutions Specialist',
+  description: 'Meet Jack Oliver, a UK-based self-taught developer with 1 year of hands-on experience. Specialising in modern web applications, AI chatbot solutions, and rapid development using cutting-edge tools.',
+  keywords: 'Jack Oliver, full-stack developer UK, self-taught developer, AI solutions specialist, web developer biography',
+  openGraph: {
+    title: 'About Jack Oliver | Full-Stack Developer & AI Solutions Specialist',
+    description: 'Meet Jack Oliver, a UK-based self-taught developer specialising in modern web applications and AI solutions.',
+  },
 }
 
-export const metadata = {
-  title: 'About - Jack Oliver Dev | Full Stack & AI Developer',
-  description: 'Learn more about Jack Oliver, an England-based full stack developer specialising in modern web applications and AI integrations.',
+export default function AboutPage() {
+  return <About />
 } 

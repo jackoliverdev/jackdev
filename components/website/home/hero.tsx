@@ -1,11 +1,13 @@
 'use client'
 
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Calendar, Monitor, Sparkles, Zap, Code2, Brain, Lightbulb, Laptop } from 'lucide-react'
+import Button, { ButtonGroup } from '@/components/website/button'
+import { Calendar, Monitor, Sparkles, Zap, Code2, Brain, Lightbulb, Laptop, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { BrowserMockup } from './browser-mockup'
+import CalendlyModal from '@/components/website/contact/calendly-modal'
 
 const FloatingElement = ({ 
   children, 
@@ -64,31 +66,7 @@ const AnimatedText = ({ text, delay = 0, charDelay = 0.03, lineDelay = 0.5 }: { 
 }
 
 export function Hero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-  
-  const springX = useSpring(mouseX, { stiffness: 50, damping: 20 })
-  const springY = useSpring(mouseY, { stiffness: 50, damping: 20 })
-  
-  const rotateX = useTransform(springY, [-0.5, 0.5], [7.5, -7.5])
-  const rotateY = useTransform(springX, [-0.5, 0.5], [-7.5, 7.5])
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = document.documentElement.getBoundingClientRect()
-      const x = (e.clientX - rect.width / 2) / rect.width
-      const y = (e.clientY - rect.height / 2) / rect.height
-      
-      mouseX.set(x)
-      mouseY.set(y)
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [mouseX, mouseY])
+  const [isCalendlyModalOpen, setIsCalendlyModalOpen] = useState(false)
 
   return (
     <section className="relative overflow-hidden pt-20 lg:pt-32 pb-16 lg:pb-24">
@@ -116,7 +94,7 @@ export function Hero() {
         {/* --- Desktop Floating Icons --- */}
         <div className="hidden lg:block">
           <FloatingElement delay={1} duration={7} amplitude={15}>
-            <div className="absolute top-32 right-[20%] p-3 bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-xl backdrop-blur-sm border border-blue-500/20">
+            <div className="absolute top-40 right-[20%] p-3 bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-xl backdrop-blur-sm border border-blue-500/20">
               <Code2 className="w-6 h-6 text-blue-400" />
             </div>
           </FloatingElement>
@@ -132,7 +110,7 @@ export function Hero() {
 
         <div className="hidden lg:block">
           <FloatingElement delay={5} duration={6} amplitude={15}>
-            <div className="absolute top-32 left-[20%] p-3 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl backdrop-blur-sm border border-yellow-500/20">
+            <div className="absolute top-40 left-[20%] p-3 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl backdrop-blur-sm border border-yellow-500/20">
               <Lightbulb className="w-6 h-6 text-yellow-400" />
             </div>
           </FloatingElement>
@@ -149,7 +127,7 @@ export function Hero() {
         {/* --- Mobile Floating Icons --- */}
         <div className="block lg:hidden">
           <FloatingElement delay={0.5} duration={8} amplitude={10}>
-            <div className="absolute top-20 left-5 p-2 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-lg backdrop-blur-sm border border-yellow-500/20">
+            <div className="absolute top-28 left-5 p-2 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-lg backdrop-blur-sm border border-yellow-500/20">
               <Lightbulb className="w-5 h-5 text-yellow-400" />
             </div>
           </FloatingElement>
@@ -157,7 +135,7 @@ export function Hero() {
 
         <div className="block lg:hidden">
           <FloatingElement delay={1.0} duration={9} amplitude={8}>
-            <div className="absolute top-24 right-5 p-2 bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-lg backdrop-blur-sm border border-blue-500/20">
+            <div className="absolute top-32 right-5 p-2 bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-lg backdrop-blur-sm border border-blue-500/20">
               <Code2 className="w-5 h-5 text-blue-400" />
             </div>
           </FloatingElement>
@@ -191,29 +169,19 @@ export function Hero() {
       </div>
 
       <div className="container relative mx-auto px-4">
-        <motion.div
-          style={{ rotateX, rotateY }}
-          className="text-center perspective-1000"
-        >
+        <div className="text-center">
           {/* Badge with enhanced animation */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.5, y: -30 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8, type: "spring", bounce: 0.4 }}
-            className="mb-8 inline-flex items-center rounded-full bg-card/60 border border-card-border/50 px-4 py-2 text-sm text-muted-foreground backdrop-blur-sm hover:bg-card/80 hover:border-card-border transition-all duration-500 hover:scale-105"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ 
+              delay: 5.8, 
+              duration: 0.8, 
+              ease: "easeInOut"
+            }}
+            className="mb-1 lg:mb-8 inline-flex items-center rounded-full bg-card/60 border border-card-border/50 px-4 py-2 text-sm text-muted-foreground backdrop-blur-sm hover:bg-card/80 hover:border-card-border transition-all duration-300 hover:scale-105"
           >
-            <motion.span 
-              className="mr-2 h-2 w-2 rounded-full bg-green-500 shadow-sm shadow-green-500/50"
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.7, 1, 0.7]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
+            <CheckCircle className="mr-2 w-4 h-4 text-green-500" />
             Available for new projects
           </motion.div>
 
@@ -221,26 +189,26 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
             className="mb-8 px-4"
           >
             <h1 className="text-4xl font-bold tracking-tight lg:text-6xl xl:text-7xl leading-tight lg:leading-tight xl:leading-tight">
               {/* Desktop First Line */}
               <div className="text-foreground hidden lg:block">
-                <AnimatedText text="Transforming Ideas into" delay={0.4} charDelay={0.04} />
+                <AnimatedText text="Transforming Ideas into" delay={0.8} charDelay={0.04} />
               </div>
               {/* Mobile First Line */}
               <div className="text-foreground block lg:hidden">
-                <AnimatedText text="From Idea to" delay={0.4} charDelay={0.04} />
+                <AnimatedText text="From Idea to" delay={0.8} charDelay={0.04} />
               </div>
 
               {/* Desktop Second Line */}
-              <div className="text-gradient-blue hidden lg:block">
-                <AnimatedText text="Digital Experiences" delay={0.4 + "Transforming Ideas into".length * 0.04 + 0.2} charDelay={0.04} />
+              <div className="text-gradient-light-blue hidden lg:block">
+                <AnimatedText text="Digital Experiences" delay={0.8 + "Transforming Ideas into".length * 0.04 + 0.3} charDelay={0.04} />
               </div>
               {/* Mobile Second Line */}
-              <div className="text-gradient-blue block lg:hidden">
-                <AnimatedText text="Digital Experience" delay={0.4 + "From Idea to".length * 0.04 + 0.2} charDelay={0.04} />
+              <div className="text-gradient-light-blue block lg:hidden">
+                <AnimatedText text="Digital Experience" delay={0.8 + "From Idea to".length * 0.04 + 0.3} charDelay={0.04} />
               </div>
             </h1>
           </motion.div>
@@ -249,21 +217,21 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.4, duration: 0.8 }}
+            transition={{ delay: 3.8, duration: 0.8 }}
             className="mx-auto mb-8 max-w-4xl"
           >
             <motion.p
               className="text-lg text-muted-foreground lg:text-xl leading-relaxed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.6, duration: 1 }}
+              transition={{ delay: 4.0, duration: 1 }}
             >
               🇬🇧 UK-based developer specialising in modern websites and AI chatbots.
               <br />
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 2, duration: 0.8 }}
+                transition={{ delay: 4.6, duration: 0.8 }}
               >
                 Fast delivery, excellent communication, and ongoing support.
               </motion.span>
@@ -274,75 +242,59 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.2, duration: 0.8, type: "spring", stiffness: 100 }}
-            className="flex flex-col gap-4 sm:flex-row sm:justify-center"
+            transition={{ delay: 5.0, duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col gap-4 sm:flex-row sm:justify-center items-center"
           >
-            <Link href="/contact">
-              <motion.button
-                className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl overflow-hidden transition-all duration-300"
-                whileHover={{ 
-                  scale: 1.05,
-                  boxShadow: "0 20px 40px -12px rgba(59, 130, 246, 0.4)"
-                }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 2.4, duration: 0.6, type: "spring", bounce: 0.3 }}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 5.2, duration: 0.6, ease: "easeOut" }}
+            >
+              <Button
+                variant="primary"
+                icon={Calendar}
+                onClick={() => setIsCalendlyModalOpen(true)}
+                className="relative overflow-hidden"
               >
+                Book a Discovery Call
+                
                 {/* Pulsing glow effect */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-xl blur-xl"
+                  className="absolute inset-0 bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-xl blur-xl -z-10"
                   animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.5, 0.8, 0.5]
+                    scale: [1, 1.1, 1],
+                    opacity: [0.4, 0.7, 0.4]
                   }}
                   transition={{
-                    duration: 2,
+                    duration: 3,
                     repeat: Infinity,
-                    ease: "easeInOut"
+                    ease: "easeInOut",
+                    repeatType: "loop"
                   }}
                 />
-                
-                {/* Hover shimmer effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "100%" }}
-                  transition={{ duration: 0.6 }}
-                />
-                
-                <span className="relative flex items-center space-x-2">
-                  <Calendar className="w-5 h-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12" />
-                  <span>Book a Discovery Call</span>
-                </span>
-              </motion.button>
-            </Link>
+              </Button>
+            </motion.div>
             
-            <Link href="/portfolio">
-              <motion.button
-                className="group px-8 py-4 border border-border bg-card/60 text-card-foreground font-semibold rounded-xl backdrop-blur-sm hover:border-border/80 hover:bg-card/80 transition-all duration-300"
-                whileHover={{ 
-                  scale: 1.05,
-                  backgroundColor: "rgba(255, 255, 255, 0.1)"
-                }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 2.6, duration: 0.6, type: "spring", bounce: 0.3 }}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 5.4, duration: 0.6, ease: "easeOut" }}
+            >
+              <Button
+                href="/portfolio"
+                variant="secondary"
+                icon={Monitor}
               >
-                <span className="flex items-center space-x-2">
-                  <Monitor className="w-5 h-5 transition-transform group-hover:scale-110 group-hover:rotate-3" />
-                  <span>View My Work</span>
-                </span>
-              </motion.button>
-            </Link>
+                View My Work
+              </Button>
+            </motion.div>
           </motion.div>
 
           {/* Enhanced About Badge */}
           <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 2.8, duration: 0.8, type: "spring", stiffness: 120 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 5.6, duration: 0.8, ease: "easeOut" }}
             className="mt-8 flex justify-center"
           >
             <Link 
@@ -372,8 +324,24 @@ export function Hero() {
               </span>
             </Link>
           </motion.div>
-        </motion.div>
+
+          {/* Browser Mockup */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 6.2, duration: 1.0, ease: "easeOut" }}
+            className="mt-16 px-4"
+          >
+            <BrowserMockup />
+          </motion.div>
+        </div>
       </div>
+
+      {/* Calendly Modal */}
+      <CalendlyModal 
+        isOpen={isCalendlyModalOpen} 
+        onClose={() => setIsCalendlyModalOpen(false)} 
+      />
     </section>
   )
 } 

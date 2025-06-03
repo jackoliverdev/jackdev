@@ -3,13 +3,63 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Github, Linkedin, Calendar } from 'lucide-react'
+import { Github, Linkedin, Calendar, Code, User, Sparkles, Star, Zap, Layers, Coffee, Target } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+
+const FloatingIcon = ({ 
+  IconComponent, 
+  delay = 0, 
+  duration = 6, 
+  amplitude = 20,
+  className = ""
+}: { 
+  IconComponent: any
+  delay?: number
+  duration?: number 
+  amplitude?: number
+  className?: string
+}) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0 }}
+    animate={{ 
+      opacity: [0, 1, 1, 0],
+      scale: [0, 1, 1, 0],
+      y: [0, -amplitude, 0],
+      x: [0, amplitude/2, -amplitude/2, 0],
+      rotate: [0, 180, 360]
+    }}
+    transition={{
+      duration,
+      repeat: Infinity,
+      ease: "easeInOut",
+      delay
+    }}
+    className={className}
+  >
+    <div className="p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm rounded-lg border border-white/20">
+      <IconComponent className="w-4 h-4 text-blue-400" />
+    </div>
+  </motion.div>
+)
 
 export function About() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-20">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-gradient-radial opacity-30" />
+      <div className="absolute inset-0 bg-gradient-mesh opacity-20" />
+      
+      {/* Floating Background Icons */}
+      <FloatingIcon IconComponent={Code} delay={0} duration={8} amplitude={30} className="absolute top-20 left-10" />
+      <FloatingIcon IconComponent={User} delay={4} duration={7} amplitude={35} className="absolute bottom-32 right-16" />
+      <FloatingIcon IconComponent={Sparkles} delay={2} duration={9} amplitude={25} className="absolute top-40 right-20" />
+      <FloatingIcon IconComponent={Star} delay={6} duration={8} amplitude={40} className="absolute bottom-20 left-20" />
+      <FloatingIcon IconComponent={Coffee} delay={1} duration={10} amplitude={20} className="absolute top-32 left-1/2" />
+      <FloatingIcon IconComponent={Zap} delay={5} duration={6} amplitude={30} className="absolute bottom-40 right-32" />
+      <FloatingIcon IconComponent={Layers} delay={3} duration={9} amplitude={35} className="absolute top-60 left-16" />
+      <FloatingIcon IconComponent={Target} delay={7} duration={7} amplitude={25} className="absolute bottom-60 right-10" />
+
+      <div className="container mx-auto px-4 pt-32 pb-20 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Left Sidebar */}
           <div className="lg:col-span-1">
@@ -76,24 +126,16 @@ export function About() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-center lg:text-left"
             >
-              <Button 
-                size="sm"
-                className="mb-6 bg-primary hover:bg-primary-hover glow-blue"
-              >
-                <Calendar className="mr-2 h-4 w-4" />
-                Schedule a call
-              </Button>
-
-              <h1 className="text-4xl lg:text-5xl font-bold mb-4">
+              <h1 className="text-4xl lg:text-5xl font-bold mb-6">
                 <span className="text-white">Jack Oliver Dev</span>
               </h1>
               
-              <p className="text-xl text-gradient-blue font-medium mb-6">
+              <p className="text-xl text-gradient-blue font-medium mb-8">
                 Full Stack & AI Developer
               </p>
 
               {/* Social Links */}
-              <div className="flex justify-center lg:justify-start gap-4 mb-8">
+              <div className="flex justify-center lg:justify-start gap-4 mb-10">
                 <Link 
                   href="https://github.com/jackoliverdev" 
                   className="flex items-center gap-2 px-4 py-2 bg-card border border-card-border rounded-lg hover:bg-card/80 transition-all duration-200 group"

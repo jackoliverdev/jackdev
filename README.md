@@ -1,34 +1,40 @@
-# Venefish 🐟
+# Jack Oliver Development Portfolio 🚀
 
-### Boilerplate for React TypeScript projects using Next.js, shadcn/ui, Tailwind and Firebase on Vercel!
+Professional portfolio website for Jack Oliver - Full-Stack Developer & AI Solutions Specialist.
 
-> Now using Next.js app router!
+## About
 
-This stack is 🔥 because projects can be built and deployed for free until you get to higher tiers within Vercel/Firebase which only happens once you get lots of DAUs.
+This is the official portfolio website for Jack Oliver Development, showcasing professional web development services, AI chatbot solutions, and consulting expertise. Built with modern technologies and designed for exceptional user experience.
 
-- **Ve**rcel for cloud and automated deployments
-- **Ne**xt.js for better React
-- **Fi**rebase for auth and database (Firestore)
-- **Sh**adcn and Tailwind for UI/styling
+## Features
 
-**Let me know if you have any questions! Godspeed.**
+- **Modern Design**: Clean, professional aesthetic with smooth animations
+- **Responsive**: Optimised for all devices and screen sizes
+- **Fast Performance**: Built with Next.js 14 and optimised for speed
+- **SEO Optimised**: Comprehensive metadata and structured data
+- **Contact Integration**: Calendly booking and contact forms
+- **Portfolio Showcase**: Featured projects and case studies
 
-## Setup
+## Tech Stack
 
-1. Make sure your Firebase project has authentication added
-1. Get your public Firebase config and paste it into `components\firebase-providers.tsx`
-1. `npm i` and `npm run dev`
+- **Framework**: Next.js 14
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Animation**: Framer Motion
+- **Authentication**: Firebase Auth
+- **Database**: Supabase
+- **Deployment**: Vercel
 
-The following is only needed if you want to use `firebase/admin` (not part of this project by default)
+## Services Showcased
 
-1. Create a new file at the root level called `.env.local`
-1. Define a new variable there called `FIREBASE_ADMIN_SDK`
-1. Get your Firebase service account private key and stringify it then set the above variable to that string
-   > e.g.: `FIREBASE_ADMIN_SDK={"type":"service_account","project_id":"sleeptoken",...}`
+- Website Development
+- AI Chatbot Solutions
+- E-commerce Platforms
+- Custom Web Applications
+- Consulting & Support
 
-### Notes
+## Contact
 
-- You can use `api/test.ts` to stringify your private key so you can use in in the environment
-- You need to define the same `FIREBASE_ADMIN_SDK` environment variable in Vercel
-
-**Created by [⬡ Enesien Software](https://enesien.com)**
+**Website**: [www.jackoliverdev.co.uk](https://www.jackoliverdev.co.uk)  
+**Location**: United Kingdom  
+**Specialisation**: Modern Web Development & AI Solutions

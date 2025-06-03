@@ -1,78 +1,143 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
-import {
-  GithubAuthProvider,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-import { GithubIcon } from "lucide-react";
-import { FC, useState } from "react";
+import { motion } from "framer-motion";
+import { Github, Chrome } from "lucide-react";
+import { signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { useAuth } from "reactfire";
+import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
 
-interface Props {
-  onSignIn?: () => void;
-}
-
-export const ProviderLoginButtons: FC<Props> = ({ onSignIn }) => {
+export const ProviderLoginButtons = () => {
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isGithubLoading, setIsGithubLoading] = useState(false);
   const auth = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  const doProviderSignIn = async (provider: GoogleAuthProvider) => {
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
     try {
-      setIsLoading(true);
+      const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      // create user in your database here
-      toast({ title: "Signed in!" });
-      onSignIn?.();
-    } catch (err: any) {
-      console.error(err);
-      toast({ title: "Error signing in", description: `${err}` });
+      toast({
+        title: "Success",
+        description: "Successfully signed in with Google!",
+      });
+    } catch (error: any) {
+      let errorMessage = "Failed to sign in with Google.";
+      
+      if (error.code === "auth/popup-closed-by-user") {
+        errorMessage = "Sign in was cancelled.";
+      } else if (error.code === "auth/popup-blocked") {
+        errorMessage = "Please allow popups and try again.";
+      }
+      
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
-      setIsLoading(false);
+      setIsGoogleLoading(false);
     }
   };
+
+  const handleGithubSignIn = async () => {
+    setIsGithubLoading(true);
+    try {
+      const provider = new GithubAuthProvider();
+      await signInWithPopup(auth, provider);
+      toast({
+        title: "Success",
+        description: "Successfully signed in with GitHub!",
+      });
+    } catch (error: any) {
+      let errorMessage = "Failed to sign in with GitHub.";
+      
+      if (error.code === "auth/popup-closed-by-user") {
+        errorMessage = "Sign in was cancelled.";
+      } else if (error.code === "auth/popup-blocked") {
+        errorMessage = "Please allow popups and try again.";
+      } else if (error.code === "auth/account-exists-with-different-credential") {
+        errorMessage = "An account already exists with this email using a different sign-in method.";
+      }
+      
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setIsGithubLoading(false);
+    }
+  };
+
   return (
-    <>
-      <Button
-        className="w-full"
-        disabled={isLoading}
-        onClick={async () => {
-          const provider = new GoogleAuthProvider();
-          toast({
-            title: "Oops!",
-            description: "Provider not configured, yet.",
-          });
-          // await doProviderSignIn(provider);
-        }}
+    <div className="space-y-3">
+      
+      {/* Google Sign In */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="1em"
-          viewBox="0 0 488 512"
-          fill="currentColor"
-          className="mr-2"
+        <Button
+          onClick={handleGoogleSignIn}
+          disabled={isGoogleLoading || isGithubLoading}
+          variant="outline"
+          className="w-full h-12 rounded-xl border-border/50 bg-background/50 hover:bg-background/80 transition-all duration-300 transform hover:scale-[1.02]"
         >
-          <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
-        </svg>
-        Google
-      </Button>
-      <Button
-        className="w-full"
-        disabled={isLoading}
-        onClick={async () => {
-          const provider = new GithubAuthProvider();
-          toast({
-            title: "Oops!",
-            description: "Provider not configured, yet.",
-          });
-          // await doProviderSignIn(provider);
-        }}
+          {isGoogleLoading ? (
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 border-2 border-muted-foreground/20 border-t-muted-foreground rounded-full animate-spin" />
+              <span>Connecting to Google...</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Chrome className="w-5 h-5 text-blue-500" />
+              <span className="font-medium">Continue with Google</span>
+            </div>
+          )}
+        </Button>
+      </motion.div>
+
+      {/* GitHub Sign In */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
       >
-        <GithubIcon className="w-4 h-4 mr-2" />
-        Github
-      </Button>
-    </>
+        <Button
+          onClick={handleGithubSignIn}
+          disabled={isGoogleLoading || isGithubLoading}
+          variant="outline"
+          className="w-full h-12 rounded-xl border-border/50 bg-background/50 hover:bg-background/80 transition-all duration-300 transform hover:scale-[1.02]"
+        >
+          {isGithubLoading ? (
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 border-2 border-muted-foreground/20 border-t-muted-foreground rounded-full animate-spin" />
+              <span>Connecting to GitHub...</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Github className="w-5 h-5 text-foreground" />
+              <span className="font-medium">Continue with GitHub</span>
+            </div>
+          )}
+        </Button>
+      </motion.div>
+
+      {/* Security Note */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.3 }}
+        className="text-center pt-2"
+      >
+        <p className="text-xs text-muted-foreground">
+          Your data is secure and we never store your social media passwords
+        </p>
+      </motion.div>
+    </div>
   );
 };
