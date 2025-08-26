@@ -1,54 +1,22 @@
 'use client'
 
-import { useRef } from 'react'
-import Link from 'next/link'
+import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Calendar, MessageCircle, Star, CheckCircle, ArrowRight, Zap, Globe } from 'lucide-react'
+import { Calendar, MessageCircle, CheckCircle, Zap, Globe } from 'lucide-react'
 import Button, { ButtonGroup } from '../button'
-
-const FloatingIcon = ({ 
-  IconComponent, 
-  delay = 0, 
-  duration = 8, 
-  amplitude = 15
-}: { 
-  IconComponent: any
-  delay?: number
-  duration?: number 
-  amplitude?: number
-}) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0 }}
-    animate={{ 
-      opacity: [0, 1, 1, 0],
-      scale: [0, 1, 1, 0],
-      y: [0, -amplitude, 0],
-      x: [0, amplitude/2, -amplitude/2, 0],
-      rotate: [0, 180, 360]
-    }}
-    transition={{
-      duration,
-      repeat: Infinity,
-      ease: "easeInOut",
-      delay
-    }}
-  >
-    <div className="p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm rounded-lg border border-white/20">
-      <IconComponent className="w-4 h-4 text-blue-400" />
-    </div>
-  </motion.div>
-)
+import HomeCalendlyModal from './calendly-modal'
+import HomeContactModal from './contact-modal'
 
 const trustIndicators = [
   {
     icon: Globe,
     text: 'UK-Based Developer',
-    description: 'Professional communication & timezone alignment'
+    description: 'Easy communication & timezone alignment'
   },
   {
     icon: Zap,
     text: 'Lightning Fast Delivery',
-    description: 'Rapid development with Cursor AI assistance'
+    description: 'Rapid development with AI assistance'
   },
   {
     icon: CheckCircle,
@@ -60,6 +28,8 @@ const trustIndicators = [
 export default function FinalCTA() {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, margin: "-100px" })
+  const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
+  const [isContactOpen, setIsContactOpen] = useState(false)
 
   return (
     <section 
@@ -69,34 +39,6 @@ export default function FinalCTA() {
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-radial opacity-50" />
       <div className="absolute inset-0 bg-gradient-mesh opacity-30" />
-
-      {/* Floating Background Icons */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-16">
-          <FloatingIcon IconComponent={Calendar} delay={0} duration={8} amplitude={30} />
-        </div>
-        <div className="absolute top-40 right-20">
-          <FloatingIcon IconComponent={MessageCircle} delay={2} duration={7} amplitude={25} />
-        </div>
-        <div className="absolute bottom-32 left-20">
-          <FloatingIcon IconComponent={Star} delay={4} duration={9} amplitude={35} />
-        </div>
-        <div className="absolute bottom-20 right-16">
-          <FloatingIcon IconComponent={CheckCircle} delay={6} duration={6} amplitude={20} />
-        </div>
-        <div className="absolute top-32 left-1/2 transform -translate-x-1/2">
-          <FloatingIcon IconComponent={Zap} delay={1} duration={10} amplitude={40} />
-        </div>
-        <div className="absolute bottom-40 right-32">
-          <FloatingIcon IconComponent={Globe} delay={5} duration={8} amplitude={30} />
-        </div>
-        <div className="absolute top-60 left-32">
-          <FloatingIcon IconComponent={ArrowRight} delay={3} duration={7} amplitude={25} />
-        </div>
-        <div className="absolute bottom-60 right-10">
-          <FloatingIcon IconComponent={Star} delay={7} duration={9} amplitude={35} />
-        </div>
-      </div>
 
       <div className="container mx-auto px-4 relative z-10">
         
@@ -162,10 +104,10 @@ export default function FinalCTA() {
             transition={{ duration: 0.8, delay: 0.5 }}
           >
             <ButtonGroup>
-              <Button href="/contact" variant="primary" icon={Calendar}>
+              <Button variant="primary" icon={Calendar} onClick={() => setIsCalendlyOpen(true)}>
                 Book a Discovery Call
               </Button>
-              <Button href="/portfolio" variant="secondary" icon={MessageCircle}>
+              <Button variant="secondary" icon={MessageCircle} onClick={() => setIsContactOpen(true)}>
                 Send Me a Message
               </Button>
             </ButtonGroup>
@@ -200,38 +142,13 @@ export default function FinalCTA() {
             })}
           </motion.div>
 
-          {/* Bottom Social Proof - More compact on mobile */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.9, duration: 0.8 }}
-            className="bg-card/60 backdrop-blur-sm border border-border/50 rounded-2xl p-4 lg:p-6 max-w-2xl mx-auto"
-          >
-            <div className="flex items-center justify-center mb-2 lg:mb-3">
-              <div className="flex -space-x-1 lg:-space-x-2">
-                {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ delay: 1.0 + (i * 0.1), duration: 0.4 }}
-                    className="w-6 lg:w-8 h-6 lg:h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full border-2 border-background flex items-center justify-center"
-                  >
-                    <Star className="w-3 lg:w-4 h-3 lg:h-4 text-white fill-current" />
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-            
-            <p className="text-foreground font-semibold mb-1 text-sm lg:text-base">
-              Join satisfied clients across the UK
-            </p>
-            <p className="text-xs lg:text-sm text-muted-foreground">
-              Fast, reliable, and results-driven development
-            </p>
-          </motion.div>
+          
         </motion.div>
       </div>
+
+      {/* Modals */}
+      <HomeCalendlyModal isOpen={isCalendlyOpen} onClose={() => setIsCalendlyOpen(false)} />
+      <HomeContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </section>
   )
 } 

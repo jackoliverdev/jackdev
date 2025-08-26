@@ -1,16 +1,22 @@
 'use client'
 
-import { Hero } from '@/components/website/home/hero'
-import ServicesOverview from '@/components/website/home/services-overview'
-import FeaturedProjects from '@/components/website/home/featured-projects'
-import Testimonials from '@/components/website/home/testimonials'
-import FinalCTA from '@/components/website/home/final-cta'
+import dynamic from 'next/dynamic'
+
+const Hero = dynamic(() => import('@/components/website/home/hero').then(m => m.Hero), { ssr: false })
+const HomeTechMarquee = dynamic(() => import('@/components/website/home/tech-marquee'), { ssr: false })
+const ServicesOverview = dynamic(() => import('@/components/website/home/services-overview'), { ssr: false })
+const HomeProcess = dynamic(() => import('@/components/website/home/process'), { ssr: false })
+const FeaturedProjects = dynamic(() => import('@/components/website/home/featured-projects'), { ssr: false })
+const Testimonials = dynamic(() => import('@/components/website/home/testimonials'), { ssr: false })
+const FinalCTA = dynamic(() => import('@/components/website/home/final-cta'), { ssr: false })
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <Hero />
+      <HomeTechMarquee />
       <ServicesOverview />
+      <HomeProcess />
       <FeaturedProjects />
       <Testimonials />
       <FinalCTA />

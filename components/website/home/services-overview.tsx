@@ -1,10 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Globe, Bot, Wrench, ArrowRight, Code, Sparkles, Zap, Lightbulb, Laptop, Brain } from 'lucide-react'
-import Link from 'next/link'
+import { Globe, Bot, Wrench, Code, Sparkles, Zap, Lightbulb, Laptop, Brain } from 'lucide-react'
 import { useState } from 'react'
-import Button, { ButtonGroup } from '../button'
 
 const services = [
   {
@@ -51,38 +49,7 @@ const services = [
   }
 ]
 
-const FloatingIcon = ({ 
-  IconComponent, 
-  delay = 0, 
-  duration = 8, 
-  amplitude = 15
-}: { 
-  IconComponent: any
-  delay?: number
-  duration?: number 
-  amplitude?: number
-}) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0 }}
-    animate={{ 
-      opacity: [0, 1, 1, 0],
-      scale: [0, 1, 1, 0],
-      y: [0, -amplitude, 0],
-      x: [0, amplitude/2, -amplitude/2, 0],
-      rotate: [0, 180, 360]
-    }}
-    transition={{
-      duration,
-      repeat: Infinity,
-      ease: "easeInOut",
-      delay
-    }}
-  >
-    <div className="p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm rounded-lg border border-white/20">
-      <IconComponent className="w-4 h-4 text-blue-400" />
-    </div>
-  </motion.div>
-)
+
 
 const FloatingServiceIcon = ({ 
   IconComponent, 
@@ -153,34 +120,7 @@ export default function ServicesOverview() {
       {/* Enhanced Background Elements */}
       <div className="absolute inset-0 bg-gradient-radial opacity-60" />
       <div className="absolute inset-0 bg-gradient-mesh opacity-40" />
-      
-      {/* Floating Background Icons */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-16">
-          <FloatingIcon IconComponent={Globe} delay={0} duration={8} amplitude={30} />
-        </div>
-        <div className="absolute top-40 right-20">
-          <FloatingIcon IconComponent={Bot} delay={2} duration={7} amplitude={25} />
-        </div>
-        <div className="absolute bottom-32 left-20">
-          <FloatingIcon IconComponent={Wrench} delay={4} duration={9} amplitude={35} />
-        </div>
-        <div className="absolute bottom-20 right-16">
-          <FloatingIcon IconComponent={Code} delay={6} duration={6} amplitude={20} />
-        </div>
-        <div className="absolute top-32 left-1/2 transform -translate-x-1/2">
-          <FloatingIcon IconComponent={Sparkles} delay={1} duration={10} amplitude={40} />
-        </div>
-        <div className="absolute bottom-40 right-32">
-          <FloatingIcon IconComponent={Zap} delay={5} duration={8} amplitude={30} />
-        </div>
-        <div className="absolute top-60 left-32">
-          <FloatingIcon IconComponent={Lightbulb} delay={3} duration={7} amplitude={25} />
-        </div>
-        <div className="absolute bottom-60 right-10">
-          <FloatingIcon IconComponent={Laptop} delay={7} duration={9} amplitude={35} />
-        </div>
-      </div>
+
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Enhanced Section Header */}
@@ -216,15 +156,24 @@ export default function ServicesOverview() {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <span className="text-foreground">
-              What I Do{' '}
-            </span>
-            <span className="text-gradient-light-blue">
-              Exceptionally Well
+              Services I Offer
             </span>
           </motion.h2>
           
+          {/* Mobile: shorter copy to fit neatly */}
           <motion.p 
-            className="text-lg lg:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed"
+            className="md:hidden text-lg lg:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+          >
+            I specialise in building modern web applications and AI-powered solutions that <span className="text-gradient-blue font-semibold">grow, scale, and dominate</span>.
+          </motion.p>
+
+          {/* Desktop/tablet: original copy with line break */}
+          <motion.p 
+            className="hidden md:block text-lg lg:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -232,7 +181,7 @@ export default function ServicesOverview() {
           >
             I specialise in building modern web applications and AI-powered solutions
             <br />
-            that help businesses <span className="text-gradient-blue font-semibold">grow, scale, and dominate</span> their markets.
+            that help businesses <span className="text-gradient-blue font-semibold">grow, scale, and dominate</span>.
           </motion.p>
         </motion.div>
 
@@ -420,23 +369,7 @@ export default function ServicesOverview() {
           })}
         </motion.div>
 
-        {/* Enhanced CTA Section */}
-        <motion.div 
-          className="text-center mt-12 lg:mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-        >
-          <ButtonGroup>
-            <Button href="/services" variant="primary">
-              Explore All Services
-            </Button>
-            <Button href="/contact" variant="secondary">
-              Start Your Project
-            </Button>
-          </ButtonGroup>
-        </motion.div>
+        {/* Bottom CTA removed for a cleaner section */}
       </div>
     </section>
   )

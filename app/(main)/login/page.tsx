@@ -1,4 +1,5 @@
 import Login from '@/components/website/login/login'
+import { MyFirebaseProvider } from '@/components/firebase-providers'
 
 export const metadata = {
   title: 'Login | Jack Oliver Development',
@@ -7,5 +8,9 @@ export const metadata = {
 }
 
 export default function LoginPage() {
-  return <Login />
+  return (
+    <MyFirebaseProvider>
+      <Login />
+    </MyFirebaseProvider>
+  )
 }
