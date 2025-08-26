@@ -185,23 +185,15 @@
       radial-gradient(5px 5px at 234px 289px, rgba(255,255,255,0.95), transparent),
       radial-gradient(3px 3px at 789px 63px, rgba(255,255,255,0.7), transparent),
       radial-gradient(2px 2px at 456px 201px, #ffffff, transparent),
-      radial-gradient(4px 4px at 92px 312px, rgba(255,255,255,0.85), transparent),
       radial-gradient(5px 5px at 567px 127px, #ffffff, transparent),
-      radial-gradient(2px 2px at 834px 345px, rgba(255,255,255,0.8), transparent),
       radial-gradient(3px 3px at 298px 189px, #ffffff, transparent),
-      radial-gradient(2px 2px at 145px 278px, rgba(255,255,255,0.7), transparent),
       radial-gradient(4px 4px at 678px 95px, #ffffff, transparent),
-      radial-gradient(6px 6px at 423px 334px, rgba(255,255,255,0.9), transparent),
-      radial-gradient(3px 3px at 756px 223px, rgba(255,255,255,0.8), transparent),
-      radial-gradient(2px 2px at 112px 45px, rgba(255,255,255,0.6), transparent),
-      radial-gradient(4px 4px at 534px 67px, rgba(255,255,255,0.85), transparent),
-      radial-gradient(3px 3px at 821px 156px, rgba(255,255,255,0.9), transparent),
-      radial-gradient(5px 5px at 234px 378px, rgba(255,255,255,0.8), transparent);
+      radial-gradient(3px 3px at 756px 223px, rgba(255,255,255,0.8), transparent);
     background-repeat: repeat;
-    background-size: 1000px 400px;
+    background-size: 1200px 500px;
     pointer-events: none;
     z-index: 1;
-    opacity: 0.5;
+    opacity: 0.46;
     animation: gentleFloat 40s ease-in-out infinite, starTwinkle1 6s ease-in-out infinite 0s;
   }
   
@@ -219,14 +211,12 @@
       radial-gradient(4px 4px at 800px 150px, rgba(255,255,255,0.7), transparent),
       radial-gradient(2px 2px at 300px 350px, rgba(255,255,255,0.85), transparent),
       radial-gradient(5px 5px at 650px 80px, rgba(255,255,255,0.9), transparent),
-      radial-gradient(3px 3px at 100px 200px, rgba(255,255,255,0.8), transparent),
-      radial-gradient(2px 2px at 750px 300px, rgba(255,255,255,0.7), transparent),
       radial-gradient(4px 4px at 400px 120px, rgba(255,255,255,0.85), transparent);
     background-repeat: repeat;
-    background-size: 1000px 400px;
+    background-size: 1200px 500px;
     pointer-events: none;
     z-index: 2;
-    opacity: 0.4;
+    opacity: 0.36;
     animation: starTwinkle2 8.3s ease-in-out infinite 2.7s, starTwinkle3 7.1s ease-in-out infinite 5.2s;
   }
   
@@ -395,6 +385,15 @@
 }
 
 @layer utilities {
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
   /* Custom animations */
   @keyframes fadeIn {
     from {
@@ -461,61 +460,61 @@
   
   @keyframes starTwinkle1 {
     0% {
-      opacity: 0.3;
+      opacity: 0.28;
     }
     25% {
-      opacity: 0.8;
+      opacity: 0.74;
     }
     50% {
-      opacity: 0.4;
+      opacity: 0.36;
     }
     75% {
-      opacity: 0.9;
+      opacity: 0.82;
     }
     100% {
-      opacity: 0.5;
+      opacity: 0.46;
     }
   }
   
   @keyframes starTwinkle2 {
     0% {
-      opacity: 0.2;
+      opacity: 0.18;
     }
     15% {
-      opacity: 0.7;
+      opacity: 0.64;
     }
     40% {
-      opacity: 0.9;
+      opacity: 0.82;
     }
     65% {
-      opacity: 0.3;
+      opacity: 0.27;
     }
     85% {
-      opacity: 0.8;
+      opacity: 0.74;
     }
     100% {
-      opacity: 0.4;
+      opacity: 0.36;
     }
   }
   
   @keyframes starTwinkle3 {
     0% {
-      opacity: 0.4;
+      opacity: 0.36;
     }
     20% {
-      opacity: 0.2;
+      opacity: 0.18;
     }
     45% {
-      opacity: 0.8;
+      opacity: 0.74;
     }
     70% {
-      opacity: 0.6;
+      opacity: 0.54;
     }
     90% {
-      opacity: 0.9;
+      opacity: 0.82;
     }
     100% {
-      opacity: 0.3;
+      opacity: 0.28;
     }
   }
   

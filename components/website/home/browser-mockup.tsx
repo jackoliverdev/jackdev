@@ -24,15 +24,15 @@ export function BrowserMockup() {
   const [isTypingComplete, setIsTypingComplete] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
   
-  const typingSpeed = 50 // ms per character
-  const lineDelay = 200 // ms delay between lines
+  const typingSpeed = 24 // ms per character (faster)
+  const lineDelay = 80 // ms delay between lines (faster)
   
   // Start typing after a delay
   useEffect(() => {
     const timer = setTimeout(() => {
       console.log('Starting typing animation...')
       setHasStarted(true)
-    }, 4000) // Start typing 4 seconds after component appears (increased from 2)
+    }, 3500) // Start typing slightly sooner
 
     return () => clearTimeout(timer)
   }, [])

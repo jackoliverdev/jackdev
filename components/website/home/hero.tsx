@@ -1,13 +1,14 @@
 'use client'
 
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import Button, { ButtonGroup } from '@/components/website/button'
-import { Calendar, Monitor, Sparkles, Zap, Code2, Brain, Lightbulb, Laptop, CheckCircle } from 'lucide-react'
-import Link from 'next/link'
+import { motion } from 'framer-motion'
+import Button from '@/components/website/button'
+import { Calendar, MessageSquare, Code2, Brain, Lightbulb, Laptop, CheckCircle } from 'lucide-react'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { BrowserMockup } from './browser-mockup'
-import CalendlyModal from '@/components/website/contact/calendly-modal'
+import HomeCalendlyModal from './calendly-modal'
+import HomeContactModal from './contact-modal'
+import AboutModal from './about-modal'
 
 const FloatingElement = ({ 
   children, 
@@ -67,6 +68,8 @@ const AnimatedText = ({ text, delay = 0, charDelay = 0.03, lineDelay = 0.5 }: { 
 
 export function Hero() {
   const [isCalendlyModalOpen, setIsCalendlyModalOpen] = useState(false)
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false)
 
   return (
     <section className="relative overflow-hidden pt-20 lg:pt-32 pb-16 lg:pb-24">
@@ -175,8 +178,8 @@ export function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ 
-              delay: 5.8, 
-              duration: 0.8, 
+              delay: 4.2, 
+              duration: 0.7, 
               ease: "easeInOut"
             }}
             className="mb-1 lg:mb-8 inline-flex items-center rounded-full bg-card/60 border border-card-border/50 px-4 py-2 text-sm text-muted-foreground backdrop-blur-sm hover:bg-card/80 hover:border-card-border transition-all duration-300 hover:scale-105"
@@ -189,26 +192,26 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
             className="mb-8 px-4"
           >
             <h1 className="text-4xl font-bold tracking-tight lg:text-6xl xl:text-7xl leading-tight lg:leading-tight xl:leading-tight">
               {/* Desktop First Line */}
               <div className="text-foreground hidden lg:block">
-                <AnimatedText text="Transforming Ideas into" delay={0.8} charDelay={0.04} />
+                <AnimatedText text="Transforming Ideas into" delay={0.6} charDelay={0.03} />
               </div>
               {/* Mobile First Line */}
               <div className="text-foreground block lg:hidden">
-                <AnimatedText text="From Idea to" delay={0.8} charDelay={0.04} />
+                <AnimatedText text="From Idea to" delay={0.6} charDelay={0.03} />
               </div>
 
               {/* Desktop Second Line */}
               <div className="text-gradient-light-blue hidden lg:block">
-                <AnimatedText text="Digital Experiences" delay={0.8 + "Transforming Ideas into".length * 0.04 + 0.3} charDelay={0.04} />
+                <AnimatedText text="Digital Experiences" delay={0.6 + "Transforming Ideas into".length * 0.03 + 0.2} charDelay={0.03} />
               </div>
               {/* Mobile Second Line */}
               <div className="text-gradient-light-blue block lg:hidden">
-                <AnimatedText text="Digital Experience" delay={0.8 + "From Idea to".length * 0.04 + 0.3} charDelay={0.04} />
+                <AnimatedText text="Digital Experience" delay={0.6 + "From Idea to".length * 0.03 + 0.2} charDelay={0.03} />
               </div>
             </h1>
           </motion.div>
@@ -217,21 +220,21 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 3.8, duration: 0.8 }}
+            transition={{ delay: 2.8, duration: 0.8 }}
             className="mx-auto mb-8 max-w-4xl"
           >
             <motion.p
               className="text-lg text-muted-foreground lg:text-xl leading-relaxed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 4.0, duration: 1 }}
+              transition={{ delay: 3.0, duration: 0.9 }}
             >
               🇬🇧 UK-based developer specialising in modern websites and AI chatbots.
               <br />
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 4.6, duration: 0.8 }}
+                transition={{ delay: 3.6, duration: 0.7 }}
               >
                 Fast delivery, excellent communication, and ongoing support.
               </motion.span>
@@ -242,13 +245,13 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 5.0, duration: 0.8, ease: "easeOut" }}
+            transition={{ delay: 3.6, duration: 0.7, ease: "easeOut" }}
             className="flex flex-col gap-4 sm:flex-row sm:justify-center items-center"
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 5.2, duration: 0.6, ease: "easeOut" }}
+              transition={{ delay: 3.8, duration: 0.5, ease: "easeOut" }}
             >
               <Button
                 variant="primary"
@@ -266,7 +269,7 @@ export function Hero() {
                     opacity: [0.4, 0.7, 0.4]
                   }}
                   transition={{
-                    duration: 3,
+                    duration: 2.4,
                     repeat: Infinity,
                     ease: "easeInOut",
                     repeatType: "loop"
@@ -278,14 +281,14 @@ export function Hero() {
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 5.4, duration: 0.6, ease: "easeOut" }}
+              transition={{ delay: 4.0, duration: 0.5, ease: "easeOut" }}
             >
               <Button
-                href="/portfolio"
                 variant="secondary"
-                icon={Monitor}
+                icon={MessageSquare}
+                onClick={() => setIsContactModalOpen(true)}
               >
-                View My Work
+                Send a Message
               </Button>
             </motion.div>
           </motion.div>
@@ -294,11 +297,12 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 5.6, duration: 0.8, ease: "easeOut" }}
+            transition={{ delay: 4.2, duration: 0.7, ease: "easeOut" }}
             className="mt-8 flex justify-center"
           >
-            <Link 
-              href="/about"
+            <button
+              type="button"
+              onClick={() => setIsAboutModalOpen(true)}
               className="group relative flex items-center gap-2.5 rounded-full bg-card/40 border border-card-border/30 px-4 py-2 backdrop-blur-sm hover:bg-card/70 hover:border-card-border/60 transition-all duration-500 hover:scale-105"
             >
               {/* Subtle glow on hover */}
@@ -322,43 +326,35 @@ export function Hero() {
               <span className="relative text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colours duration-300">
                 About – Jack Oliver
               </span>
-            </Link>
+            </button>
           </motion.div>
 
           {/* Browser Mockup */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 6.2, duration: 1.0, ease: "easeOut" }}
+            transition={{ delay: 4.8, duration: 0.8, ease: "easeOut" }}
             className="mt-16 px-4"
           >
             <BrowserMockup />
           </motion.div>
-
-          {/* Gym Tours AI Embed Test Section */}
-          <div className="mt-20 px-4">
-            <h2 className="text-3xl font-bold tracking-tight lg:text-4xl mb-8">
-              Gym Tours Embed Test
-            </h2>
-            <div className="rounded-xl overflow-hidden shadow-2xl border border-card-border/30">
-              <iframe 
-                src="https://gymtours.ai/embed/tour/13d6b46b-0cde-41f8-833d-072c4cc0b150?id=tour-13d6b46b-0cde-41f8-833d-072c4cc0b150-1752135684158" 
-                width="100%" 
-                height="600px" 
-                frameBorder="0" 
-                allowFullScreen
-                title="Gym Tours AI Embed Test"
-              >
-              </iframe>
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Calendly Modal */}
-      <CalendlyModal 
+      <HomeCalendlyModal 
         isOpen={isCalendlyModalOpen} 
         onClose={() => setIsCalendlyModalOpen(false)} 
+      />
+      {/* About Modal */}
+      <AboutModal 
+        isOpen={isAboutModalOpen}
+        onClose={() => setIsAboutModalOpen(false)}
+      />
+      {/* Contact Modal */}
+      <HomeContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
       />
     </section>
   )
