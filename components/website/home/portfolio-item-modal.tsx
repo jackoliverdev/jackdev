@@ -42,20 +42,10 @@ export default function PortfolioItemModal({ isOpen, onClose, item }: PortfolioI
     if (e.target === e.currentTarget) onClose()
   }
 
-  const AUTO_MS = 2000
-  const PAUSE_MS = 5000
   const [index, setIndex] = useState(0)
-  const [pauseUntilMs, setPauseUntilMs] = useState(0)
   useEffect(() => {
-    if (!isOpen || !item) return
-    // schedule next tick with pause awareness
-    const now = Date.now()
-    const wait = pauseUntilMs > now ? (pauseUntilMs - now) : AUTO_MS
-    const id = window.setTimeout(() => {
-      setIndex((i) => (item.images.length ? (i + 1) % item.images.length : 0))
-    }, wait)
-    return () => window.clearTimeout(id)
-  }, [isOpen, item, index, pauseUntilMs])
+    if (!isOpen) setIndex(0)
+  }, [isOpen])
 
   return (
     <AnimatePresence>
@@ -106,8 +96,8 @@ export default function PortfolioItemModal({ isOpen, onClose, item }: PortfolioI
                     <button
                       key={i}
                       type="button"
-                      onClick={() => { setIndex(i); setPauseUntilMs(Date.now() + PAUSE_MS) }}
-                      className={`inline-flex items-center justify-center shrink-0 h-2.5 w-2.5 rounded-full p-0 appearance-none border ${i === index ? 'bg-white/90 dark:bg-black/80' : 'bg-white/30 dark:bg-black/30'} border-white/40 dark:border-black/40`}
+                      onClick={() => { setIndex(i) }}
+                      className={`inline-flex items-center justify-center shrink-0 h-2.5 w-2.5 rounded-full p-0 appearance-none border ${i === index ? 'bg-primary' : 'bg-primary/30'} border-primary/40`}
                       aria-label={`Go to slide ${i + 1}`}
                     />
                   ))}

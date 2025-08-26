@@ -37,11 +37,20 @@ export default function HomeContactModal({ isOpen, onClose }: ContactModalProps)
     e.preventDefault()
     setIsSubmitting(true)
     try {
-      // TODO: replace with real Formspree endpoint
-      await new Promise(res => setTimeout(res, 800))
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      if (!response.ok) {
+        throw new Error('Failed to send message')
+      }
       setIsSuccess(true)
       setFormData({ name: '', email: '', phone: '', message: '' })
       setTimeout(() => setIsSuccess(false), 4000)
+    } catch (error) {
+      // Basic fallback UI; consider toasting in future
+      alert('Sorry, there was a problem sending your message. Please try again.')
     } finally {
       setIsSubmitting(false)
     }

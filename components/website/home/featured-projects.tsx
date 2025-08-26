@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
-import Image from 'next/image'
+import NextImage from 'next/image'
 import React from 'react'
 import PortfolioItemModal, { PortfolioItem } from './portfolio-item-modal'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
@@ -86,35 +86,44 @@ const itemVariants = {
 
 interface ProjectCardProps {
   project: typeof featuredProjects[0]
-  tick: number
   onViewInfo: (project: typeof featuredProjects[0]) => void
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, tick, onViewInfo }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewInfo }) => {
   const IconComponent = project.icon
   const images = (project as any).images as string[] | undefined
-  const currentIndex = images && images.length > 0 ? (tick % images.length) : 0
+  const [index, setIndex] = React.useState(0)
+  const currentIndex = images && images.length > 0 ? index : 0
+  // Preload project images once to avoid flashes during transitions
+  React.useEffect(() => {
+    if (!images || !images.length || typeof window === 'undefined') return
+    images.forEach((src) => {
+      const img = new window.Image()
+      img.src = src
+    })
+  }, [images])
 
   const CardContent = (
     <div className="h-full rounded-xl overflow-hidden border border-border/50 bg-card hover:border-border transition-all duration-300">
       <motion.div className="relative overflow-hidden" style={{ aspectRatio: '16 / 9' }} initial={{ scale: 1.02 }} animate={{ scale: 1 }} transition={{ duration: 0.8, ease: 'easeOut' }}>
         {images && images.length > 0 ? (
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             <motion.div
               key={images[currentIndex]}
               className="absolute inset-0"
-              initial={{ x: 40, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -40, opacity: 0 }}
-              transition={{ duration: 0.45, ease: 'easeOut' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              style={{ willChange: 'opacity' }}
             >
-              <Image
+              <NextImage
                 src={images[currentIndex]}
                 alt={project.title}
                 fill
                 className="object-cover object-top"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority={false}
+                priority={currentIndex === 0}
               />
             </motion.div>
           </AnimatePresence>
@@ -123,6 +132,17 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, tick, onViewInfo }) 
             <IconComponent className="w-10 h-10 text-muted-foreground" />
           </div>
         )}
+        <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-2 z-10">
+          {images?.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setIndex(i)}
+              className={`inline-flex items-center justify-center shrink-0 h-2.5 w-2.5 rounded-full p-0 appearance-none border ${i === currentIndex ? 'bg-primary' : 'bg-primary/30'} border-primary/40`}
+              aria-label={`Go to image ${i + 1}`}
+            />
+          ))}
+        </div>
         {/* subtle top gradient for brand feel */}
         <div className="absolute inset-0 bg-gradient-to-t from-card/0 via-card/0 to-card/10 pointer-events-none" />
       </motion.div>
@@ -171,13 +191,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, tick, onViewInfo }) 
 export default function FeaturedProjects() {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, margin: '-100px' })
-  const [tick, setTick] = React.useState(0)
   const [selected, setSelected] = React.useState<PortfolioItem | undefined>(undefined)
 
-  React.useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 2000)
-    return () => clearInterval(id)
-  }, [])
 
   function getTechFor(title: string) {
     const logos = {
@@ -272,7 +287,6 @@ export default function FeaturedProjects() {
             <motion.div key={project.id} variants={itemVariants}>
               <ProjectCard
                 project={project}
-                tick={tick}
                 onViewInfo={(p) => setSelected({
                   id: p.id,
                   title: p.title,
