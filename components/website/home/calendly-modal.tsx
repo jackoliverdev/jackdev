@@ -12,6 +12,8 @@ interface CalendlyWindow extends Window {
       prefill?: object
       utm?: object
     }) => void
+    // Calendly in-app event listener
+    initBadgeWidget?: (options: any) => void
   }
 }
 
@@ -64,6 +66,25 @@ export default function HomeCalendlyModal({ isOpen, onClose }: HomeCalendlyModal
             prefill: {},
             utm: {}
           })
+
+          // Attach Calendly event listener to detect scheduled events
+          const handler = (e: MessageEvent) => {
+            if (typeof e.data !== 'object' || !e.data) return
+            const { event, payload } = e.data as any
+            if (event === 'calendly.event_scheduled') {
+              const inviteeName = payload?.invitee?.name
+              const inviteeEmail = payload?.invitee?.email
+              const eventName = payload?.event?.name
+              const eventStart = payload?.event?.start_time
+              const eventEnd = payload?.event?.end_time
+              fetch('/api/calendly', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ inviteeName, inviteeEmail, eventName, eventStart, eventEnd, payload }),
+              }).catch(() => {})
+            }
+          }
+          window.addEventListener('message', handler)
         }
       }, 100)
     }
