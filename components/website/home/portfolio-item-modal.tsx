@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
-import { X, Globe, BadgeCheck } from 'lucide-react'
+import { X, Globe, BadgeCheck, ChevronLeft, ChevronRight } from 'lucide-react'
+import useEmblaCarousel from 'embla-carousel-react'
 
 export type PortfolioTech = {
   name: string
@@ -47,6 +48,23 @@ export default function PortfolioItemModal({ isOpen, onClose, item }: PortfolioI
     if (!isOpen) setIndex(0)
   }, [isOpen])
 
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    duration: 20
+  })
+
+  useEffect(() => {
+    if (!emblaApi) return
+    const onSelect = () => setIndex(emblaApi.selectedScrollSnap())
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onSelect)
+    onSelect()
+    return () => {
+      emblaApi.off('select', onSelect)
+      emblaApi.off('reInit', onSelect)
+    }
+  }, [emblaApi])
+
   return (
     <AnimatePresence>
       {isOpen && item && (
@@ -84,25 +102,52 @@ export default function PortfolioItemModal({ isOpen, onClose, item }: PortfolioI
 
             {/* Body */}
             <div className="p-6 overflow-y-auto max-h-[calc(90vh-64px)] space-y-6">
-              {/* Image slider with controls */}
+              {/* Image slider with Embla */}
               <div className="relative w-full overflow-hidden rounded-xl border border-border/50" style={{ aspectRatio: '16 / 9' }}>
-                <AnimatePresence mode="wait">
-                  <motion.div key={item.images[index]} className="absolute inset-0" initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -40, opacity: 0 }} transition={{ duration: 0.45 }}>
-                    <Image src={item.images[index]} alt={item.title} fill className="object-cover object-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 960px" />
-                  </motion.div>
-                </AnimatePresence>
-                <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-2">
-                  {item.images.map((_, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => { setIndex(i) }}
-                      className={`inline-flex items-center justify-center shrink-0 h-2.5 w-2.5 rounded-full p-0 appearance-none border ${i === index ? 'bg-primary' : 'bg-primary/30'} border-primary/40`}
-                      aria-label={`Go to slide ${i + 1}`}
-                    />
-                  ))}
+                <div className="h-full" ref={emblaRef}>
+                  <div className="flex h-full">
+                    {item.images.map((src, i) => (
+                      <div key={src} className="min-w-0 flex-[0_0_100%] relative">
+                        <Image src={src} alt={item.title} fill className="object-cover object-top" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 960px" />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                {/* Removed side chevrons - dots are primary controls */}
+
+                {item.images.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => emblaApi?.scrollPrev()}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center h-9 w-9 rounded-full bg-card/80 backdrop-blur border border-border/60 text-foreground shadow hover:bg-card"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => emblaApi?.scrollNext()}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center h-9 w-9 rounded-full bg-card/80 backdrop-blur border border-border/60 text-foreground shadow hover:bg-card"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </>
+                )}
+
+                {item.images.length > 1 && (
+                  <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-2">
+                    {item.images.map((_, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => emblaApi?.scrollTo(i)}
+                        className={`inline-flex items-center justify-center shrink-0 h-2.5 w-2.5 rounded-full p-0 appearance-none border ${i === index ? 'bg-primary' : 'bg-primary/30'} border-primary/40`}
+                        aria-label={`Go to slide ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Description */}

@@ -5,7 +5,9 @@ import NextImage from 'next/image'
 import React from 'react'
 import PortfolioItemModal, { PortfolioItem } from './portfolio-item-modal'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
-import { Bot, ShoppingCart, Camera, ArrowRight } from 'lucide-react'
+import { Bot, ShoppingCart, Camera, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
+import useEmblaCarousel from 'embla-carousel-react'
+import Autoplay from 'embla-carousel-autoplay'
 
 const featuredProjects = [
   {
@@ -92,57 +94,97 @@ interface ProjectCardProps {
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onViewInfo }) => {
   const IconComponent = project.icon
   const images = (project as any).images as string[] | undefined
-  const [index, setIndex] = React.useState(0)
-  const currentIndex = images && images.length > 0 ? index : 0
-  // Preload project images once to avoid flashes during transitions
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+      skipSnaps: false,
+      duration: 20
+    },
+    [
+      Autoplay({
+        delay: 3500,
+        stopOnInteraction: true,
+        stopOnMouseEnter: true
+      })
+    ]
+  )
+
   React.useEffect(() => {
-    if (!images || !images.length || typeof window === 'undefined') return
-    images.forEach((src) => {
-      const img = new window.Image()
-      img.src = src
-    })
-  }, [images])
+    if (!emblaApi) return
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap())
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onSelect)
+    onSelect()
+    return () => {
+      emblaApi.off('select', onSelect)
+      emblaApi.off('reInit', onSelect)
+    }
+  }, [emblaApi])
 
   const CardContent = (
     <div className="h-full rounded-xl overflow-hidden border border-border/50 bg-card hover:border-border transition-all duration-300">
-      <motion.div className="relative overflow-hidden" style={{ aspectRatio: '16 / 9' }} initial={{ scale: 1.02 }} animate={{ scale: 1 }} transition={{ duration: 0.8, ease: 'easeOut' }}>
+      <motion.div className="relative overflow-hidden group/embla" style={{ aspectRatio: '16 / 9' }} initial={{ scale: 1.02 }} animate={{ scale: 1 }} transition={{ duration: 0.8, ease: 'easeOut' }}>
         {images && images.length > 0 ? (
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={images[currentIndex]}
-              className="absolute inset-0"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
-              style={{ willChange: 'opacity' }}
-            >
-              <NextImage
-                src={images[currentIndex]}
-                alt={project.title}
-                fill
-                className="object-cover object-top"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority={currentIndex === 0}
-              />
-            </motion.div>
-          </AnimatePresence>
+          <div className="h-full" ref={emblaRef}>
+            <div className="flex h-full">
+              {images.map((src, i) => (
+                <div key={src} className="min-w-0 flex-[0_0_100%] relative">
+                  <NextImage
+                    src={src}
+                    alt={project.title}
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={i === 0}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-muted/40">
             <IconComponent className="w-10 h-10 text-muted-foreground" />
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-2 z-10">
-          {images?.map((_, i) => (
+
+        {/* Arrows */}
+        {images && images.length > 1 && (
+          <>
             <button
-              key={i}
               type="button"
-              onClick={() => setIndex(i)}
-              className={`inline-flex items-center justify-center shrink-0 h-2.5 w-2.5 rounded-full p-0 appearance-none border ${i === currentIndex ? 'bg-primary' : 'bg-primary/30'} border-primary/40`}
-              aria-label={`Go to image ${i + 1}`}
-            />
-          ))}
-        </div>
+              onClick={() => emblaApi?.scrollPrev()}
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center h-8 w-8 rounded-full bg-card/80 backdrop-blur border border-border/60 text-foreground shadow hover:bg-card"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => emblaApi?.scrollNext()}
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center h-8 w-8 rounded-full bg-card/80 backdrop-blur border border-border/60 text-foreground shadow hover:bg-card"
+              aria-label="Next slide"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </>
+        )}
+
+        {/* Dots */}
+        {images && images.length > 1 && (
+          <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-2 z-10">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => emblaApi?.scrollTo(i)}
+                className={`inline-flex items-center justify-center shrink-0 h-2.5 w-2.5 rounded-full p-0 appearance-none border ${i === selectedIndex ? 'bg-primary' : 'bg-primary/30'} border-primary/40`}
+                aria-label={`Go to image ${i + 1}`}
+              />
+            ))}
+          </div>
+        )}
+
         {/* subtle top gradient for brand feel */}
         <div className="absolute inset-0 bg-gradient-to-t from-card/0 via-card/0 to-card/10 pointer-events-none" />
       </motion.div>
