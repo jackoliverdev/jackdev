@@ -14,7 +14,7 @@ export const AuthCard = () => {
 
   useEffect(() => {
     if (user) {
-      router.push("/app");
+      router.push("/dashboard");
     }
   }, [user, router]);
 
