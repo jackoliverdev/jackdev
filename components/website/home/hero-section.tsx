@@ -76,7 +76,13 @@ export function HeroSection() {
             data-hero-line
             className="block overflow-hidden pb-1 md:hidden"
           >
-            <span className="block">that win you work.</span>
+            <span className="block">that win</span>
+          </span>
+          <span
+            data-hero-line
+            className="block overflow-hidden pb-1 md:hidden"
+          >
+            <span className="block">work.</span>
           </span>
         </h1>
 
