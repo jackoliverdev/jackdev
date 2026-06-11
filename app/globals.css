@@ -2,158 +2,137 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------
+   Jack Oliver Dev — Global Design System
+   Minimalist editorial theme in two modes. Light is the default:
+   white, blues and blacks. Dark flips the same ink/paper scale.
+------------------------------------------------------------------- */
+
 @layer base {
   :root {
-    /* Modern Dark Theme - Jack Oliver Development */
-    /* Enhanced Deep Blues & Navy */
-    --navy-950: 225 35% 7%;          /* #0E1A2E - Deep cosmic navy */
-    --navy-900: 225 32% 10%;         /* #152038 - Darkest navy */
-    --navy-800: 225 28% 14%;         /* #1E2B45 - Dark navy */
-    --navy-700: 225 25% 18%;         /* #283652 - Medium navy */
-    --navy-600: 225 22% 24%;         /* #34445F - Light navy */
-    --navy-500: 225 20% 30%;         /* #42526C - Lighter navy */
-    
-    /* Enhanced Royal & Midnight Blues */
-    --blue-950: 235 45% 12%;         /* #12204C - Ultra deep blue */
-    --blue-900: 235 42% 16%;         /* #1A2B5F - Deep midnight */
-    --blue-800: 235 40% 22%;         /* #263A75 - Midnight blue */
-    --blue-700: 238 38% 28%;         /* #32498B - Royal blue dark */
-    --blue-600: 240 42% 35%;         /* #405BA1 - Royal blue */
-    --blue-500: 242 48% 45%;         /* #4F6FBF - Bright royal */
-    --blue-400: 244 52% 58%;         /* #6B88E3 - Light blue */
-    --blue-300: 246 60% 70%;         /* #8FA7F0 - Very light blue */
-    
-    /* Enhanced Deep Purples & Violets */
-    --purple-950: 265 40% 8%;        /* #0F0B1F - Ultra dark purple */
-    --purple-900: 265 38% 12%;       /* #181030 - Darkest purple */
-    --purple-800: 268 36% 18%;       /* #241A42 - Deep purple */
-    --purple-700: 270 38% 25%;       /* #322054 - Medium purple */
-    --purple-600: 272 42% 35%;       /* #4A2D70 - Violet */
-    --purple-500: 275 48% 45%;       /* #653E95 - Bright purple */
-    --purple-400: 278 55% 58%;       /* #8B5FC7 - Light purple */
-    --purple-300: 280 65% 70%;       /* #B084E8 - Very light purple */
-    
-    /* Enhanced Whites & Greys */
-    --white: 0 0% 100%;              /* #FFFFFF - Pure white */
-    --grey-50: 222 15% 98%;          /* #FAFAFC - Off white */
-    --grey-100: 222 12% 95%;         /* #F2F3F6 - Light grey */
-    --grey-200: 222 10% 88%;         /* #DEE1E6 - Medium light grey */
-    --grey-300: 222 8% 75%;          /* #BCC0C7 - Medium grey */
-    --grey-400: 222 6% 60%;          /* #969CA6 - Dark grey */
-    --grey-500: 222 5% 45%;          /* #707885 - Darker grey */
-    --grey-600: 222 5% 35%;          /* #555C68 - Very dark grey */
-    
-    /* Enhanced Accent Colours */
-    --emerald-500: 160 50% 55%;      /* #4ABAD5 - Modern emerald */
-    --emerald-400: 160 55% 65%;      /* #6BC9E8 - Light emerald */
-    --cyan-500: 190 70% 60%;         /* #22D3EE - Bright cyan */
-    --cyan-400: 190 75% 70%;         /* #67E8F9 - Light cyan */
-    --yellow-500: 48 95% 65%;        /* #F59E0B - Modern yellow */
-    --yellow-400: 48 100% 75%;       /* #FBC02D - Bright yellow */
-    --orange-500: 25 95% 60%;        /* #F97316 - Modern orange */
-    --orange-400: 25 100% 70%;       /* #FB923C - Light orange */
-    
-    /* Enhanced Gradient Stops */
-    --gradient-blue-start: 242 48% 45%;     /* Bright royal blue */
-    --gradient-blue-mid: 260 55% 50%;       /* Blue-purple transition */
-    --gradient-blue-end: 275 48% 45%;       /* Bright purple */
-    --gradient-purple-start: 275 48% 45%;   /* Bright purple */
-    --gradient-purple-mid: 290 45% 50%;     /* Purple-pink transition */
-    --gradient-purple-end: 320 40% 55%;     /* Purple-pink end */
-    
-    /* Star Colors - Dark Theme Default */
-    --star-color-1: #ffffff;
-    --star-color-2: rgba(255,255,255,0.8);
-    --star-color-3: rgba(255,255,255,0.9);
-    --star-color-4: rgba(255,255,255,0.7);
-    --star-color-5: rgba(255,255,255,0.6);
-    --star-opacity: 0.3;
-    
-    /* Design System Variables - Dark Theme Default */
-    --background: var(--navy-950);
-    --foreground: var(--white);
-    --background-secondary: var(--navy-900);
-    --background-tertiary: var(--navy-800);
-    
-    --card: var(--navy-900);
-    --card-foreground: var(--white);
-    --card-border: var(--navy-600);
-    
-    --primary: var(--blue-600);
-    --primary-foreground: var(--white);
-    --primary-hover: var(--blue-500);
-    
-    --secondary: var(--purple-600);
-    --secondary-foreground: var(--white);
-    --secondary-hover: var(--purple-500);
-    
-    --accent: var(--cyan-500);
-    --accent-foreground: var(--navy-950);
-    --accent-secondary: var(--emerald-500);
-    
-    --muted: var(--navy-700);
-    --muted-foreground: var(--grey-300);
-    
-    --border: var(--navy-600);
-    --input: var(--navy-800);
-    --ring: var(--blue-500);
-    
-    --radius: 0.75rem;
-    --radius-sm: 0.5rem;
-    --radius-lg: 1rem;
-    --radius-xl: 1.5rem;
+    /* --- Core ink palette (LIGHT default) ---
+       ink = surfaces (lightest page bg to strongest UI)
+       paper = type (strongest text to faintest) */
+    --ink-950: 40 20% 99%;           /* page background, warm white */
+    --ink-900: 220 20% 97%;          /* raised surfaces */
+    --ink-800: 220 16% 94%;          /* cards */
+    --ink-700: 220 13% 89%;          /* borders */
+    --ink-600: 220 10% 80%;          /* hover borders */
+    --ink-500: 220 8% 62%;           /* subtle UI */
+
+    /* --- Type --- */
+    --paper: 228 16% 9%;             /* near-black blue ink */
+    --paper-dim: 228 8% 34%;         /* secondary text */
+    --paper-faint: 228 6% 50%;       /* tertiary text */
+
+    /* --- Accent: electric blue --- */
+    --electric: 226 83% 53%;         /* #2156E8 */
+    --electric-bright: 224 100% 62%; /* #3D78FF hover */
+    --electric-deep: 228 78% 42%;    /* #1841BE pressed */
+
+    /* --- Semantic tokens (shadcn-compatible; dashboard relies on these) --- */
+    --background: var(--ink-950);
+    --foreground: var(--paper);
+    --background-secondary: var(--ink-900);
+    --background-tertiary: var(--ink-800);
+
+    --card: var(--ink-900);
+    --card-foreground: var(--paper);
+    --card-border: var(--ink-700);
+
+    --primary: var(--electric);
+    --primary-foreground: var(--ink-950);
+    --primary-hover: var(--electric-bright);
+
+    --secondary: var(--ink-800);
+    --secondary-foreground: var(--paper);
+    --secondary-hover: var(--ink-700);
+
+    --accent: var(--electric);
+    --accent-foreground: var(--ink-950);
+    --accent-secondary: var(--electric-bright);
+
+    --muted: var(--ink-800);
+    --muted-foreground: var(--paper-dim);
+
+    --destructive: 0 72% 56%;
+    --destructive-foreground: var(--paper);
+
+    --popover: var(--ink-900);
+    --popover-foreground: var(--paper);
+
+    --border: var(--ink-700);
+    --input: var(--ink-800);
+    --ring: var(--electric);
+
+    --radius: 0.5rem;
+    --radius-sm: 0.375rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+
+    /* --- Legacy palette (kept for dashboard/auth components) --- */
+    --navy-950: 225 35% 7%;
+    --navy-900: 225 32% 10%;
+    --navy-800: 225 28% 14%;
+    --navy-700: 225 25% 18%;
+    --navy-600: 225 22% 24%;
+    --navy-500: 225 20% 30%;
+    --blue-950: 235 45% 12%;
+    --blue-900: 235 42% 16%;
+    --blue-800: 235 40% 22%;
+    --blue-700: 238 38% 28%;
+    --blue-600: 240 42% 35%;
+    --blue-500: 242 48% 45%;
+    --blue-400: 244 52% 58%;
+    --blue-300: 246 60% 70%;
+    --purple-950: 265 40% 8%;
+    --purple-900: 265 38% 12%;
+    --purple-800: 268 36% 18%;
+    --purple-700: 270 38% 25%;
+    --purple-600: 272 42% 35%;
+    --purple-500: 275 48% 45%;
+    --purple-400: 278 55% 58%;
+    --purple-300: 280 65% 70%;
+    --white: 0 0% 100%;
+    --grey-50: 222 15% 98%;
+    --grey-100: 222 12% 95%;
+    --grey-200: 222 10% 88%;
+    --grey-300: 222 8% 75%;
+    --grey-400: 222 6% 60%;
+    --grey-500: 222 5% 45%;
+    --grey-600: 222 5% 35%;
+    --emerald-500: 160 50% 55%;
+    --emerald-400: 160 55% 65%;
+    --cyan-500: 190 70% 60%;
+    --cyan-400: 190 75% 70%;
+    --yellow-500: 48 95% 65%;
+    --yellow-400: 48 100% 75%;
+    --orange-500: 25 95% 60%;
+    --orange-400: 25 100% 70%;
+    --gradient-blue-start: 242 48% 45%;
+    --gradient-blue-mid: 260 55% 50%;
+    --gradient-blue-end: 275 48% 45%;
+    --gradient-purple-start: 275 48% 45%;
+    --gradient-purple-mid: 290 45% 50%;
+    --gradient-purple-end: 320 40% 55%;
   }
 
-  /* Light Theme */
-  .light {
-    /* Light Mode Colours */
-    --light-50: 0 0% 100%;           /* #FFFFFF - Pure white */
-    --light-100: 210 40% 98%;        /* #F8FAFC - Off white */
-    --light-200: 214 32% 91%;        /* #E2E8F0 - Very light grey */
-    --light-300: 213 27% 84%;        /* #CBD5E1 - Light grey */
-    --light-400: 215 20% 65%;        /* #94A3B8 - Medium grey */
-    --light-500: 215 16% 47%;        /* #64748B - Dark grey */
-    --light-600: 215 19% 35%;        /* #475569 - Darker grey */
-    --light-700: 215 25% 27%;        /* #334155 - Very dark grey */
-    --light-800: 217 33% 17%;        /* #1E293B - Almost black */
-    --light-900: 222 84% 5%;         /* #0F172A - Deep black */
+  /* Dark mode: same scale, flipped */
+  .dark {
+    --ink-950: 240 8% 3%;            /* page background */
+    --ink-900: 240 7% 5%;            /* raised surfaces */
+    --ink-800: 240 6% 8%;            /* cards */
+    --ink-700: 240 5% 12%;           /* borders */
+    --ink-600: 240 5% 16%;           /* hover borders */
+    --ink-500: 240 4% 28%;           /* subtle UI */
 
-    /* Star Colors - Light Theme */
-    --star-color-1: #405BA1;
-    --star-color-2: rgba(64,91,161,0.8);
-    --star-color-3: rgba(50,73,139,0.9);
-    --star-color-4: rgba(64,91,161,0.7);
-    --star-color-5: rgba(64,91,161,0.6);
-    --star-opacity: 0.4;
+    --paper: 40 14% 96%;             /* warm off-white */
+    --paper-dim: 40 6% 72%;
+    --paper-faint: 240 4% 52%;
 
-    /* Design System Variables - Light Theme */
-    --background: var(--light-50);
-    --foreground: var(--light-900);
-    --background-secondary: var(--light-100);
-    --background-tertiary: var(--light-200);
-    
-    --card: var(--light-100);
-    --card-foreground: var(--light-900);
-    --card-border: var(--light-300);
-    
-    --primary: var(--blue-600);
-    --primary-foreground: var(--white);
-    --primary-hover: var(--blue-500);
-    
-    --secondary: var(--purple-600);
-    --secondary-foreground: var(--white);
-    --secondary-hover: var(--purple-500);
-    
-    --accent: var(--cyan-500);
-    --accent-foreground: var(--light-50);
-    --accent-secondary: var(--emerald-500);
-    
-    --muted: var(--light-200);
-    --muted-foreground: var(--light-500);
-    
-    --border: var(--light-300);
-    --input: var(--light-200);
-    --ring: var(--blue-500);
+    --electric: 224 100% 64%;        /* #477CFF */
+    --electric-bright: 222 100% 72%;
+    --electric-deep: 226 80% 50%;
   }
 }
 
@@ -161,231 +140,139 @@
   * {
     @apply border-border;
   }
-  
-  body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    position: relative;
-  }
-  
-  /* Star Background - Default (Dark) */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-      radial-gradient(3px 3px at 73px 157px, #ffffff, transparent),
-      radial-gradient(2px 2px at 347px 92px, rgba(255,255,255,0.9), transparent),
-      radial-gradient(4px 4px at 891px 234px, #ffffff, transparent),
-      radial-gradient(3px 3px at 156px 41px, rgba(255,255,255,0.8), transparent),
-      radial-gradient(2px 2px at 623px 178px, #ffffff, transparent),
-      radial-gradient(5px 5px at 234px 289px, rgba(255,255,255,0.95), transparent),
-      radial-gradient(3px 3px at 789px 63px, rgba(255,255,255,0.7), transparent),
-      radial-gradient(2px 2px at 456px 201px, #ffffff, transparent),
-      radial-gradient(5px 5px at 567px 127px, #ffffff, transparent),
-      radial-gradient(3px 3px at 298px 189px, #ffffff, transparent),
-      radial-gradient(4px 4px at 678px 95px, #ffffff, transparent),
-      radial-gradient(3px 3px at 756px 223px, rgba(255,255,255,0.8), transparent);
-    background-repeat: repeat;
-    background-size: 1200px 500px;
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0.46;
-    animation: gentleFloat 40s ease-in-out infinite, starTwinkle1 6s ease-in-out infinite 0s;
-  }
-  
-  /* Additional star layers for random twinkling */
-  body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-      radial-gradient(2px 2px at 200px 100px, rgba(255,255,255,0.8), transparent),
-      radial-gradient(3px 3px at 500px 250px, rgba(255,255,255,0.9), transparent),
-      radial-gradient(4px 4px at 800px 150px, rgba(255,255,255,0.7), transparent),
-      radial-gradient(2px 2px at 300px 350px, rgba(255,255,255,0.85), transparent),
-      radial-gradient(5px 5px at 650px 80px, rgba(255,255,255,0.9), transparent),
-      radial-gradient(4px 4px at 400px 120px, rgba(255,255,255,0.85), transparent);
-    background-repeat: repeat;
-    background-size: 1200px 500px;
-    pointer-events: none;
-    z-index: 2;
-    opacity: 0.36;
-    animation: starTwinkle2 8.3s ease-in-out infinite 2.7s, starTwinkle3 7.1s ease-in-out infinite 5.2s;
-  }
-  
-  /* Star Background - Light Mode Override */
-  .light body::before {
-    background: none;
-    opacity: 0;
-    animation: none;
-  }
 
-  .light body::after {
-    background: none;
-    opacity: 0;
-    animation: none;
-  }
-  
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  @media (max-width: 767px) {
+    html,
+    body {
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+  }
+
+  ::selection {
+    background: hsl(var(--electric) / 0.9);
+    color: hsl(var(--ink-950));
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--electric));
+    outline-offset: 2px;
+  }
+
+  /* Editorial display headings */
+  .font-display {
+    letter-spacing: -0.03em;
   }
 }
 
 @layer components {
-  /* Enhanced Gradient Backgrounds */
-  .gradient-blue-purple {
-    background: linear-gradient(135deg, 
-      hsl(var(--gradient-blue-start)) 0%, 
-      hsl(var(--gradient-blue-mid)) 50%,
-      hsl(var(--gradient-blue-end)) 100%);
+  /* --- Layout primitives --- */
+  .site-container {
+    @apply mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-12;
   }
-  
-  .gradient-purple-blue {
-    background: linear-gradient(135deg, 
-      hsl(var(--gradient-purple-start)) 0%, 
-      hsl(var(--gradient-blue-mid)) 50%,
-      hsl(var(--gradient-blue-start)) 100%);
+
+  .section-pad {
+    @apply py-20 md:py-24 lg:py-28;
   }
-  
-  .gradient-radial {
-    background: radial-gradient(ellipse at center, 
-      hsl(var(--blue-950)) 0%, 
-      hsl(var(--navy-950)) 65%,
-      hsl(var(--background)) 100%);
+
+  /* --- Type treatments --- */
+  .eyebrow {
+    @apply font-mono text-[0.6875rem] uppercase tracking-[0.25em] text-paper-faint;
   }
-  
-  .gradient-mesh {
-    background: 
-      radial-gradient(at 40% 20%, hsl(var(--blue-900) / 0.3) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsl(var(--purple-900) / 0.3) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsl(var(--blue-800) / 0.2) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, hsl(var(--purple-800) / 0.2) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, hsl(var(--cyan-900) / 0.1) 0px, transparent 50%),
-      radial-gradient(at 80% 100%, hsl(var(--blue-900) / 0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 0%, hsl(var(--purple-900) / 0.1) 0px, transparent 50%);
+
+  .display-hairline {
+    @apply font-display font-medium leading-[0.95] tracking-tight;
   }
-  
-  /* Enhanced Text Gradients */
-  .text-gradient-blue {
-    background: linear-gradient(135deg, 
-      hsl(var(--blue-400)) 0%, 
-      hsl(var(--cyan-400)) 50%,
-      hsl(var(--purple-400)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+
+  .text-accent-underline {
+    background-image: linear-gradient(hsl(var(--electric)), hsl(var(--electric)));
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
   }
-  
-  .text-gradient-light-blue {
-    background: linear-gradient(135deg, 
-      hsl(230 100% 60%) 0%, 
-      hsl(220 100% 65%) 25%,
-      hsl(210 100% 70%) 75%,
-      hsl(200 100% 75%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+
+  /* --- Surfaces --- */
+  .surface-card {
+    @apply rounded-lg border border-ink-700 bg-ink-900;
   }
-  
-  .text-gradient-purple {
-    background: linear-gradient(135deg, 
-      hsl(var(--purple-400)) 0%, 
-      hsl(var(--blue-400)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+
+  .surface-card-hover {
+    @apply transition-colors duration-300 hover:border-ink-500;
   }
-  
-  .text-gradient-accent {
-    background: linear-gradient(135deg, 
-      hsl(var(--cyan-400)) 0%, 
-      hsl(var(--emerald-400)) 50%,
-      hsl(var(--yellow-400)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+
+  .hairline-top {
+    @apply border-t border-ink-700;
   }
-  
-  /* Enhanced Glass Effects */
+
+  /* --- Buttons --- */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-paper px-6 py-3 text-sm font-medium text-ink-950 transition-all duration-300 hover:bg-electric hover:text-ink-950;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink-600 px-6 py-3 text-sm font-medium text-paper transition-all duration-300 hover:border-paper/60 hover:bg-paper/5;
+  }
+
+  .link-arrow {
+    @apply inline-flex items-center gap-1.5 text-sm font-medium text-paper-dim transition-colors duration-300 hover:text-paper;
+  }
+
+  /* --- Legacy classes (dashboard/auth still reference these) --- */
   .glass {
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.1) 0%, 
-      rgba(255, 255, 255, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
     backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.12);
   }
-  
+
   .glass-card {
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.15) 0%, 
-      rgba(255, 255, 255, 0.08) 50%,
-      rgba(255, 255, 255, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
     backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.16);
   }
-  
-  /* Animation Classes */
-  .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+
+  .gradient-blue-purple {
+    background: linear-gradient(135deg, hsl(var(--gradient-blue-start)) 0%, hsl(var(--gradient-blue-mid)) 50%, hsl(var(--gradient-blue-end)) 100%);
   }
-  
-  .animate-slide-up {
-    animation: slideUp 0.6s ease-out forwards;
+
+  .gradient-radial {
+    background: radial-gradient(ellipse at center, hsl(var(--ink-900)) 0%, hsl(var(--ink-950)) 100%);
   }
-  
-  .animate-slide-in-left {
-    animation: slideInLeft 0.8s ease-out forwards;
+
+  .gradient-mesh {
+    background: radial-gradient(at 40% 20%, hsl(var(--ink-800) / 0.5) 0px, transparent 50%);
   }
-  
-  .animate-slide-in-right {
-    animation: slideInRight 0.8s ease-out forwards;
+
+  .text-gradient-blue,
+  .text-gradient-light-blue,
+  .text-gradient-purple,
+  .text-gradient-accent {
+    background: linear-gradient(135deg, hsl(var(--electric-bright)) 0%, hsl(var(--electric)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-  
-  /* Enhanced Glow Effects */
-  .glow-blue {
-    box-shadow: 
-      0 0 20px hsl(var(--blue-500) / 0.4),
-      0 0 40px hsl(var(--blue-600) / 0.2);
-  }
-  
-  .glow-purple {
-    box-shadow: 
-      0 0 20px hsl(var(--purple-500) / 0.4),
-      0 0 40px hsl(var(--purple-600) / 0.2);
-  }
-  
-  .glow-accent {
-    box-shadow: 
-      0 0 15px hsl(var(--cyan-500) / 0.5),
-      0 0 30px hsl(var(--cyan-600) / 0.3);
-  }
-  
-  .shadow-glow-blue {
-    box-shadow: 
-      0 4px 14px 0 hsl(var(--blue-600) / 0.15),
-      0 0 20px hsl(var(--blue-500) / 0.2);
-  }
-  
+
+  .glow-blue,
+  .glow-purple,
+  .glow-accent,
+  .shadow-glow-blue,
   .shadow-glow-purple {
-    box-shadow: 
-      0 4px 14px 0 hsl(var(--purple-600) / 0.15),
-      0 0 20px hsl(var(--purple-500) / 0.2);
+    box-shadow: 0 0 24px hsl(var(--electric) / 0.18);
   }
 }
 
 @layer utilities {
-  /* Respect reduced motion preferences */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.001ms !important;
@@ -394,166 +281,43 @@
       scroll-behavior: auto !important;
     }
   }
-  /* Custom animations */
+
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
-  
+
   @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
   }
-  
+
   @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
   }
-  
+
   @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
   }
-  
+
   @keyframes float {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
   }
-  
-  @keyframes gentleFloat {
-    0% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-    100% {
-      transform: translateY(0px);
-    }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
-  
-  @keyframes starTwinkle1 {
-    0% {
-      opacity: 0.28;
-    }
-    25% {
-      opacity: 0.74;
-    }
-    50% {
-      opacity: 0.36;
-    }
-    75% {
-      opacity: 0.82;
-    }
-    100% {
-      opacity: 0.46;
-    }
-  }
-  
-  @keyframes starTwinkle2 {
-    0% {
-      opacity: 0.18;
-    }
-    15% {
-      opacity: 0.64;
-    }
-    40% {
-      opacity: 0.82;
-    }
-    65% {
-      opacity: 0.27;
-    }
-    85% {
-      opacity: 0.74;
-    }
-    100% {
-      opacity: 0.36;
-    }
-  }
-  
-  @keyframes starTwinkle3 {
-    0% {
-      opacity: 0.36;
-    }
-    20% {
-      opacity: 0.18;
-    }
-    45% {
-      opacity: 0.74;
-    }
-    70% {
-      opacity: 0.54;
-    }
-    90% {
-      opacity: 0.82;
-    }
-    100% {
-      opacity: 0.28;
-    }
-  }
-  
-  @keyframes typewriter {
-    from {
-      width: 0;
-    }
-    to {
-      width: 100%;
-    }
-  }
-  
-  @keyframes blink {
-    50% {
-      border-color: transparent;
-    }
-  }
-  
-  /* Typewriter Effect */
-  .typewriter {
-    overflow: hidden;
-    border-right: 2px solid hsl(var(--blue-500));
-    white-space: nowrap;
-    animation: typewriter 2s steps(30, end), blink 1s step-end infinite;
-  }
-  
-  .typewriter-2 {
-    overflow: hidden;
-    border-right: 2px solid hsl(var(--purple-400));
-    white-space: nowrap;
-    animation: typewriter 2s steps(20, end) 3.2s both, blink 1s step-end infinite 3.2s;
-  }
-  
-  /* Text utilities */
-  .text-balance {
-    text-wrap: balance;
-  }
-  
-  .text-pretty {
-    text-wrap: pretty;
-  }
+
+  .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+  .animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
+  .animate-slide-in-left { animation: slideInLeft 0.8s ease-out forwards; }
+  .animate-slide-in-right { animation: slideInRight 0.8s ease-out forwards; }
+  .animate-float { animation: float 6s ease-in-out infinite; }
+
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
 }

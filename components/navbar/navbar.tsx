@@ -1,81 +1,153 @@
-'use client'
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { useTheme } from "next-themes"
-import { useState } from "react"
-import { Calendar, Mail, Sun, Moon } from "lucide-react"
-import HomeCalendlyModal from "@/components/website/home/calendly-modal"
-import HomeContactModal from "@/components/website/home/contact-modal"
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react";
+import { site } from "@/lib/content/site";
+
+function ThemeToggle({ className = "" }: { className?: string }) {
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      className={`flex h-9 w-9 items-center justify-center rounded-full border border-ink-700 text-paper-dim transition-colors duration-300 hover:border-ink-500 hover:text-paper ${className}`}
+      aria-label="Toggle colour theme"
+    >
+      {mounted && resolvedTheme === "dark" ? (
+        <Sun className="h-4 w-4" />
+      ) : (
+        <Moon className="h-4 w-4" />
+      )}
+    </button>
+  );
+}
+
+const navLinks = [
+  { label: "Work", href: "/#work" },
+  { label: "Services", href: "/#services" },
+  { label: "About", href: "/#about" },
+  { label: "Contact", href: "/#contact" },
+];
 
 export const NavBar = () => {
-  const { theme, setTheme } = useTheme()
-  const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
-  const [isContactOpen, setIsContactOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-  }
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Lock body scroll while the mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   return (
     <>
-      {/* Gradient fade overlay */}
-      <div className="fixed top-0 left-0 right-0 h-20 bg-gradient-to-b from-background via-background/80 to-transparent z-40 pointer-events-none" />
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+          scrolled
+            ? "border-b border-ink-700 bg-background/80 backdrop-blur-md"
+            : "border-b border-transparent bg-transparent"
+        }`}
+      >
+        <nav
+          className="site-container flex h-16 items-center justify-between"
+          aria-label="Main navigation"
+        >
+          <Link
+            href="/"
+            className="font-display text-sm font-medium tracking-tight text-paper"
+            onClick={() => setMenuOpen(false)}
+          >
+            Jack Oliver Dev
+            <span className="text-electric">.</span>
+          </Link>
 
-      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
-        <div className="bg-card/80 backdrop-blur-md border border-card-border rounded-full pl-4 pr-6 sm:pl-5 sm:pr-5 py-2 shadow-lg">
-          <div className="flex items-center gap-3">
-            {/* Brand */}
-            <Link href="/" className="flex items-center gap-2 pr-3 sm:pr-4 border-r border-card-border shrink-0">
-              <Image src="/logos/logo.svg" alt="Jack Oliver Dev" width={20} height={20} className="opacity-90" />
-              <span className="text-[13px] sm:text-sm font-semibold text-foreground whitespace-nowrap">Jack Oliver Dev</span>
-            </Link>
-
-            {/* Actions */}
-            <div className="flex items-center gap-1 sm:gap-2">
-              {/* Book a call */}
-              <button
-                type="button"
-                onClick={() => setIsCalendlyOpen(true)}
-                className="flex items-center justify-center w-8 h-8 rounded-full text-muted-foreground hover:text-white hover:bg-card/60 transition-all duration-300 shrink-0"
-                aria-label="Book a call"
+          <div className="hidden items-center gap-8 md:flex">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm text-paper-dim transition-colors duration-300 hover:text-paper"
               >
-                <Calendar className="h-4 w-4" />
-              </button>
-
-              {/* Divider */}
-              <div className="h-6 w-px bg-card-border mx-0.5 sm:mx-1" />
-
-              {/* Email */}
-              <button
-                type="button"
-                onClick={() => setIsContactOpen(true)}
-                className="flex items-center justify-center w-8 h-8 rounded-full text-muted-foreground hover:text-white hover:bg-card/60 transition-all duration-300 shrink-0"
-                aria-label="Open contact form"
-              >
-                <Mail className="h-4 w-4" />
-              </button>
-
-              {/* Divider */}
-              <div className="h-6 w-px bg-card-border mx-0.5 sm:mx-1" />
-
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="relative flex items-center justify-center w-8 h-8 rounded-full text-muted-foreground hover:text-white hover:bg-card/60 transition-all duration-300 shrink-0"
-                aria-label="Toggle theme"
-              >
-                <Sun className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              </button>
-            </div>
+                {link.label}
+              </Link>
+            ))}
+            <ThemeToggle />
+            <a
+              href={site.calendly}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary px-5 py-2 text-xs"
+            >
+              Book a call
+              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+            </a>
           </div>
-        </div>
-      </nav>
 
-      {/* Modals */}
-      <HomeCalendlyModal isOpen={isCalendlyOpen} onClose={() => setIsCalendlyOpen(false)} />
-      <HomeContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
+            <button
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              className="flex h-10 w-10 items-center justify-center rounded-full text-paper"
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+            >
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </nav>
+      </header>
+
+      {/* Mobile menu overlay */}
+      <div
+        className={`fixed inset-0 z-40 flex flex-col bg-background pt-24 transition-opacity duration-300 md:hidden ${
+          menuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      >
+        <nav
+          className="site-container flex flex-col gap-2"
+          aria-label="Mobile navigation"
+        >
+          {navLinks.map((link, index) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              className="display-hairline border-b border-ink-700 py-5 text-display-sm text-paper"
+            >
+              <span className="mr-4 font-mono text-xs text-paper-faint">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              {link.label}
+            </Link>
+          ))}
+          <a
+            href={site.calendly}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary mt-8 w-fit"
+            onClick={() => setMenuOpen(false)}
+          >
+            Book a call
+            <ArrowUpRight className="h-4 w-4" aria-hidden />
+          </a>
+        </nav>
+      </div>
     </>
-  )
-}
+  );
+};

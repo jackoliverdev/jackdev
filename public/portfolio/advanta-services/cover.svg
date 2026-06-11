@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="1000" viewBox="0 0 1640 1000" role="img" aria-label="ADVANTA Services  launching soon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#060608"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22C3EE"/>
+      <stop offset="1" stop-color="#477CFF"/>
+    </linearGradient>
+  </defs>
+  <rect width="1640" height="1000" fill="url(#bg)"/>
+  <g stroke="#1C2433" stroke-width="1">
+    <line x1="0" y1="250" x2="1640" y2="250"/>
+    <line x1="0" y1="500" x2="1640" y2="500"/>
+    <line x1="0" y1="750" x2="1640" y2="750"/>
+    <line x1="410" y1="0" x2="410" y2="1000"/>
+    <line x1="820" y1="0" x2="820" y2="1000"/>
+    <line x1="1230" y1="0" x2="1230" y2="1000"/>
+  </g>
+  <rect x="120" y="368" width="56" height="6" rx="3" fill="url(#accent)"/>
+  <text x="120" y="345" font-family="Menlo, monospace" font-size="22" letter-spacing="6" fill="#7F8B9F">IN BUILD  LAUNCHING 2026</text>
+  <text x="114" y="520" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="128" letter-spacing="-2" fill="#F7F6F2">ADVANTA</text>
+  <text x="120" y="600" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="44" fill="#BCB9B2">Air conditioning &amp; electrical services</text>
+  <text x="120" y="665" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="34" fill="#7F8B9F">Peterborough &amp; surrounding areas</text>
+  <g transform="translate(1340, 380)">
+    <circle cx="80" cy="80" r="78" fill="none" stroke="url(#accent)" stroke-width="3"/>
+    <g stroke="#F7F6F2" stroke-width="5" stroke-linecap="round" fill="none">
+      <path d="M80 36 v44"/>
+      <path d="M52 56 a38 38 0 1 0 56 0"/>
+    </g>
+  </g>
+</svg>
