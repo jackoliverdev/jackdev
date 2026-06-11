@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { MyFirebaseProvider } from "@/components/firebase-providers";
+// import { MyFirebaseProvider } from "@/components/firebase-providers";
 import { AppShell } from "@/components/app/app-shell";
 
 export const metadata = {
@@ -10,9 +10,8 @@ export const metadata = {
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <MyFirebaseProvider>
-      <AppShell>{children}</AppShell>
-    </MyFirebaseProvider>
+    // Firebase auth temporarily disabled — re-enable MyFirebaseProvider when ready
+    <AppShell>{children}</AppShell>
   );
 }
 

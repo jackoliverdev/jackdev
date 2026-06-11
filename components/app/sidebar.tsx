@@ -3,17 +3,17 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { signOut } from "firebase/auth";
-import { useAuth } from "reactfire";
-import { useToast } from "@/components/ui/use-toast";
+// Firebase auth temporarily disabled
+// import { signOut } from "firebase/auth";
+// import { useAuth } from "reactfire";
 import {
   LayoutDashboard,
   Settings,
   ChevronLeft,
   ChevronRight,
-  LogOut,
+  ArrowLeft,
   CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -44,31 +44,7 @@ const navItems: NavItem[] = [
 
 export const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const pathname = usePathname();
-  const auth = useAuth();
-  const router = useRouter();
-  const { toast } = useToast();
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await signOut(auth);
-      toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
-      });
-      router.push("/login");
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to sign out. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoggingOut(false);
-    }
-  };
 
   return (
     <motion.aside
@@ -146,17 +122,12 @@ export const Sidebar = () => {
 
       {/* Bottom */}
       <div className="p-3 border-t border-border/50 space-y-2">
-        {/* Logout */}
-        <button
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-muted-foreground hover:text-red-400 hover:bg-red-500/10 group"
+        {/* Back to site — restore Firebase sign-out when auth is ready */}
+        <Link
+          href="/"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-accent/50 group"
         >
-          {isLoggingOut ? (
-            <div className="w-5 h-5 border-2 border-muted-foreground/20 border-t-red-400 rounded-full animate-spin flex-shrink-0" />
-          ) : (
-            <LogOut className="w-5 h-5 flex-shrink-0 group-hover:text-red-400 transition-colors" />
-          )}
+          <ArrowLeft className="w-5 h-5 flex-shrink-0 transition-colors" />
           <AnimatePresence>
             {!isCollapsed && (
               <motion.span
@@ -166,11 +137,11 @@ export const Sidebar = () => {
                 transition={{ duration: 0.2 }}
                 className="text-sm font-medium whitespace-nowrap"
               >
-                {isLoggingOut ? "Signing out..." : "Sign Out"}
+                Back to site
               </motion.span>
             )}
           </AnimatePresence>
-        </button>
+        </Link>
 
         {/* Collapse Toggle */}
         <button
