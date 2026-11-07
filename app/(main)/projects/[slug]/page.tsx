@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { getNextProject, getProject, projects } from "@/lib/content/projects";
-import { site } from "@/lib/content/site";
-import { Reveal } from "@/components/website/motion/reveal";
+import { site, testimonials } from "@/lib/content/site";
+import { DesktopFrame, PhoneFrame } from "@/components/website/work/frames";
 
-type PageProps = {
-  params: { slug: string };
-};
+type PageProps = { params: { slug: string } };
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
@@ -18,8 +14,7 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: PageProps): Metadata {
   const project = getProject(params.slug);
   if (!project) return {};
-
-  const title = `${project.name} Case Study | Jack Oliver Dev`;
+  const title = `${project.name} case study | Jack Oliver Dev`;
   return {
     title,
     description: project.seoDescription,
@@ -31,208 +26,189 @@ export function generateMetadata({ params }: PageProps): Metadata {
       siteName: site.legalName,
       locale: "en_GB",
       type: "article",
-      images: project.cover.src.endsWith(".svg")
-        ? undefined
-        : [{ url: project.cover.src, alt: project.cover.alt }],
+      images: [{ url: project.desktop[0].src, alt: project.desktop[0].alt }],
     },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description: project.seoDescription,
-    },
+    twitter: { card: "summary_large_image", title, description: project.seoDescription },
   };
+}
+
+function Arrow({ className }: { className?: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden className={className}>
+      <path d="M1 7h11M8 3l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
 }
 
 export default function ProjectPage({ params }: PageProps) {
   const project = getProject(params.slug);
   if (!project) notFound();
 
-  const nextProject = getNextProject(project.slug);
+  const next = getNextProject(project.slug);
+  const quote = testimonials.find((t) => t.project === project.slug);
+  const [, d2, d3, d4] = project.desktop;
+  const [, m2] = project.mobile;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
-    name: project.name,
+    name: `${project.name} case study`,
     description: project.seoDescription,
     url: `${site.url}/projects/${project.slug}`,
-    author: {
-      "@type": "Person",
-      name: site.name,
-      url: site.url,
-    },
-    ...(project.url ? { sameAs: project.url } : {}),
+    image: `${site.url}${project.desktop[0].src}`,
+    author: { "@type": "Person", name: site.personName, url: site.url },
+    about: { "@type": "Organization", name: project.name, url: project.url },
   };
 
   return (
-    <main className="pt-28">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+    <main id="main" className="pt-[calc(var(--nav-h)+clamp(2rem,6vw,4.5rem))]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <article>
-        {/* Header */}
-        <header className="site-container">
-          <Link href="/#work" className="link-arrow mb-10">
-            <ArrowLeft className="h-4 w-4" aria-hidden />
+        <header className="container-x">
+          <Link href="/#work" className="group inline-flex items-center gap-2 text-small text-fg-muted transition-colors hover:text-fg">
+            <Arrow className="rotate-180 transition-transform duration-300 ease-out group-hover:-translate-x-1" />
             All work
           </Link>
 
-          <p className="eyebrow mb-4">
-            {project.sector} · {project.year}
-          </p>
-          <h1 className="display-hairline text-display-xl max-w-4xl text-paper">
-            {project.name}
-          </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-paper-dim sm:text-lg">
-            {project.summary}
-          </p>
+          <div className="mt-10 grid gap-8 md:mt-14 md:grid-cols-12 md:items-end">
+            <div className="md:col-span-8">
+              <p className="text-fg-muted">{project.client}</p>
+              <h1 className="mt-3 text-display text-fg">{project.name}</h1>
+            </div>
+            <p className="max-w-[40ch] text-lead text-fg-muted md:col-span-4 md:justify-self-end">{project.tagline}</p>
+          </div>
 
-          <dl className="mt-12 grid gap-8 border-t border-ink-700 pt-8 sm:grid-cols-3">
+          <dl className="mt-12 grid grid-cols-2 gap-6 border-t border-rule pt-6 md:grid-cols-4">
             <div>
-              <dt className="text-xs text-paper-faint">Role</dt>
-              <dd className="mt-2 text-sm text-paper">{project.role}</dd>
+              <dt className="text-small text-fg-faint">Sector</dt>
+              <dd className="mt-1 text-fg">{project.sector}</dd>
             </div>
             <div>
-              <dt className="text-xs text-paper-faint">Stack</dt>
-              <dd className="mt-2 text-sm text-paper">
-                {project.stack.join(" · ")}
-              </dd>
+              <dt className="text-small text-fg-faint">Year</dt>
+              <dd className="mt-1 text-fg">{project.year}</dd>
             </div>
             <div>
-              <dt className="text-xs text-paper-faint">Status</dt>
-              <dd className="mt-2 text-sm text-paper">
-                {project.live && project.url ? (
-                  <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="link-arrow text-paper hover:text-electric-bright"
-                  >
-                    Visit live site
-                    <ArrowUpRight className="h-4 w-4" aria-hidden />
+              <dt className="text-small text-fg-faint">What I built</dt>
+              <dd className="mt-1 text-fg">{project.built.join(", ")}</dd>
+            </div>
+            <div>
+              <dt className="text-small text-fg-faint">Site</dt>
+              <dd className="mt-1">
+                {project.status === "live" ? (
+                  <a href={project.url} target="_blank" rel="noopener noreferrer" className="link text-sky-ink">
+                    {project.url.replace(/^https?:\/\/(www\.)?/, "")}
                   </a>
                 ) : (
-                  "In build, launching soon"
+                  <span className="text-fg">Launching soon</span>
                 )}
               </dd>
             </div>
           </dl>
         </header>
 
-        {/* Cover */}
-        <div className="site-container mt-14">
-          <Reveal>
-            <div className="relative aspect-[16/10] overflow-hidden rounded-lg border border-ink-700 bg-ink-900 md:aspect-[21/10]">
-              <Image
-                src={project.cover.src}
-                alt={project.cover.alt}
-                fill
-                sizes="(max-width: 1320px) 100vw, 1320px"
-                className="object-cover object-top"
-                priority
-              />
-            </div>
-          </Reveal>
-        </div>
-
-        {/* Challenge / Solution */}
-        <div className="site-container section-pad grid gap-12 md:grid-cols-2 md:gap-20">
-          <Reveal>
-            <h2 className="eyebrow mb-5">The Challenge</h2>
-            <p className="text-base leading-relaxed text-paper-dim">
-              {project.challenge}
-            </p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h2 className="eyebrow mb-5">The Solution</h2>
-            <p className="text-base leading-relaxed text-paper-dim">
-              {project.solution}
-            </p>
-          </Reveal>
-        </div>
-
-        {/* Features */}
-        <div className="site-container">
-          <Reveal>
-            <h2 className="eyebrow mb-8">What it does</h2>
-          </Reveal>
-          <Reveal
-            stagger="[data-feature]"
-            className="grid gap-px overflow-hidden rounded-lg border border-ink-700 bg-ink-700 sm:grid-cols-2"
-          >
-            {project.features.map((feature, index) => (
-              <div
-                key={feature}
-                data-feature
-                className="flex gap-4 bg-ink-900 p-6"
-              >
-                <span className="font-mono text-xs text-electric">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="text-sm leading-relaxed text-paper">{feature}</p>
-              </div>
-            ))}
-          </Reveal>
-        </div>
-
-        {/* Gallery */}
-        {project.shots.length > 0 && (
-          <div className="site-container mt-20 grid gap-6 md:grid-cols-3">
-            {project.shots.map((shot) => (
-              <Reveal key={shot.src}>
-                <div className="relative aspect-[16/10] overflow-hidden rounded-lg border border-ink-700 bg-ink-900">
-                  <Image
-                    src={shot.src}
-                    alt={shot.alt}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover object-top"
-                  />
-                </div>
-              </Reveal>
-            ))}
+        {/* The cover: desktop and phone, the same composition as the homepage. */}
+        <div className="container-x mt-12 md:mt-16">
+          <div className="relative overflow-hidden rounded-frame bg-well px-[6%] pb-[8%] pt-[6%]">
+            <DesktopFrame shot={project.desktop[0]} sizes="(min-width: 1320px) 1100px, 90vw" priority className="w-[86%]" />
+            <PhoneFrame shot={project.mobile[0]} sizes="(min-width: 768px) 260px, 22vw" priority className="absolute bottom-[5%] right-[5%] w-[21%]" />
           </div>
-        )}
+        </div>
 
-        {/* Results */}
-        <div className="site-container section-pad">
-          <Reveal>
-            <h2 className="eyebrow mb-8">The Result</h2>
-            <ul className="flex max-w-3xl flex-col gap-5">
-              {project.results.map((result) => (
-                <li
-                  key={result}
-                  className="display-hairline border-l border-electric pl-6 text-display-sm text-paper"
-                >
-                  {result}
+        <div className="container-x section-y grid gap-12 md:grid-cols-12">
+          <div className="md:col-span-4">
+            <div className="md:sticky md:top-[calc(var(--nav-h)+2rem)]">
+              <h2 className="text-h3 text-fg">Built with</h2>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {project.stack.map((tool) => (
+                  <li key={tool} className="rounded-full border border-rule px-3 py-1 text-caption text-fg-muted">
+                    {tool}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="space-y-14 md:col-span-8">
+            <p className="text-h3 font-display font-medium leading-[1.3] tracking-[-0.02em] text-fg">{project.summary}</p>
+            <section>
+              <h2 className="text-h3 text-fg">The problem</h2>
+              <p className="mt-4 max-w-prose text-lead text-fg-muted">{project.challenge}</p>
+            </section>
+            <section>
+              <h2 className="text-h3 text-fg">What I built</h2>
+              <p className="mt-4 max-w-prose text-lead text-fg-muted">{project.solution}</p>
+              <ul className="mt-8 grid gap-x-8 gap-y-3 border-t border-rule pt-6 sm:grid-cols-2">
+                {project.features.map((feature) => (
+                  <li key={feature} className="flex gap-3 text-fg">
+                    <span className="mt-[0.6em] h-1.5 w-1.5 shrink-0 rounded-full bg-sky" aria-hidden />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </div>
+        </div>
+
+        {/* Gallery: one ratio per device, so nothing is cropped differently. */}
+        <div className="container-x space-y-6 md:space-y-8">
+          {d2 && <DesktopFrame shot={d2} sizes="(min-width: 1320px) 1320px, 92vw" />}
+          <div className="grid items-start gap-6 md:grid-cols-12 md:gap-8">
+            {d3 && <DesktopFrame shot={d3} sizes="(min-width: 768px) 880px, 92vw" className="md:col-span-9" />}
+            {m2 && (
+              <div className="md:col-span-3">
+                <PhoneFrame shot={m2} sizes="(min-width: 768px) 300px, 60vw" className="mx-auto w-[60%] md:w-full" />
+              </div>
+            )}
+          </div>
+          {d4 && <DesktopFrame shot={d4} sizes="(min-width: 1320px) 1320px, 92vw" />}
+        </div>
+
+        <div className="container-x section-y grid gap-12 md:grid-cols-12">
+          <section className="md:col-span-5">
+            <h2 className="text-h2 text-fg">What changed</h2>
+            <ul className="mt-8 space-y-5">
+              {project.outcomes.map((outcome) => (
+                <li key={outcome} className="border-t border-rule pt-5 text-lead text-fg">
+                  {outcome}
                 </li>
               ))}
             </ul>
-          </Reveal>
-        </div>
-
-        {/* Next project */}
-        <div className="hairline-top">
-          <Link
-            href={`/projects/${nextProject.slug}`}
-            className="group block py-16 transition-colors duration-300 hover:bg-ink-900 md:py-20"
-          >
-            <div className="site-container flex items-end justify-between gap-6">
-              <div>
-                <p className="eyebrow mb-3">Next project</p>
-                <p className="display-hairline text-display-lg text-paper">
-                  {nextProject.name}
-                </p>
-              </div>
-              <ArrowRight
-                className="mb-2 h-8 w-8 shrink-0 text-paper-faint transition-all duration-300 group-hover:translate-x-2 group-hover:text-electric-bright"
-                aria-hidden
-              />
-            </div>
-          </Link>
+          </section>
+          {quote && (
+            <figure className="md:col-span-6 md:col-start-7">
+              <blockquote className="font-display text-[clamp(1.5rem,2.9vw,2.5rem)] font-medium leading-[1.18] tracking-[-0.03em] text-fg">
+                &ldquo;{quote.quote}&rdquo;
+              </blockquote>
+              <figcaption className="mt-8 border-t border-rule pt-5">
+                <span className="block font-medium text-fg">{quote.name}</span>
+                <span className="text-small text-fg-muted">
+                  {quote.role}, {quote.company}
+                </span>
+              </figcaption>
+            </figure>
+          )}
         </div>
       </article>
+
+      <section className="border-t border-rule">
+        <div className="container-x grid gap-10 py-16 md:grid-cols-12 md:items-center md:py-24">
+          <div className="md:col-span-5">
+            <h2 className="text-h1 text-fg">Want something like this?</h2>
+            <p className="mt-5 max-w-[38ch] text-fg-muted">Tell me what you need. You get a straight answer and a fixed price.</p>
+            <Link href="/#contact" className="btn-sky mt-8">
+              Book a call
+            </Link>
+          </div>
+          <Link href={`/projects/${next.slug}`} className="group block md:col-span-6 md:col-start-7">
+            <p className="text-small text-fg-faint">Next project</p>
+            <p className="mt-2 flex items-center justify-between gap-4 font-display text-h2 font-semibold tracking-[-0.035em] text-fg">
+              {next.name}
+              <Arrow className="h-5 w-5 transition-transform duration-300 ease-out group-hover:translate-x-1" />
+            </p>
+            <DesktopFrame shot={next.desktop[0]} hover={next.desktop[1]} sizes="(min-width: 768px) 600px, 92vw" className="mt-6" />
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }

@@ -1,54 +1,94 @@
-import { Reveal } from "@/components/website/motion/reveal";
-import { testimonials } from "@/lib/content/site";
+"use client";
 
+import Link from "next/link";
+import { useId, useState } from "react";
+import { testimonials } from "@/lib/content/site";
+import { cn } from "@/lib/utils";
+
+/** One quote at a time; the visitor picks whose. */
 export function TestimonialsSection() {
-  const row = [...testimonials, ...testimonials];
+  const [active, setActive] = useState(0);
+  const id = useId();
+  const t = testimonials[active];
+
+  const onKey = (e: React.KeyboardEvent) => {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    e.preventDefault();
+    const dir = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : -1;
+    const next = (active + dir + testimonials.length) % testimonials.length;
+    setActive(next);
+    document.getElementById(`${id}-tab-${next}`)?.focus();
+  };
 
   return (
-    <section className="section-pad hairline-top max-md:overflow-x-hidden">
-      <div className="site-container">
-        <Reveal>
-          <p className="eyebrow mb-4">Customer Testimonials</p>
-          <h2 className="display-hairline text-display-lg max-w-4xl text-paper">
-            Clients say it better than I can.
+    <section aria-labelledby={`${id}-title`} className="section-y">
+      <div className="container-x grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-12">
+        <div className="md:col-span-4">
+          <h2 id={`${id}-title`} className="text-h1 text-fg">
+            What clients say
           </h2>
-        </Reveal>
-      </div>
-
-      <Reveal className="relative mt-14 overflow-hidden">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent sm:w-32" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent sm:w-32" />
-
-        <div className="group flex w-max animate-marquee gap-6 hover:[animation-play-state:paused] motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:w-full">
-          {row.map((testimonial, index) => (
-            <figure
-              key={`${testimonial.name}-${index}`}
-              className="surface-card surface-card-hover flex w-[20rem] shrink-0 flex-col justify-between p-7 sm:w-[24rem]"
-              aria-hidden={index >= testimonials.length}
-            >
-              <blockquote className="text-sm leading-relaxed text-paper sm:text-base">
-                &ldquo;{testimonial.quote}&rdquo;
-              </blockquote>
-              <figcaption className="mt-6 flex items-center gap-3 border-t border-ink-700 pt-5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-electric/10 font-mono text-xs text-electric">
-                  {testimonial.name
-                    .split(" ")
-                    .map((part) => part[0])
-                    .join("")}
-                </span>
-                <span>
-                  <p className="text-sm font-medium text-paper">
-                    {testimonial.name}
-                  </p>
-                  <p className="mt-0.5 text-xs text-paper-faint">
-                    {testimonial.position}, {testimonial.company}
-                  </p>
-                </span>
-              </figcaption>
-            </figure>
-          ))}
+          <div
+            role="tablist"
+            aria-orientation="vertical"
+            aria-label="Clients"
+            onKeyDown={onKey}
+            className="no-scrollbar -mx-[var(--gutter)] mt-8 flex gap-2 overflow-x-auto px-[var(--gutter)] md:mx-0 md:mt-12 md:flex-col md:gap-0 md:overflow-visible md:px-0"
+          >
+            {testimonials.map((item, i) => (
+              <button
+                key={item.company}
+                id={`${id}-tab-${i}`}
+                role="tab"
+                type="button"
+                aria-selected={i === active}
+                aria-controls={`${id}-panel`}
+                tabIndex={i === active ? 0 : -1}
+                onClick={() => setActive(i)}
+                className={cn(
+                  "shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-small transition-colors duration-200 ease-out",
+                  "md:flex md:items-center md:justify-between md:rounded-none md:border-0 md:border-b md:border-rule md:px-0 md:py-3.5 md:text-body",
+                  i === active
+                    ? "border-fg bg-fg text-canvas md:bg-transparent md:text-fg"
+                    : "border-rule text-fg-muted hover:text-fg"
+                )}
+              >
+                {item.company}
+                <span
+                  className={cn(
+                    "hidden h-1.5 w-1.5 rounded-full bg-sky transition-opacity duration-200 md:block",
+                    i === active ? "opacity-100" : "opacity-0"
+                  )}
+                  aria-hidden
+                />
+              </button>
+            ))}
+          </div>
         </div>
-      </Reveal>
+
+        <figure
+          id={`${id}-panel`}
+          role="tabpanel"
+          aria-labelledby={`${id}-tab-${active}`}
+          className="flex flex-col justify-between gap-10 md:col-span-8 md:pl-8"
+        >
+          <blockquote key={active} className="animate-in fade-in-0 slide-in-from-bottom-2 duration-500">
+            <p className="font-display text-[clamp(1.5rem,2.9vw,2.5rem)] font-medium leading-[1.18] tracking-[-0.03em] text-fg">
+              &ldquo;{t.quote}&rdquo;
+            </p>
+          </blockquote>
+          <figcaption className="flex flex-wrap items-end justify-between gap-4 border-t border-rule pt-6">
+            <span>
+              <span className="block font-medium text-fg">{t.name}</span>
+              <span className="text-small text-fg-muted">
+                {t.role}, {t.company}
+              </span>
+            </span>
+            <Link href={`/projects/${t.project}`} className="link text-small text-sky-ink">
+              See the {t.company} project
+            </Link>
+          </figcaption>
+        </figure>
+      </div>
     </section>
   );
 }

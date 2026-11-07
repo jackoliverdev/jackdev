@@ -1,71 +1,71 @@
 import Link from "next/link";
-import { FC } from "react";
-import { site } from "@/lib/content/site";
+import { Logo } from "@/components/brand/logo";
+import { nav, site } from "@/lib/content/site";
+import { projects } from "@/lib/content/projects";
 
-const footerLinks = [
-  { label: "Work", href: "/#work" },
-  { label: "Services", href: "/#services" },
-  { label: "About", href: "/#about" },
-  { label: "Contact", href: "/#contact" },
-];
-
-export const Footer: FC = () => {
-  const currentYear = new Date().getFullYear();
+export const Footer = () => {
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="hairline-top">
-      <div className="site-container flex flex-col gap-10 py-14 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="font-display text-sm font-medium tracking-tight text-paper">
-            Jack Oliver Dev<span className="text-electric">.</span>
+    <footer className="border-t border-rule">
+      <div className="container-x grid gap-12 py-16 md:grid-cols-12 md:py-20">
+        <div className="md:col-span-5">
+          <Link href="/" className="inline-block rounded-md text-[1.25rem]" aria-label="Jack Oliver Dev, home">
+            <Logo />
+          </Link>
+          <p className="mt-5 max-w-sm text-fg-muted">
+            Websites, AI assistants and web apps, designed and built in the UK by one developer.
           </p>
-          <p className="mt-2 max-w-xs text-sm leading-relaxed text-paper-faint">
-            Websites, AI and web applications, designed and built in the
-            United Kingdom.
-          </p>
+          <a href={`mailto:${site.email}`} className="link mt-8 inline-block font-display text-h3 font-semibold text-fg">
+            {site.email}
+          </a>
         </div>
 
-        <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-8 gap-y-3">
-          {footerLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm text-paper-dim transition-colors duration-300 hover:text-paper"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex flex-col gap-3 text-sm md:items-end">
-          <div className="flex gap-5">
-            <a
-              href={`mailto:${site.email}`}
-              className="text-paper-dim transition-colors duration-300 hover:text-paper"
-            >
-              Email
-            </a>
-            <a
-              href={site.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-paper-dim transition-colors duration-300 hover:text-paper"
-            >
-              LinkedIn
-            </a>
-            <a
-              href={site.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-paper-dim transition-colors duration-300 hover:text-paper"
-            >
-              GitHub
-            </a>
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-7 md:justify-items-end">
+          <div>
+            <h2 className="text-small font-medium tracking-normal text-fg-muted">Site</h2>
+            <ul className="mt-4 space-y-2.5">
+              {nav.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="link text-fg">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
-          <p className="text-xs text-paper-faint">
-            © {currentYear} Jack Oliver Dev · United Kingdom
-          </p>
-        </div>
+          <div>
+            <h2 className="text-small font-medium tracking-normal text-fg-muted">Work</h2>
+            <ul className="mt-4 space-y-2.5">
+              {projects.map((project) => (
+                <li key={project.slug}>
+                  <Link href={`/projects/${project.slug}`} className="link text-fg">
+                    {project.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-small font-medium tracking-normal text-fg-muted">Elsewhere</h2>
+            <ul className="mt-4 space-y-2.5">
+              <li>
+                <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="link text-fg">
+                  LinkedIn
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${site.email}`} className="link text-fg">
+                  Email
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div className="container-x flex flex-col gap-2 border-t border-rule py-6 text-caption text-fg-faint sm:flex-row sm:justify-between">
+        <p>© {year} Jack Oliver Dev. All rights reserved.</p>
+        <p>Designed and built by Jack, in the UK.</p>
       </div>
     </footer>
   );

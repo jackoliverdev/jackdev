@@ -247,6 +247,7 @@ export function horizontalLoop(
       draggable = Draggable.create(proxy, {
         trigger: items[0].parentNode as HTMLElement,
         type: "x",
+        dragClickables: true,
         onPressInit(this: Draggable) {
           const x = this.x;
           gsap.killTweensOf(tl);

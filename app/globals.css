@@ -2,137 +2,140 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ------------------------------------------------------------------
-   Jack Oliver Dev — Global Design System
-   Minimalist editorial theme in two modes. Light is the default:
-   white, blues and blacks. Dark flips the same ink/paper scale.
-------------------------------------------------------------------- */
+/* ==================================================================
+   Jack Oliver Dev design system. See docs/DESIGN.md.
+   Change a value here once and both modes and every component follow.
+   Colours are RGB channels so Tailwind can add opacity: bg-sky/20.
+   ================================================================== */
 
 @layer base {
   :root {
-    /* --- Core ink palette (LIGHT default) ---
-       ink = surfaces (lightest page bg to strongest UI)
-       paper = type (strongest text to faintest) */
-    --ink-950: 40 20% 99%;           /* page background, warm white */
-    --ink-900: 220 20% 97%;          /* raised surfaces */
-    --ink-800: 220 16% 94%;          /* cards */
-    --ink-700: 220 13% 89%;          /* borders */
-    --ink-600: 220 10% 80%;          /* hover borders */
-    --ink-500: 220 8% 62%;           /* subtle UI */
+    /* --- Brand: the three colours everything is built from --- */
+    --obsidian: 17 18 23;      /* #111217 */
+    --ice: 223 229 235;        /* #DFE5EB */
+    --sky-500: 5 147 198;      /* #0593C6 */
 
-    /* --- Type --- */
-    --paper: 228 16% 9%;             /* near-black blue ink */
-    --paper-dim: 228 8% 34%;         /* secondary text */
-    --paper-faint: 228 6% 50%;       /* tertiary text */
+    /* --- Light mode: ice ground, obsidian ink --- */
+    --bg: 238 241 244;         /* #EEF1F4 page */
+    --raised: 247 248 250;     /* #F7F8FA panels, frames, form */
+    --well: 223 229 235;       /* #DFE5EB ice bands and image mats */
+    --rule: 205 212 220;       /* #CDD4DC hairlines */
+    --rule-strong: 168 178 189;/* #A8B2BD hover borders */
+    --fg: 17 18 23;            /* #111217 text */
+    --fg-muted: 79 88 100;     /* #4F5864 subtext, 6.4:1 */
+    --fg-faint: 107 116 128;   /* #6B7480 captions only */
+    --sky: var(--sky-500);     /* fills: buttons, dot, focus */
+    --sky-hover: 4 124 168;    /* #047CA8 */
+    --sky-ink: 3 110 148;      /* #036E94 sky as text, AA on bg */
+    --on-sky: 17 18 23;        /* text on a sky fill, 5.3:1 */
+    --bezel: 17 18 23;         /* phone frame edge */
+    --frame-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 24px 48px -28px rgb(17 18 23 / 0.28);
 
-    /* --- Accent: electric blue --- */
-    --electric: 226 83% 53%;         /* #2156E8 */
-    --electric-bright: 224 100% 62%; /* #3D78FF hover */
-    --electric-deep: 228 78% 42%;    /* #1841BE pressed */
+    /* --- Shape, rhythm, motion --- */
+    --radius-frame: 14px;
+    --radius-control: 10px;
+    --container: 1320px;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+    --section-y: clamp(5rem, 11vw, 9rem);
+    --nav-h: 4.25rem;
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
-    /* --- Semantic tokens (shadcn-compatible; dashboard relies on these) --- */
-    --background: var(--ink-950);
-    --foreground: var(--paper);
-    --background-secondary: var(--ink-900);
-    --background-tertiary: var(--ink-800);
+    /* --- shadcn semantic tokens (HSL) for the dashboard and ui/ kit --- */
+    --background: 210 22% 95%;
+    --foreground: 230 15% 8%;
+    --card: 220 20% 97%;
+    --card-foreground: 230 15% 8%;
+    --card-border: 212 17% 83%;
+    --popover: 220 20% 97%;
+    --popover-foreground: 230 15% 8%;
+    --primary: 196 95% 40%;
+    --primary-foreground: 230 15% 8%;
+    --primary-hover: 196 95% 35%;
+    --secondary: 210 23% 90%;
+    --secondary-foreground: 230 15% 8%;
+    --secondary-hover: 212 17% 83%;
+    --muted: 210 23% 90%;
+    --muted-foreground: 214 12% 35%;
+    --accent: 196 95% 40%;
+    --accent-foreground: 230 15% 8%;
+    --accent-secondary: 196 95% 35%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 212 17% 83%;
+    --input: 212 17% 83%;
+    --ring: 196 95% 40%;
+    --radius: 0.625rem;
+    --radius-xl: 0.875rem;
 
-    --card: var(--ink-900);
-    --card-foreground: var(--paper);
-    --card-border: var(--ink-700);
+    /* Older names still used by the dashboard, mapped onto the new palette */
+    --ink-950: 210 22% 95%;
+    --ink-900: 220 20% 97%;
+    --ink-800: 210 23% 90%;
+    --ink-700: 212 17% 83%;
+    --ink-600: 211 13% 70%;
+    --ink-500: 214 9% 46%;
+    --paper: 230 15% 8%;
+    --paper-dim: 214 12% 35%;
+    --paper-faint: 214 9% 46%;
+    --electric: 196 95% 40%;
+    --electric-bright: 196 80% 52%;
+    --electric-deep: 196 96% 30%;
+    --navy-900: 230 15% 8%;
+    --navy-800: 227 16% 11%;
+    --navy-700: 225 14% 17%;
+    --navy-600: 222 12% 24%;
+    --grey-50: 220 20% 97%;
+    --grey-100: 210 22% 95%;
+    --grey-200: 210 23% 90%;
+    --grey-300: 212 17% 83%;
+    --grey-400: 213 11% 64%;
+    --grey-500: 214 12% 35%;
 
-    --primary: var(--electric);
-    --primary-foreground: var(--ink-950);
-    --primary-hover: var(--electric-bright);
-
-    --secondary: var(--ink-800);
-    --secondary-foreground: var(--paper);
-    --secondary-hover: var(--ink-700);
-
-    --accent: var(--electric);
-    --accent-foreground: var(--ink-950);
-    --accent-secondary: var(--electric-bright);
-
-    --muted: var(--ink-800);
-    --muted-foreground: var(--paper-dim);
-
-    --destructive: 0 72% 56%;
-    --destructive-foreground: var(--paper);
-
-    --popover: var(--ink-900);
-    --popover-foreground: var(--paper);
-
-    --border: var(--ink-700);
-    --input: var(--ink-800);
-    --ring: var(--electric);
-
-    --radius: 0.5rem;
-    --radius-sm: 0.375rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
-
-    /* --- Legacy palette (kept for dashboard/auth components) --- */
-    --navy-950: 225 35% 7%;
-    --navy-900: 225 32% 10%;
-    --navy-800: 225 28% 14%;
-    --navy-700: 225 25% 18%;
-    --navy-600: 225 22% 24%;
-    --navy-500: 225 20% 30%;
-    --blue-950: 235 45% 12%;
-    --blue-900: 235 42% 16%;
-    --blue-800: 235 40% 22%;
-    --blue-700: 238 38% 28%;
-    --blue-600: 240 42% 35%;
-    --blue-500: 242 48% 45%;
-    --blue-400: 244 52% 58%;
-    --blue-300: 246 60% 70%;
-    --purple-950: 265 40% 8%;
-    --purple-900: 265 38% 12%;
-    --purple-800: 268 36% 18%;
-    --purple-700: 270 38% 25%;
-    --purple-600: 272 42% 35%;
-    --purple-500: 275 48% 45%;
-    --purple-400: 278 55% 58%;
-    --purple-300: 280 65% 70%;
-    --white: 0 0% 100%;
-    --grey-50: 222 15% 98%;
-    --grey-100: 222 12% 95%;
-    --grey-200: 222 10% 88%;
-    --grey-300: 222 8% 75%;
-    --grey-400: 222 6% 60%;
-    --grey-500: 222 5% 45%;
-    --grey-600: 222 5% 35%;
-    --emerald-500: 160 50% 55%;
-    --emerald-400: 160 55% 65%;
-    --cyan-500: 190 70% 60%;
-    --cyan-400: 190 75% 70%;
-    --yellow-500: 48 95% 65%;
-    --yellow-400: 48 100% 75%;
-    --orange-500: 25 95% 60%;
-    --orange-400: 25 100% 70%;
-    --gradient-blue-start: 242 48% 45%;
-    --gradient-blue-mid: 260 55% 50%;
-    --gradient-blue-end: 275 48% 45%;
-    --gradient-purple-start: 275 48% 45%;
-    --gradient-purple-mid: 290 45% 50%;
-    --gradient-purple-end: 320 40% 55%;
+    color-scheme: light;
   }
 
-  /* Dark mode: same scale, flipped */
+  /* --- Dark mode: obsidian ground, ice ink. Tuned, not inverted. --- */
   .dark {
-    --ink-950: 240 8% 3%;            /* page background */
-    --ink-900: 240 7% 5%;            /* raised surfaces */
-    --ink-800: 240 6% 8%;            /* cards */
-    --ink-700: 240 5% 12%;           /* borders */
-    --ink-600: 240 5% 16%;           /* hover borders */
-    --ink-500: 240 4% 28%;           /* subtle UI */
+    --bg: 17 18 23;            /* #111217 */
+    --raised: 24 26 33;        /* #181A21 */
+    --well: 12 13 17;          /* #0C0D11 */
+    --rule: 38 41 50;          /* #262932 */
+    --rule-strong: 62 67 80;   /* #3E4350 */
+    --fg: 223 229 235;         /* #DFE5EB */
+    --fg-muted: 152 162 174;   /* #98A2AE, 6.4:1 */
+    --fg-faint: 120 129 141;   /* #78818D */
+    --sky-hover: 30 166 214;   /* #1EA6D6 */
+    --sky-ink: 56 182 232;     /* #38B6E8 */
+    --bezel: 52 56 66;         /* #343842 */
+    --frame-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 28px 60px -30px rgb(0 0 0 / 0.85);
 
-    --paper: 40 14% 96%;             /* warm off-white */
-    --paper-dim: 40 6% 72%;
-    --paper-faint: 240 4% 52%;
+    --background: 230 15% 8%;
+    --foreground: 210 23% 90%;
+    --card: 227 16% 11%;
+    --card-foreground: 210 23% 90%;
+    --card-border: 225 14% 17%;
+    --popover: 227 16% 11%;
+    --popover-foreground: 210 23% 90%;
+    --secondary: 225 14% 17%;
+    --secondary-foreground: 210 23% 90%;
+    --secondary-hover: 222 12% 24%;
+    --muted: 225 14% 17%;
+    --muted-foreground: 213 11% 64%;
+    --border: 225 14% 17%;
+    --input: 225 14% 17%;
 
-    --electric: 224 100% 64%;        /* #477CFF */
-    --electric-bright: 222 100% 72%;
-    --electric-deep: 226 80% 50%;
+    --ink-950: 230 15% 8%;
+    --ink-900: 227 16% 11%;
+    --ink-800: 225 14% 14%;
+    --ink-700: 225 14% 17%;
+    --ink-600: 224 13% 28%;
+    --ink-500: 213 9% 50%;
+    --paper: 210 23% 90%;
+    --paper-dim: 213 11% 64%;
+    --paper-faint: 213 9% 50%;
+
+    color-scheme: dark;
   }
 }
 
@@ -142,182 +145,191 @@
   }
 
   html {
-    scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--nav-h) + 1rem);
+    background: rgb(var(--bg));
   }
 
-  body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
-    text-rendering: optimizeLegibility;
+  /* Lenis handles smoothing; native smooth only when Lenis is off. */
+  html:not(.lenis) {
+    scroll-behavior: smooth;
   }
-
-  @media (max-width: 767px) {
-    html,
-    body {
-      overflow-x: hidden;
-      max-width: 100%;
+  @media (prefers-reduced-motion: reduce) {
+    html:not(.lenis) {
+      scroll-behavior: auto;
     }
   }
 
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-fg antialiased;
+    font-size: 1rem;
+    line-height: 1.6;
+    font-feature-settings: "kern" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
   ::selection {
-    background: hsl(var(--electric) / 0.9);
-    color: hsl(var(--ink-950));
+    background: rgb(var(--sky) / 0.85);
+    color: rgb(var(--on-sky));
   }
 
   :focus-visible {
-    outline: 2px solid hsl(var(--electric));
-    outline-offset: 2px;
+    outline: 2px solid rgb(var(--sky));
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 
-  /* Editorial display headings */
-  .font-display {
-    letter-spacing: -0.03em;
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  img,
+  video {
+    max-width: 100%;
   }
 }
 
 @layer components {
-  /* --- Layout primitives --- */
-  .site-container {
-    @apply mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-12;
+  /* --- Layout --- */
+  .container-x {
+    width: 100%;
+    max-width: calc(var(--container) + var(--gutter) * 2);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
   }
 
-  .section-pad {
-    @apply py-20 md:py-24 lg:py-28;
+  .section-y {
+    padding-block: var(--section-y);
   }
 
-  /* --- Type treatments --- */
-  .eyebrow {
-    @apply font-mono text-[0.6875rem] uppercase tracking-[0.25em] text-paper-faint;
+  /* --- Buttons: one primary per view --- */
+  .btn {
+    @apply inline-flex min-h-[2.75rem] items-center justify-center gap-2 whitespace-nowrap px-5 text-[0.9375rem] font-medium;
+    border-radius: var(--radius-control);
+    transition: background-color 180ms var(--ease-out), color 180ms var(--ease-out),
+      border-color 180ms var(--ease-out), transform 180ms var(--ease-out);
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-sky {
+    @apply btn bg-sky text-on-sky hover:bg-sky-hover;
+  }
+  .btn-line {
+    @apply btn border border-rule bg-transparent text-fg hover:border-rule-strong hover:bg-raised;
+  }
+  .btn-quiet {
+    @apply btn px-0 text-fg underline decoration-rule decoration-1 underline-offset-[6px] hover:decoration-sky;
   }
 
-  .display-hairline {
-    @apply font-display font-medium leading-[0.95] tracking-tight;
-  }
-
-  .text-accent-underline {
-    background-image: linear-gradient(hsl(var(--electric)), hsl(var(--electric)));
-    background-size: 100% 1px;
+  /* --- Text link with a sliding underline --- */
+  .link {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
     background-position: 0 100%;
     background-repeat: no-repeat;
+    transition: background-size 320ms var(--ease-out), color 180ms var(--ease-out);
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-size: 100% 1px;
   }
 
-  /* --- Surfaces --- */
-  .surface-card {
-    @apply rounded-lg border border-ink-700 bg-ink-900;
+  /* --- Frames: every screenshot sits in one of these --- */
+  .frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-frame);
+    background: rgb(var(--raised));
+    box-shadow: var(--frame-shadow);
+    outline: 1px solid rgb(var(--rule));
+    outline-offset: -1px;
+  }
+  .frame-phone {
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+    background: rgb(var(--raised));
+    box-shadow: 0 0 0 5px rgb(var(--bezel)), var(--frame-shadow);
   }
 
-  .surface-card-hover {
-    @apply transition-colors duration-300 hover:border-ink-500;
+  /* --- Legacy helpers still used by the login page --- */
+  .eyebrow {
+    @apply text-sm text-fg-muted;
   }
-
-  .hairline-top {
-    @apply border-t border-ink-700;
+  .display-hairline {
+    @apply font-display font-semibold leading-[0.95] tracking-tight;
   }
-
-  /* --- Buttons --- */
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-paper px-6 py-3 text-sm font-medium text-ink-950 transition-all duration-300 hover:bg-electric hover:text-ink-950;
-  }
-
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink-600 px-6 py-3 text-sm font-medium text-paper transition-all duration-300 hover:border-paper/60 hover:bg-paper/5;
+    @apply btn-line;
   }
-
-  .link-arrow {
-    @apply inline-flex items-center gap-1.5 text-sm font-medium text-paper-dim transition-colors duration-300 hover:text-paper;
+  .btn-primary {
+    @apply btn-sky;
   }
-
-  /* --- Legacy classes (dashboard/auth still reference these) --- */
-  .glass {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
-    backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-  }
-
-  .glass-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-  }
-
-  .gradient-blue-purple {
-    background: linear-gradient(135deg, hsl(var(--gradient-blue-start)) 0%, hsl(var(--gradient-blue-mid)) 50%, hsl(var(--gradient-blue-end)) 100%);
-  }
-
-  .gradient-radial {
-    background: radial-gradient(ellipse at center, hsl(var(--ink-900)) 0%, hsl(var(--ink-950)) 100%);
-  }
-
+  .gradient-radial,
   .gradient-mesh {
-    background: radial-gradient(at 40% 20%, hsl(var(--ink-800) / 0.5) 0px, transparent 50%);
-  }
-
-  .text-gradient-blue,
-  .text-gradient-light-blue,
-  .text-gradient-purple,
-  .text-gradient-accent {
-    background: linear-gradient(135deg, hsl(var(--electric-bright)) 0%, hsl(var(--electric)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .glow-blue,
-  .glow-purple,
-  .glow-accent,
-  .shadow-glow-blue,
-  .shadow-glow-purple {
-    box-shadow: 0 0 24px hsl(var(--electric) / 0.18);
+    background: rgb(var(--well));
   }
 }
 
 @layer utilities {
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.001ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.001ms !important;
-      scroll-behavior: auto !important;
-    }
+  .text-balance {
+    text-wrap: balance;
   }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  .text-pretty {
+    text-wrap: pretty;
   }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
-
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-30px); }
-    to { opacity: 1; transform: translateX(0); }
+  .no-scrollbar {
+    scrollbar-width: none;
   }
-
-  @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(30px); }
-    to { opacity: 1; transform: translateX(0); }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
+}
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+/* The work reel drifts on its own; it stops for hover, focus and reduced motion. */
+.reel img {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-
-  .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
-  .animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
-  .animate-slide-in-left { animation: slideInLeft 0.8s ease-out forwards; }
-  .animate-slide-in-right { animation: slideInRight 0.8s ease-out forwards; }
-  .animate-float { animation: float 6s ease-in-out infinite; }
-
-  .text-balance { text-wrap: balance; }
-  .text-pretty { text-wrap: pretty; }
 }

@@ -3,54 +3,22 @@
 import { ReactNode, useRef } from "react";
 import { gsap, useGSAP, prefersReducedMotion } from "@/lib/animations/gsap";
 
-type RevealProps = {
-  children: ReactNode;
-  className?: string;
-  /** Vertical offset in px the content rises from. */
-  y?: number;
-  /** Delay in seconds once the trigger fires. */
-  delay?: number;
-  /** CSS selector for staggered children; when set, children animate individually. */
-  stagger?: string;
-  /** Seconds between staggered children. */
-  staggerAmount?: number;
-};
-
 /**
- * Scroll-triggered reveal. Content is server-rendered and visible to
- * crawlers; GSAP only hides it client-side immediately before animating.
+ * A quiet scroll reveal, used only on the work. Content is server-rendered and
+ * visible to crawlers; GSAP hides it client-side just before it animates in.
  */
-export function Reveal({
-  children,
-  className,
-  y = 32,
-  delay = 0,
-  stagger,
-  staggerAmount = 0.08,
-}: RevealProps) {
+export function Reveal({ children, className }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       if (prefersReducedMotion() || !ref.current) return;
-
-      const targets = stagger
-        ? ref.current.querySelectorAll(stagger)
-        : [ref.current];
-      if (!targets.length) return;
-
-      gsap.from(targets, {
+      gsap.from(ref.current, {
         autoAlpha: 0,
-        y,
-        duration: 1,
-        delay,
-        ease: "expo.out",
-        stagger: stagger ? staggerAmount : 0,
-        scrollTrigger: {
-          trigger: ref.current,
-          start: "top 85%",
-          once: true,
-        },
+        y: 20,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ref.current, start: "top 88%", once: true },
       });
     },
     { scope: ref }
