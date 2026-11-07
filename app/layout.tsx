@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "@/app/globals.css";
 import { cn } from "@/lib/utils";
@@ -22,13 +22,17 @@ const fontSans = localFont({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  // Next 13.5 takes theme colour and viewport here; move to `export const viewport` after upgrading.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#EEF1F4" },
     { media: "(prefers-color-scheme: dark)", color: "#111217" },
   ],
-  viewport: { width: "device-width", initialScale: 1, viewportFit: "cover" },
+};
+
+export const metadata: Metadata = {
   title: {
     default: site.title,
     template: "%s",

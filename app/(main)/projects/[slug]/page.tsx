@@ -5,14 +5,15 @@ import { getNextProject, getProject, projects } from "@/lib/content/projects";
 import { site, testimonials } from "@/lib/content/site";
 import { DesktopFrame, PhoneFrame } from "@/components/website/work/frames";
 
-type PageProps = { params: { slug: string } };
+type PageProps = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const project = getProject(params.slug);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const project = getProject(slug);
   if (!project) return {};
   const title = `${project.name} case study | Jack Oliver Dev`;
   return {
@@ -40,8 +41,9 @@ function Arrow({ className }: { className?: string }) {
   );
 }
 
-export default function ProjectPage({ params }: PageProps) {
-  const project = getProject(params.slug);
+export default async function ProjectPage({ params }: PageProps) {
+  const { slug } = await params;
+  const project = getProject(slug);
   if (!project) notFound();
 
   const next = getNextProject(project.slug);

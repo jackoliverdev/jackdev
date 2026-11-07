@@ -1,4 +1,4 @@
-import { ImageResponse } from "next/server";
+import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 export const alt = "Jack Oliver Dev: websites, AI and web apps for UK businesses";
