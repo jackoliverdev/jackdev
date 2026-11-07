@@ -4,138 +4,323 @@
 
 /* ==================================================================
    Jack Oliver Dev design system. See docs/DESIGN.md.
-   Change a value here once and both modes and every component follow.
-   Colours are RGB channels so Tailwind can add opacity: bg-sky/20.
+
+   Three layers, so the look is changed in one place:
+   1. Palette scales: five nature colours, 50 to 950 each.
+   2. Roles: what the site uses (--bg, --fg, --brand...), mapped to steps.
+   3. Components read roles only, never a scale step directly.
+
+   To swap palettes, change the class on <html> in app/layout.tsx:
+   "palette-nature" (current) or "palette-v1" (obsidian, ice and sky).
+   Colours are RGB channels so Tailwind can add opacity: bg-brand/20.
    ================================================================== */
 
 @layer base {
   :root {
-    /* --- Brand: the three colours everything is built from --- */
+    /* --- 1. Palette scales (OKLCH-even steps; each base hex is exact) --- */
+    /* olive: base #2F3A2E sits at 800 */
+    --olive-50: 241 250 240;   /* #F1FAF0 */
+    --olive-100: 232 242 231;  /* #E8F2E7 */
+    --olive-200: 220 230 219;  /* #DCE6DB */
+    --olive-300: 198 210 197;  /* #C6D2C5 */
+    --olive-400: 169 181 168;  /* #A9B5A8 */
+    --olive-500: 139 152 138;  /* #8B988A */
+    --olive-600: 110 122 108;  /* #6E7A6C */
+    --olive-700: 83 95 82;  /* #535F52 */
+    --olive-800: 47 58 46;  /* #2F3A2E */
+    --olive-900: 34 42 34;  /* #222A22 */
+    --olive-950: 18 24 18;  /* #121812 */
+    /* sage: base #8E9A86 sits at 500 */
+    --sage-50: 242 250 236;   /* #F2FAEC */
+    --sage-100: 233 242 227;  /* #E9F2E3 */
+    --sage-200: 221 231 215;  /* #DDE7D7 */
+    --sage-300: 199 210 192;  /* #C7D2C0 */
+    --sage-400: 170 181 162;  /* #AAB5A2 */
+    --sage-500: 142 154 134;  /* #8E9A86 */
+    --sage-600: 110 122 102;  /* #6E7A66 */
+    --sage-700: 84 95 76;  /* #545F4C */
+    --sage-800: 59 69 53;  /* #3B4535 */
+    --sage-900: 35 42 30;  /* #232A1E */
+    --sage-950: 19 24 15;  /* #13180F */
+    /* bone: base #ECE7DC sits at 200 */
+    --bone-50: 250 246 240;   /* #FAF6F0 */
+    --bone-100: 241 238 231;  /* #F1EEE7 */
+    --bone-200: 236 231 220;  /* #ECE7DC */
+    --bone-300: 210 205 196;  /* #D2CDC4 */
+    --bone-400: 181 177 166;  /* #B5B1A6 */
+    --bone-500: 152 147 137;  /* #989389 */
+    --bone-600: 122 117 107;  /* #7A756B */
+    --bone-700: 95 90 81;  /* #5F5A51 */
+    --bone-800: 68 65 57;  /* #444139 */
+    --bone-900: 42 39 33;  /* #2A2721 */
+    --bone-950: 24 22 17;  /* #181611 */
+    /* moss: base #BBC7A4 sits at 300 */
+    --moss-50: 243 251 228;   /* #F3FBE4 */
+    --moss-100: 234 243 218;  /* #EAF3DA */
+    --moss-200: 222 231 205;  /* #DEE7CD */
+    --moss-300: 187 199 164;  /* #BBC7A4 */
+    --moss-400: 171 183 149;  /* #ABB795 */
+    --moss-500: 142 153 118;  /* #8E9976 */
+    --moss-600: 112 123 89;  /* #707B59 */
+    --moss-700: 85 96 64;  /* #556040 */
+    --moss-800: 60 69 42;  /* #3C452A */
+    --moss-900: 36 43 22;  /* #242B16 */
+    --moss-950: 19 24 9;  /* #131809 */
+    /* cocoa: base #5D4538 sits at 800 */
+    --cocoa-50: 255 244 239;   /* #FFF4EF */
+    --cocoa-100: 254 234 223;  /* #FEEADF */
+    --cocoa-200: 244 222 210;  /* #F4DED2 */
+    --cocoa-300: 224 200 187;  /* #E0C8BB */
+    --cocoa-400: 197 171 157;  /* #C5AB9D */
+    --cocoa-500: 168 141 127;  /* #A88D7F */
+    --cocoa-600: 138 112 98;  /* #8A7062 */
+    --cocoa-700: 109 85 72;  /* #6D5548 */
+    --cocoa-800: 93 69 56;  /* #5D4538 */
+    --cocoa-900: 52 35 27;  /* #34231B */
+    --cocoa-950: 31 19 12;  /* #1F130C */
+
+    /* v1 brand colours, kept for palette-v1 */
     --obsidian: 17 18 23;      /* #111217 */
     --ice: 223 229 235;        /* #DFE5EB */
     --sky-500: 5 147 198;      /* #0593C6 */
 
-    /* --- Light mode: ice ground, obsidian ink --- */
-    --bg: 238 241 244;         /* #EEF1F4 page */
-    --raised: 247 248 250;     /* #F7F8FA panels, frames, form */
-    --well: 223 229 235;       /* #DFE5EB ice bands and image mats */
-    --rule: 205 212 220;       /* #CDD4DC hairlines */
-    --rule-strong: 168 178 189;/* #A8B2BD hover borders */
-    --fg: 17 18 23;            /* #111217 text */
-    --fg-muted: 79 88 100;     /* #4F5864 subtext, 6.4:1 */
-    --fg-faint: 107 116 128;   /* #6B7480 captions only */
-    --sky: var(--sky-500);     /* fills: buttons, dot, focus */
-    --sky-hover: 4 124 168;    /* #047CA8 */
-    --sky-ink: 3 110 148;      /* #036E94 sky as text, AA on bg */
-    --on-sky: 17 18 23;        /* text on a sky fill, 5.3:1 */
-    --bezel: 17 18 23;         /* phone frame edge */
-    --frame-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 24px 48px -28px rgb(17 18 23 / 0.28);
-
-    /* --- Shape, rhythm, motion --- */
-    --radius-frame: 14px;
-    --radius-control: 10px;
-    --container: 1320px;
+    /* --- Shape, rhythm, motion, type --- */
+    --radius-frame: 8px;       /* mats, panels, cards */
+    --radius-shot: 3px;        /* desktop screenshots: barely rounded */
+    --radius-phone: 9px;       /* phone screenshots */
+    --radius-control: 6px;
+    --container: 1280px;
     --gutter: clamp(1rem, 4vw, 2.5rem);
-    --section-y: clamp(5rem, 11vw, 9rem);
-    --nav-h: 4.25rem;
+    --section-y: clamp(4rem, 8vw, 6.5rem);
+    --nav-h: 4rem;
+    --display-stretch: 118%;   /* Archivo width for headlines: 100% normal, 125% widest */
     --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
     --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --radius: 0.5rem;
+    --radius-xl: 0.75rem;
+  }
 
-    /* --- shadcn semantic tokens (HSL) for the dashboard and ui/ kit --- */
-    --background: 210 22% 95%;
-    --foreground: 230 15% 8%;
-    --card: 220 20% 97%;
-    --card-foreground: 230 15% 8%;
-    --card-border: 212 17% 83%;
-    --popover: 220 20% 97%;
-    --popover-foreground: 230 15% 8%;
-    --primary: 196 95% 40%;
-    --primary-foreground: 230 15% 8%;
-    --primary-hover: 196 95% 35%;
-    --secondary: 210 23% 90%;
-    --secondary-foreground: 230 15% 8%;
-    --secondary-hover: 212 17% 83%;
-    --muted: 210 23% 90%;
-    --muted-foreground: 214 12% 35%;
-    --accent: 196 95% 40%;
-    --accent-foreground: 230 15% 8%;
-    --accent-secondary: 196 95% 35%;
-    --destructive: 0 72% 50%;
+  /* --- 2. Roles: Nature, light. Bone ground, olive ink, moss signal. --- */
+  :root,
+  .palette-nature {
+    --bg: var(--sage-100);             /* pale field green */
+    --raised: var(--sage-50);
+    --well: var(--sage-200);
+    --rule: var(--sage-300);
+    --rule-strong: var(--sage-400);
+    --fg: var(--olive-900);
+    --fg-muted: var(--olive-700);
+    --fg-faint: var(--sage-700);
+    --brand: var(--olive-800);         /* main button fill */
+    --brand-hover: var(--olive-700);
+    --on-brand: var(--bone-50);
+    --brand-ink: var(--moss-700);      /* links and highlighted text */
+    --signal: var(--moss-600);         /* the logo dot, bullets, focus */
+    --earth: var(--cocoa-800);         /* the palette brown #5D4538: underlines, quote marks, dots, bullets */
+    --earth-ink: var(--cocoa-800);     /* brown for small text: links, step numbers */
+    --bezel: var(--olive-900);
+    --frame-shadow: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 18px 40px -26px rgb(var(--olive-950) / 0.35);
+
+    /* shadcn tokens (HSL) used by the dashboard and components/ui */
+    --background: 96 33% 92%;
+    --foreground: 120 11% 15%;
+    --card: 94 56% 95%;
+    --card-foreground: 120 11% 15%;
+    --card-border: 39 13% 80%;
+    --popover: 36 56% 96%;
+    --popover-foreground: 120 11% 15%;
+    --primary: 115 12% 20%;
+    --primary-foreground: 36 56% 96%;
+    --primary-hover: 115 7% 35%;
+    --secondary: 41 30% 89%;
+    --secondary-foreground: 120 11% 15%;
+    --secondary-hover: 39 13% 80%;
+    --muted: 41 30% 89%;
+    --muted-foreground: 115 7% 35%;
+    --accent: 81 23% 71%;
+    --accent-foreground: 120 11% 15%;
+    --accent-secondary: 81 30% 60%;
+    --destructive: 4 62% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 212 17% 83%;
-    --input: 212 17% 83%;
-    --ring: 196 95% 40%;
-    --radius: 0.625rem;
-    --radius-xl: 0.875rem;
-
-    /* Older names still used by the dashboard, mapped onto the new palette */
-    --ink-950: 210 22% 95%;
-    --ink-900: 220 20% 97%;
-    --ink-800: 210 23% 90%;
-    --ink-700: 212 17% 83%;
-    --ink-600: 211 13% 70%;
-    --ink-500: 214 9% 46%;
-    --paper: 230 15% 8%;
-    --paper-dim: 214 12% 35%;
-    --paper-faint: 214 9% 46%;
-    --electric: 196 95% 40%;
-    --electric-bright: 196 80% 52%;
-    --electric-deep: 196 96% 30%;
-    --navy-900: 230 15% 8%;
-    --navy-800: 227 16% 11%;
-    --navy-700: 225 14% 17%;
-    --navy-600: 222 12% 24%;
-    --grey-50: 220 20% 97%;
-    --grey-100: 210 22% 95%;
-    --grey-200: 210 23% 90%;
-    --grey-300: 212 17% 83%;
-    --grey-400: 213 11% 64%;
-    --grey-500: 214 12% 35%;
-
+    --border: 39 13% 80%;
+    --input: 39 13% 80%;
+    --ring: 81 15% 42%;
+    /* older dashboard names */
+    --ink-950: 41 26% 93%;
+    --ink-900: 36 56% 96%;
+    --ink-800: 41 30% 89%;
+    --ink-700: 39 13% 80%;
+    --ink-600: 42 7% 68%;
+    --ink-500: 95 9% 45%;
+    --paper: 120 11% 15%;
+    --paper-dim: 115 7% 35%;
+    --paper-faint: 95 11% 34%;
+    --electric: 81 15% 42%;
+    --electric-bright: 81 23% 60%;
+    --electric-deep: 115 12% 20%;
+    --navy-900: 120 14% 8%;
+    --navy-800: 120 11% 15%;
+    --navy-700: 115 12% 20%;
+    --navy-600: 115 7% 35%;
+    --grey-50: 36 56% 96%;
+    --grey-100: 41 26% 93%;
+    --grey-200: 41 30% 89%;
+    --grey-300: 39 13% 80%;
+    --grey-400: 95 11% 67%;
+    --grey-500: 115 7% 35%;
     color-scheme: light;
   }
 
-  /* --- Dark mode: obsidian ground, ice ink. Tuned, not inverted. --- */
-  .dark {
-    --bg: 17 18 23;            /* #111217 */
-    --raised: 24 26 33;        /* #181A21 */
-    --well: 12 13 17;          /* #0C0D11 */
-    --rule: 38 41 50;          /* #262932 */
-    --rule-strong: 62 67 80;   /* #3E4350 */
-    --fg: 223 229 235;         /* #DFE5EB */
-    --fg-muted: 152 162 174;   /* #98A2AE, 6.4:1 */
-    --fg-faint: 120 129 141;   /* #78818D */
-    --sky-hover: 30 166 214;   /* #1EA6D6 */
-    --sky-ink: 56 182 232;     /* #38B6E8 */
-    --bezel: 52 56 66;         /* #343842 */
-    --frame-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 28px 60px -30px rgb(0 0 0 / 0.85);
+  /* --- Nature, dark. Olive-black ground, bone ink, moss for the pop. --- */
+  .dark,
+  .palette-nature.dark {
+    --bg: var(--olive-950);
+    --raised: var(--olive-900);
+    --well: 12 16 12;                  /* #0C100C below olive-950 */
+    --rule: 44 53 43;                  /* #2C352B */
+    --rule-strong: var(--olive-700);
+    --fg: var(--bone-200);
+    --fg-muted: var(--sage-400);
+    --fg-faint: var(--sage-500);
+    --brand: var(--moss-300);
+    --brand-hover: var(--moss-200);
+    --on-brand: var(--olive-900);
+    --brand-ink: var(--moss-300);
+    --signal: var(--moss-300);
+    --earth: var(--cocoa-800);         /* the same palette brown in dark mode */
+    --earth-ink: var(--cocoa-500);     /* lighter step of the same brown so small text stays readable (5.8:1) */
+    --bezel: 52 62 51;
+    --frame-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 24px 50px -28px rgb(0 0 0 / 0.8);
 
-    --background: 230 15% 8%;
-    --foreground: 210 23% 90%;
-    --card: 227 16% 11%;
-    --card-foreground: 210 23% 90%;
-    --card-border: 225 14% 17%;
-    --popover: 227 16% 11%;
-    --popover-foreground: 210 23% 90%;
-    --secondary: 225 14% 17%;
-    --secondary-foreground: 210 23% 90%;
-    --secondary-hover: 222 12% 24%;
-    --muted: 225 14% 17%;
-    --muted-foreground: 213 11% 64%;
-    --border: 225 14% 17%;
-    --input: 225 14% 17%;
-
-    --ink-950: 230 15% 8%;
-    --ink-900: 227 16% 11%;
-    --ink-800: 225 14% 14%;
-    --ink-700: 225 14% 17%;
-    --ink-600: 224 13% 28%;
-    --ink-500: 213 9% 50%;
-    --paper: 210 23% 90%;
-    --paper-dim: 213 11% 64%;
-    --paper-faint: 213 9% 50%;
-
+    --background: 120 14% 8%;
+    --foreground: 41 30% 89%;
+    --card: 120 11% 15%;
+    --card-foreground: 41 30% 89%;
+    --card-border: 114 10% 19%;
+    --popover: 120 11% 15%;
+    --popover-foreground: 41 30% 89%;
+    --primary: 81 23% 71%;
+    --primary-foreground: 120 11% 15%;
+    --primary-hover: 81 30% 85%;
+    --secondary: 114 10% 19%;
+    --secondary-foreground: 41 30% 89%;
+    --secondary-hover: 115 7% 35%;
+    --muted: 114 10% 19%;
+    --muted-foreground: 95 11% 67%;
+    --border: 114 10% 19%;
+    --input: 114 10% 19%;
+    --ring: 81 23% 71%;
+    --ink-950: 120 14% 8%;
+    --ink-900: 120 11% 15%;
+    --ink-800: 114 10% 17%;
+    --ink-700: 114 10% 19%;
+    --ink-600: 115 7% 35%;
+    --ink-500: 95 9% 50%;
+    --paper: 41 30% 89%;
+    --paper-dim: 95 11% 67%;
+    --paper-faint: 95 9% 56%;
+    --electric: 81 23% 71%;
     color-scheme: dark;
+  }
+
+
+  /* --- Forest bands: deep green sections in light mode, a lifted olive in dark.
+     Add class="forest" to any section; everything inside reads the dark roles. --- */
+  .forest {
+    --bg: var(--olive-800);
+    --raised: 58 70 56;
+    --well: 38 47 37;
+    --rule: 72 85 70;
+    --rule-strong: var(--olive-600);
+    --fg: var(--bone-100);
+    --fg-muted: var(--sage-300);
+    --fg-faint: var(--sage-400);
+    --brand: var(--moss-300);
+    --brand-hover: var(--moss-200);
+    --on-brand: var(--olive-900);
+    --brand-ink: var(--moss-300);
+    --signal: var(--moss-300);
+    --earth: var(--cocoa-800);         /* the same palette brown in dark mode */
+    --bezel: 24 30 24;
+    color-scheme: dark;
+    background-color: rgb(var(--bg));
+    color: rgb(var(--fg));
+  }
+  .dark .forest {
+    --bg: var(--olive-900);
+    --raised: 44 54 43;
+    --well: 26 33 26;
+    --rule: 56 67 54;
+  }
+
+  /* --- Palette bands: swatch-coloured panels. Same fills in both modes, like the palette itself. --- */
+  .band-sage,
+  .band-moss,
+  .band-cocoa,
+  .band-olive {
+    background-color: rgb(var(--band-bg));
+    color: rgb(var(--fg));
+  }
+  .band-sage {
+    --band-bg: var(--sage-500);
+    --fg: var(--olive-950);
+    --fg-muted: 34 44 32;
+    --rule: 118 130 110;       /* #76826E */
+  }
+  .band-moss {
+    --band-bg: var(--moss-300);
+    --fg: var(--olive-950);
+    --fg-muted: var(--olive-800);
+    --rule: 157 169 133;       /* #9DA985 */
+  }
+  .band-cocoa {
+    --band-bg: var(--cocoa-800);
+    --fg: var(--bone-100);
+    --fg-muted: var(--cocoa-200);
+    --rule: 122 97 83;         /* #7A6153 */
+    --signal: var(--cocoa-400);
+    --bezel: 40 27 20;
+  }
+  .band-olive {
+    --band-bg: var(--olive-800);
+    --fg: var(--bone-100);
+    --fg-muted: var(--sage-300);
+    --rule: var(--olive-700);
+  }
+
+  /* --- v1: obsidian, ice and sky. Add class="palette-v1" on <html> to bring it back. --- */
+  .palette-v1 {
+    --bg: 238 241 244;
+    --raised: 247 248 250;
+    --well: 223 229 235;
+    --rule: 205 212 220;
+    --rule-strong: 168 178 189;
+    --fg: 17 18 23;
+    --fg-muted: 79 88 100;
+    --fg-faint: 107 116 128;
+    --brand: var(--sky-500);
+    --brand-hover: 4 124 168;
+    --on-brand: 17 18 23;
+    --brand-ink: 3 110 148;
+    --signal: var(--sky-500);
+    --earth: 3 110 148;
+    --bezel: 17 18 23;
+  }
+  .palette-v1.dark {
+    --bg: 17 18 23;
+    --raised: 24 26 33;
+    --well: 12 13 17;
+    --rule: 38 41 50;
+    --rule-strong: 62 67 80;
+    --fg: 223 229 235;
+    --fg-muted: 152 162 174;
+    --fg-faint: 120 129 141;
+    --brand-hover: 30 166 214;
+    --on-brand: 17 18 23;
+    --brand-ink: 56 182 232;
+    --signal: var(--sky-500);
+    --earth: 56 182 232;
+    --bezel: 52 56 66;
   }
 }
 
@@ -147,26 +332,16 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    scroll-padding-top: calc(var(--nav-h) + 1rem);
+    /* Anchor jumps land exactly below the fixed nav (and the iPhone notch area). */
+    scroll-padding-top: calc(var(--nav-h) + 1px + env(safe-area-inset-top));
     background: rgb(var(--bg));
   }
 
-  /* Lenis handles smoothing; native smooth only when Lenis is off. */
-  html:not(.lenis) {
-    scroll-behavior: smooth;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html:not(.lenis) {
-      scroll-behavior: auto;
+  /* In-page links glide; instant for reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
     }
-  }
-
-  html.lenis,
-  html.lenis body {
-    height: auto;
-  }
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
   }
 
   body {
@@ -183,8 +358,9 @@
   h3,
   h4 {
     @apply font-display;
-    font-weight: 600;
-    letter-spacing: -0.035em;
+    font-weight: 650;
+    font-stretch: var(--display-stretch);
+    letter-spacing: -0.03em;
     text-wrap: balance;
   }
 
@@ -193,12 +369,12 @@
   }
 
   ::selection {
-    background: rgb(var(--sky) / 0.85);
-    color: rgb(var(--on-sky));
+    background: rgb(var(--signal) / 0.45);
+    color: rgb(var(--fg));
   }
 
   :focus-visible {
-    outline: 2px solid rgb(var(--sky));
+    outline: 2px solid rgb(var(--signal));
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -239,14 +415,22 @@
   .btn:active {
     transform: translateY(1px);
   }
-  .btn-sky {
-    @apply btn bg-sky text-on-sky hover:bg-sky-hover;
+  .btn-brand {
+    @apply btn bg-brand text-on-brand hover:bg-brand-hover;
   }
   .btn-line {
     @apply btn border border-rule bg-transparent text-fg hover:border-rule-strong hover:bg-raised;
   }
   .btn-quiet {
-    @apply btn px-0 text-fg underline decoration-rule decoration-1 underline-offset-[6px] hover:decoration-sky;
+    @apply btn px-0 text-fg underline decoration-rule decoration-1 underline-offset-[6px] hover:decoration-signal;
+  }
+
+  /* --- Native select with a drawn chevron, so it matches the inputs --- */
+  .select-chevron {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' fill='none' stroke='%23889480' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-position: right 0.9rem center;
+    background-size: 12px;
+    background-repeat: no-repeat;
   }
 
   /* --- Text link with a sliding underline --- */
@@ -266,7 +450,7 @@
   .frame {
     position: relative;
     overflow: hidden;
-    border-radius: var(--radius-frame);
+    border-radius: var(--radius-shot);
     background: rgb(var(--raised));
     box-shadow: var(--frame-shadow);
     outline: 1px solid rgb(var(--rule));
@@ -275,9 +459,9 @@
   .frame-phone {
     position: relative;
     overflow: hidden;
-    border-radius: 22px;
+    border-radius: var(--radius-phone);
     background: rgb(var(--raised));
-    box-shadow: 0 0 0 5px rgb(var(--bezel)), var(--frame-shadow);
+    box-shadow: 0 0 0 1.5px rgb(var(--bezel)), var(--frame-shadow);
   }
 
   /* --- Legacy helpers still used by the login page --- */
@@ -285,13 +469,13 @@
     @apply text-sm text-fg-muted;
   }
   .display-hairline {
-    @apply font-display font-semibold leading-[0.95] tracking-tight;
+    @apply font-display font-semibold leading-[1] tracking-tight;
   }
   .btn-ghost {
     @apply btn-line;
   }
   .btn-primary {
-    @apply btn-sky;
+    @apply btn-brand;
   }
   .gradient-radial,
   .gradient-mesh {
@@ -317,11 +501,85 @@
   }
 }
 
-/* The work reel drifts on its own; it stops for hover, focus and reduced motion. */
-.reel img {
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-drag: none;
+/* Logo strip: two identical groups, each carrying its own trailing gap, slid by
+   exactly half the track. That makes the loop seamless at any size or gap. */
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee-track {
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+  will-change: transform;
+}
+.marquee-reverse {
+  animation-direction: reverse;
+}
+
+/* The contour map sways very slowly. Transform-only on one image layer, so it is
+   composited on the GPU and never repaints. */
+@keyframes topo-drift {
+  from {
+    transform: translate3d(-1.5%, -1%, 0) rotate(-3deg) scale(1);
+  }
+  to {
+    transform: translate3d(1.5%, 1%, 0) rotate(3deg) scale(1.04);
+  }
+}
+.topo-drift {
+  animation: topo-drift 38s var(--ease-in-out) infinite alternate;
+  will-change: transform;
+}
+
+/* Hero entrance in pure CSS: it starts on first paint, before any JavaScript
+   loads, so phones never see the content jump while the page hydrates. */
+@keyframes hero-rise {
+  from {
+    transform: translate3d(0, 105%, 0);
+  }
+}
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+}
+@keyframes hero-map {
+  from {
+    opacity: 0;
+  }
+}
+.hero-line {
+  animation: hero-rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(80ms + var(--i, 0) * 80ms);
+}
+.hero-fade {
+  animation: hero-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(450ms + var(--i, 0) * 60ms);
+}
+.hero-map {
+  animation: hero-map 1.6s ease-out both;
+}
+
+/* Scroll reveals (see components/website/motion/reveal-observer.tsx).
+   Hidden only once JavaScript has marked what is already on screen, so nothing flashes.
+   data-reveal="" rises and fades; "fade" only fades; "zoom" settles from 97% scale.
+   --i staggers siblings by 70ms. */
+html.reveal-ready [data-reveal]:not(.is-in) {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+html.reveal-ready [data-reveal="fade"]:not(.is-in) {
+  transform: none;
+}
+html.reveal-ready [data-reveal="zoom"]:not(.is-in) {
+  transform: translate3d(0, 18px, 0) scale(0.97);
+}
+html.reveal-ready [data-reveal] {
+  transition:
+    opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--i, 0) * 70ms);
 }
 
 @media (prefers-reduced-motion: reduce) {

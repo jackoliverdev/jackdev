@@ -2,6 +2,9 @@ import type { Config } from "tailwindcss";
 
 // Every colour points at a CSS variable in app/globals.css. Change it there.
 const rgb = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;
+const steps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+const scales = (names: string[]) =>
+  Object.fromEntries(names.map((n) => [n, Object.fromEntries(steps.map((s) => [s, rgb(`${n}-${s}`)]))]));
 
 const config = {
   darkMode: ["class"],
@@ -26,14 +29,13 @@ const config = {
         well: rgb("well"),
         rule: { DEFAULT: rgb("rule"), strong: rgb("rule-strong") },
         fg: { DEFAULT: rgb("fg"), muted: rgb("fg-muted"), faint: rgb("fg-faint") },
-        sky: {
-          DEFAULT: rgb("sky"),
-          hover: rgb("sky-hover"),
-          ink: rgb("sky-ink"),
-        },
-        "on-sky": rgb("on-sky"),
-        obsidian: rgb("obsidian"),
-        ice: rgb("ice"),
+        brand: { DEFAULT: rgb("brand"), hover: rgb("brand-hover"), ink: rgb("brand-ink") },
+        "on-brand": rgb("on-brand"),
+        signal: rgb("signal"),
+        earth: { DEFAULT: rgb("earth"), ink: rgb("earth-ink") },
+
+        // --- The five nature scales, 50 to 950, for anything the roles don't cover ---
+        ...scales(["olive", "sage", "bone", "moss", "cocoa"]),
 
         // --- shadcn semantic tokens (dashboard and components/ui) ---
         border: "hsl(var(--border))",
@@ -118,16 +120,16 @@ const config = {
         control: "var(--radius-control)",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
-        display: ["var(--font-display)", "var(--font-sans)", "ui-sans-serif", "sans-serif"],
+        sans: ["var(--font-archivo)", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        display: ["var(--font-archivo)", "ui-sans-serif", "sans-serif"],
       },
       fontSize: {
         // Fluid type scale. Headings get their tracking from globals.css.
-        display: ["clamp(2.875rem, 7.4vw, 6.75rem)", { lineHeight: "0.94", letterSpacing: "-0.045em" }],
-        h1: ["clamp(2.5rem, 5.6vw, 4.75rem)", { lineHeight: "0.98", letterSpacing: "-0.04em" }],
-        h2: ["clamp(2rem, 4vw, 3.375rem)", { lineHeight: "1.02", letterSpacing: "-0.035em" }],
-        h3: ["clamp(1.375rem, 2vw, 1.75rem)", { lineHeight: "1.15", letterSpacing: "-0.025em" }],
-        lead: ["clamp(1.125rem, 1.5vw, 1.3125rem)", { lineHeight: "1.5", letterSpacing: "-0.01em" }],
+        display: ["clamp(2.25rem, 5vw, 4.25rem)", { lineHeight: "1.02", letterSpacing: "-0.035em" }],
+        h1: ["clamp(2rem, 4vw, 3.5rem)", { lineHeight: "1.04", letterSpacing: "-0.03em" }],
+        h2: ["clamp(1.625rem, 2.8vw, 2.5rem)", { lineHeight: "1.08", letterSpacing: "-0.025em" }],
+        h3: ["clamp(1.1875rem, 1.5vw, 1.375rem)", { lineHeight: "1.2", letterSpacing: "-0.015em" }],
+        lead: ["clamp(1.0625rem, 1.3vw, 1.1875rem)", { lineHeight: "1.55", letterSpacing: "-0.005em" }],
         body: ["1rem", { lineHeight: "1.6" }],
         small: ["0.875rem", { lineHeight: "1.5" }],
         caption: ["0.8125rem", { lineHeight: "1.45" }],

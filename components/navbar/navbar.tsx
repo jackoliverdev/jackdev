@@ -54,7 +54,7 @@ export const NavBar = () => {
     <>
       <a
         href="#main"
-        className="btn-sky fixed left-4 top-3 z-[60] -translate-y-20 focus-visible:translate-y-0"
+        className="btn-brand fixed left-4 top-3 z-[60] -translate-y-20 focus-visible:translate-y-0"
       >
         Skip to content
       </a>
@@ -63,12 +63,12 @@ export const NavBar = () => {
           "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-300 ease-out",
           "pt-[env(safe-area-inset-top)]",
           scrolled || open
-            ? "border-b border-rule bg-canvas/85 backdrop-blur-md supports-[backdrop-filter]:bg-canvas/70"
+            ? "border-b border-rule bg-canvas/[0.97]"
             : "border-b border-transparent"
         )}
       >
         <nav className="container-x flex h-[var(--nav-h)] items-center justify-between gap-6" aria-label="Main">
-          <Link href="/" className="-ml-1 rounded-md p-1 text-[1.0625rem]" onClick={() => setOpen(false)}>
+          <Link href="/" className="-ml-1 flex items-center rounded-md p-1 text-[1.0625rem] leading-none" onClick={() => setOpen(false)}>
             <Logo />
           </Link>
 
@@ -84,7 +84,7 @@ export const NavBar = () => {
             ))}
             <span className="mx-2 h-5 w-px bg-rule" aria-hidden />
             <ThemeToggle />
-            <Link href="/#contact" className="btn-sky ml-2 min-h-[2.5rem] px-4 text-small">
+            <Link href="/#contact" className="btn-brand ml-2 min-h-[2.5rem] px-4 text-small">
               Book a call
             </Link>
           </div>
@@ -125,7 +125,6 @@ export const NavBar = () => {
           open ? "opacity-100" : "pointer-events-none opacity-0"
         )}
         aria-hidden={!open}
-        data-lenis-prevent
       >
         <nav
           className="container-x flex h-full flex-col pb-[max(2rem,env(safe-area-inset-bottom))] pt-[calc(var(--nav-h)+env(safe-area-inset-top)+1.5rem)]"
@@ -153,7 +152,7 @@ export const NavBar = () => {
             ))}
           </ul>
           <div className="mt-auto">
-            <Link href="/#contact" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)} className="btn-sky w-full">
+            <Link href="/#contact" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)} className="btn-brand w-full">
               Book a call
             </Link>
           </div>

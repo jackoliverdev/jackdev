@@ -2,33 +2,30 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "@/app/globals.css";
 import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ReactNode } from "react";
 import { site } from "@/lib/content/site";
 
-// Funnel Display and Funnel Sans by NORD ID and Kristian Möller (SIL OFL), self-hosted.
-const fontDisplay = localFont({
-  src: "./fonts/FunnelDisplay.woff2",
-  variable: "--font-display",
-  weight: "300 800",
+// Archivo (Omnibus-Type, SIL OFL), self-hosted. One variable file with weight and
+// width axes: headlines run wide (--display-stretch in globals.css), body runs normal.
+const archivo = localFont({
+  src: "./fonts/Archivo.woff2",
+  variable: "--font-archivo",
+  weight: "100 900",
   display: "swap",
+  declarations: [{ prop: "font-stretch", value: "62% 125%" }],
 });
 
-const fontSans = localFont({
-  src: "./fonts/FunnelSans.woff2",
-  variable: "--font-sans",
-  weight: "300 800",
-  display: "swap",
-});
+// The colour palette for the whole site: "palette-nature" or "palette-v1".
+const PALETTE = "palette-nature";
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#EEF1F4" },
-    { media: "(prefers-color-scheme: dark)", color: "#111217" },
+    { media: "(prefers-color-scheme: light)", color: "#F1EEE7" },
+    { media: "(prefers-color-scheme: dark)", color: "#121812" },
   ],
 };
 
@@ -81,11 +78,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en-GB" suppressHydrationWarning>
-      <body className={cn(fontSans.variable, fontDisplay.variable, "font-sans")}>
+    <html lang="en-GB" className={PALETTE} suppressHydrationWarning>
+      <body className={cn(archivo.variable, "font-sans")}>
         <ThemeProvider>
           {children}
-          <Toaster />
         </ThemeProvider>
       </body>
     </html>

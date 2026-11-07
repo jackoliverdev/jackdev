@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
 import { nav, site } from "@/lib/content/site";
-import { projects } from "@/lib/content/projects";
 
 export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
     <footer className="border-t border-rule">
-      <div className="container-x grid gap-12 py-16 md:grid-cols-12 md:py-20">
+      <div className="container-x grid grid-cols-1 gap-12 py-16 md:grid-cols-12 md:py-20">
         <div className="md:col-span-5">
           <Link href="/" className="inline-block rounded-md text-[1.25rem]" aria-label="Jack Oliver Dev, home">
             <Logo />
@@ -21,7 +20,7 @@ export const Footer = () => {
           </a>
         </div>
 
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-7 md:justify-items-end">
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-8 md:col-span-7 md:justify-items-end">
           <div>
             <h2 className="text-small font-medium tracking-normal text-fg-muted">Site</h2>
             <ul className="mt-4 space-y-2.5">
@@ -29,18 +28,6 @@ export const Footer = () => {
                 <li key={item.href}>
                   <Link href={item.href} className="link text-fg">
                     {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h2 className="text-small font-medium tracking-normal text-fg-muted">Work</h2>
-            <ul className="mt-4 space-y-2.5">
-              {projects.map((project) => (
-                <li key={project.slug}>
-                  <Link href={`/projects/${project.slug}`} className="link text-fg">
-                    {project.name}
                   </Link>
                 </li>
               ))}

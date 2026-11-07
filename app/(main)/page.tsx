@@ -52,9 +52,9 @@ export default function HomePage() {
     <main id="main">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <HeroSection />
-      <SelectedWork />
       <ServicesSection />
       <ProcessSection />
+      <SelectedWork />
       <TestimonialsSection />
       <AboutSection />
       <ContactSection />

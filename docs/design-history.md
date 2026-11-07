@@ -16,4 +16,4 @@ Files that carried the v1 look: `app/globals.css`, `tailwind.config.ts`, `app/la
 
 ## v2: Nature (07/11/2026)
 
-The current look. See `docs/DESIGN.md`.
+The current look: Soft Moss, Deep Olive, Sage Gray, Bone White and Cocoa Brown, each as a 50 to 950 scale; Archivo with wide headlines; a compact, reordered homepage. See `docs/DESIGN.md`. To switch back to v1 colours only, set `PALETTE = "palette-v1"` in `app/layout.tsx`. To get the whole v1 site back, check out the `design-v1` tag.

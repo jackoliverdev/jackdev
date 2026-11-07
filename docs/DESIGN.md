@@ -1,68 +1,105 @@
 # Jack Oliver Dev design system
 
-The single source of truth for how jackodev.co.uk looks and moves. Written 07/11/2026 for the redesign on `feat/redesign-2026`. If this file and the code disagree, the code wins: fix this file in the same change.
+The single source of truth for how jackodev.co.uk looks and moves. v2 "Nature", 07/11/2026. Earlier looks are recorded in `docs/design-history.md`. If this file and the code disagree, the code wins: fix this file in the same change.
 
 ## Where to change things
 
 | What | File |
 | --- | --- |
-| Every colour, radius, shadow, easing and spacing token | `app/globals.css` (`:root` and `.dark`) |
-| Tailwind names for those tokens | `tailwind.config.ts` |
-| Fonts | `app/layout.tsx` (self-hosted from `@fontsource-variable`) |
-| All copy | `lib/content/site.ts` and `lib/content/projects.ts` |
-| Logos | `public/brand/` (icon, horizontal, vertical; light and dark) |
-| Project imagery | `public/work/<slug>/` |
+| Palette scales, colour roles, spacing, radius, motion | `app/globals.css` |
+| Which palette the site uses | `PALETTE` in `app/layout.tsx` (`"palette-nature"` or `"palette-v1"`) |
+| Tailwind names for every token and scale | `tailwind.config.ts` |
+| Font | `app/layout.tsx` (Archivo, self-hosted from `app/fonts/Archivo.woff2`) |
+| Headline width | `--display-stretch` in `app/globals.css` (100% normal, 125% widest) |
+| All copy | `lib/content/site.ts`, `lib/content/projects.ts` |
+| Logos | `public/brand/` (icon, horizontal, vertical; light and dark), paths in `lib/brand/logo-paths.ts` |
+| Project images and blur previews | `public/work/<slug>/`, `lib/content/image-blur.ts` |
 
-Change a colour once in `globals.css` and both modes and every component follow.
+## How colour works
 
-## The idea
+Three layers, so a change happens in one place:
 
-A developer's portfolio should be judged on the work, so the work is the hero. The page opens with one sentence and then puts real client sites on screen straight away, in identical frames, so seven very different businesses read as one body of work. Everything else stays quiet.
+1. **Scales.** Five nature colours, each a 50 to 950 scale generated in OKLCH so the steps look even. Each original hex sits exactly on one step. Use them in Tailwind as `bg-olive-800`, `text-moss-600`, `border-bone-300` and so on.
+2. **Roles.** What components actually use: `--bg`, `--raised`, `--well`, `--rule`, `--fg`, `--fg-muted`, `--fg-faint`, `--brand`, `--on-brand`, `--brand-ink`, `--signal`, `--earth`. Each role points at a scale step, separately for light and dark.
+3. **Components** read roles only (`bg-canvas`, `text-fg`, `btn-brand`, `bg-signal`), never a scale step. Swap the role mapping and the whole site follows.
 
-## Colour
+### The scales
 
-| Token | Light | Dark | Use |
+| Scale | Base | Sits at | Feel |
 | --- | --- | --- | --- |
-| `--bg` | `#EEF1F4` ice, lifted | `#111217` obsidian | Page ground |
-| `--surface` | `#F7F8FA` | `#181A21` | Raised panels, form, frames |
-| `--sunken` | `#DFE5EB` ice | `#0C0D11` | Bands, wells, image mats |
-| `--line` | `#CDD4DC` | `#262932` | Hairlines and borders |
-| `--fg` | `#111217` | `#DFE5EB` | Text |
-| `--fg-muted` | `#4F5864` | `#98A2AE` | Subtext only |
-| `--sky` | `#0593C6` | `#0593C6` | Brand fill: buttons, the logo dot, focus |
-| `--sky-ink` | `#036E94` | `#38B6E8` | Sky as text, so it passes AA |
-| `--on-sky` | `#111217` | `#111217` | Text on a sky fill (5.3:1) |
+| `olive` | `#2F3A2E` Deep Olive | 800 | Ink, buttons, the dark ground |
+| `sage` | `#8E9A86` Sage Gray | 500 | Secondary text |
+| `bone` | `#ECE7DC` Bone White | 200 | The light ground |
+| `moss` | `#BBC7A4` Soft Moss | 300 | The pop: dots, links, dark-mode buttons |
+| `cocoa` | `#5D4538` Cocoa Brown | 800 | Warm secondary accent: quote marks, step numbers |
 
-Light mode is not dark mode inverted: light sits on a lifted ice with obsidian ink, dark sits on obsidian with ice ink, and each has its own surfaces. Sky is the only colour. It marks the one action per view, the logo dot and focus rings. Nothing else is coloured.
+### The roles
 
-No glow, no gradient text, no blurred blobs. Depth comes from the frames, hairlines and one soft shadow token.
+| Role | Light | Dark |
+| --- | --- | --- |
+| `--bg` page | sage-100 | olive-950 |
+| `--raised` panels | sage-50 | olive-900 |
+| `--well` bands | sage-200 | below olive-950 |
+| `--rule` hairlines | sage-300 | between olive-900 and 800 |
+| `--fg` text | olive-900 | bone-200 |
+| `--fg-muted` subtext | olive-700 | sage-400 |
+| `--brand` main button | olive-800, bone-50 text | moss-300, olive-900 text |
+| `--brand-ink` links | moss-700 | moss-300 |
+| `--signal` dot, bullets, focus | moss-600 | moss-300 |
+| `--earth` warm accent: underlines, quote marks, dots | cocoa-800 (#5D4538) | cocoa-800 (#5D4538) |
+| `--earth-ink` brown text: links, step numbers | cocoa-800 | cocoa-500, so it reads at 5.8:1 on the dark page |
+
+All text roles pass WCAG AA on their grounds.
+
+### Forest bands
+
+Add `class="forest"` to any section and everything inside it switches to the dark roles: olive-800 in light mode, a lifted olive-900 in dark. The hero, the contact panel and the Selected work mats use it (with the contour map), so the page opens and closes in forest green.
+
+### Palette bands
+
+`.band-sage`, `.band-moss`, `.band-cocoa` and `.band-olive` are swatch panels in the palette's own colours, the same in light and dark, with their own text colours. "What I build" stacks sage, moss and deep olive bands like the palette cards that inspired the site. Every project in "Selected work" sits on a forest-green mat with faint contour lines, matching the hero and contact panel.
+
+### Where cocoa shows
+
+Cocoa (`--earth`) is kept for accents only: project title underlines on hover, "Read the case study", "Launching" labels, quote marks, step numbers, the active testimonial marker and case study bullets.
+
+### Corners
+
+`--radius-shot` 3px for desktop screenshots, `--radius-phone` 9px for phone screenshots with a 1.5px bezel, `--radius-frame` 8px for mats and panels, `--radius-control` 6px for buttons and fields.
 
 ## Type
 
-- **Funnel Display** (NORD ID and Kristian Möller, OFL) for headlines. Its shifted stems give movement without animation. Weight 600, tracking `-0.035em`, tight leading.
-- **Funnel Sans** for everything else. Weight 400 and 500.
-- One family, two cuts. No monospace labels, no all-caps eyebrows, no middle-dot meta strings.
-- Fluid scale with `clamp()`: `display` (hero), `h1`, `h2`, `h3`, `lead`, `body`, `small`. Defined as `text-*` utilities in `tailwind.config.ts`.
+- **Archivo** (Omnibus-Type, SIL OFL), one variable file with weight and width axes.
+- Headlines run wide (`--display-stretch: 118%`) at weight 650 with slight negative tracking: clean, utilitarian, like kit labels.
+- Body runs at normal width, weight 400 and 500.
+- Fluid scale: `text-display`, `text-h1`, `text-h2`, `text-h3`, `text-lead`, `text-body`, `text-small`, `text-caption`.
+- No all-caps labels, no monospace, no middle-dot meta strings.
 
-## Layout and spacing
+## Layout
 
-- One container: `max-width 1320px`, gutters `clamp(1rem, 4vw, 2.5rem)`.
-- Section rhythm from one token: `--section-y: clamp(5rem, 11vw, 9rem)`.
-- Left-aligned throughout. Nothing centred except the logo lockup in the footer.
-- Radii by hierarchy: frames `14px`, controls `10px`, chips `999px`. Not one radius on everything.
+- One container (`--container` 1280px) with fluid gutters, and one section rhythm (`--section-y`).
+- Homepage order: forest hero (contour map, headline, platform logo strip), what I build (palette bands), process, selected work, testimonials, about (with a second logo strip), forest contact panel.
+- Project order everywhere: Centrus AI (featured), JetNow Drainage, Imperial Build, Advanta Services, Excel Electrics, Hand Line, Gym Tours AI.
+- Platform logos come from `lib/brand/tech-logos.ts` (Simple Icons, CC0), in order: languages and frameworks, front-end motion, databases, hosting and payments, AI and Google. Shown as icons only, one size, one colour.
+- Layout grids always set `grid-cols-1` on phones and `min-w-0` on children, so nothing can push the page wider than the screen.
 
 ## Imagery
 
-Every project shot is captured from the live site with the same rig: desktop at 1440 × 900 (2x) and phone at 390 × 844 (3x), cookie banners removed. Desktop shots sit in a 16:10 frame; phone shots sit in a 390:844 frame. Never crop a shot to a different ratio.
+Every project shot is captured with one rig: desktop at 1440 × 900 and phone at 390 × 844, cookie banners removed. Desktop shots sit in a 16:10 frame and phone shots in a 390:844 frame. Sources are stored at display size (1600px desktop, 780px phone, WebP), Next serves AVIF at the exact size needed, and each frame shows a blurred preview from `image-blur.ts` while it loads.
 
-## Motion
+## Motion and performance
 
-- One orchestrated moment: the hero line and work reel arrive together on load.
-- The work reel drifts slowly and stops on hover, focus or drag. It's static for reduced motion.
-- Everything else moves only in answer to the visitor: hover on project frames, the form's selected states, the menu.
-- Easing `cubic-bezier(0.2, 0.8, 0.2, 1)`, 180 to 600ms. Only `transform` and `opacity` animate.
-- Lenis smooth scroll stays, synced to GSAP, off for reduced motion.
+- **Hero entrance** is pure CSS (`.hero-line`, `.hero-fade`, `.hero-map` in `globals.css`). It starts on first paint, before JavaScript loads, so it never stutters while the page hydrates on a phone.
+- **The contour map** is one static file, `public/brand/topo.svg`, built by `node scripts/generate-topo.mjs`. Every forest panel uses the same cached image. The hero and contact maps sway slowly by moving the whole image layer (`.topo-drift`, transform only), so the curves are never repainted.
+- **Scroll reveals:** add `data-reveal` (rise), `data-reveal="fade"` or `data-reveal="zoom"` to an element, and `style={stagger(i)}` from `lib/reveal.ts` to stagger siblings. One passive, frame-throttled scroll check in `components/website/motion/reveal-observer.tsx` adds `is-in` once; anything at or above the viewport counts, so anchor jumps never leave a section hidden. Content is visible until that script runs. Put `data-reveal` on wrappers that have no transform transitions of their own.
+- **Anchor links** land exactly under the nav: `scroll-padding-top` on `html` equals the nav height. Don't add `scroll-margin` to sections as well.
+- **Logo strips** use two identical groups that each carry their own trailing gap, slid by exactly -50%. Both strips are the same component at the same size.
+- **No scroll library.** Native scrolling, with `scroll-behavior: smooth` for in-page links (off for reduced motion). GSAP and Lenis are gone.
+- **No blur over moving content.** The nav and the contact form use near-solid backgrounds instead of `backdrop-filter`, which costs a full re-blur on every scroll frame.
+- Hover-only images (the second screen on project cards) are `display: none` on phones, so they never download there.
+- Toasts load only in the dashboard.
+- Only `transform` and `opacity` animate. Everything stops for reduced motion.
 
 ## Copy
 
-British English, sentence case, no em dashes, no "elevate", "seamless", "powerful" or "cutting-edge". Say what was built and what changed for the client. Quotes are paraphrased from clients and must be signed off by them before launch.
+British English, sentence case, no em dashes, no "elevate", "seamless", "powerful" or "cutting-edge". Client names are written as the client writes them (Advanta Services, not ADVANTA). Quotes are paraphrased and must be signed off by each client before launch.
