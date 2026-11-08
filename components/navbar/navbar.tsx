@@ -3,149 +3,159 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
-import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react";
-import { site } from "@/lib/content/site";
+import { Moon, Sun } from "lucide-react";
+import { Logo } from "@/components/brand/logo";
+import { nav } from "@/lib/content/site";
+import { cn } from "@/lib/utils";
 
-function ThemeToggle({ className = "" }: { className?: string }) {
+function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => setMounted(true), []);
+  const dark = mounted && resolvedTheme === "dark";
 
   return (
     <button
       type="button"
-      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      className={`flex h-9 w-9 items-center justify-center rounded-full border border-ink-700 text-paper-dim transition-colors duration-300 hover:border-ink-500 hover:text-paper ${className}`}
-      aria-label="Toggle colour theme"
+      onClick={() => setTheme(dark ? "light" : "dark")}
+      className="grid h-10 w-10 place-items-center rounded-full text-fg-muted transition-colors duration-200 ease-out hover:bg-raised hover:text-fg"
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {mounted && resolvedTheme === "dark" ? (
-        <Sun className="h-4 w-4" />
-      ) : (
-        <Moon className="h-4 w-4" />
-      )}
+      {/* Render both so the server and client agree; CSS shows the right one. */}
+      <Sun className="hidden h-[18px] w-[18px] dark:block" aria-hidden />
+      <Moon className="h-[18px] w-[18px] dark:hidden" aria-hidden />
     </button>
   );
 }
 
-const navLinks = [
-  { label: "Work", href: "/#work" },
-  { label: "Services", href: "/#services" },
-  { label: "About", href: "/#about" },
-  { label: "Contact", href: "/#contact" },
-];
-
 export const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll while the mobile menu is open
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
+    const root = document.documentElement;
+    root.style.overflow = open ? "hidden" : "";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = "";
+      root.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
     };
-  }, [menuOpen]);
+  }, [open]);
 
   return (
     <>
-      <header
-        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-          scrolled
-            ? "border-b border-ink-700 bg-background/80 backdrop-blur-md"
-            : "border-b border-transparent bg-transparent"
-        }`}
+      <a
+        href="#main"
+        className="btn-brand fixed left-4 top-3 z-[60] -translate-y-20 focus-visible:translate-y-0"
       >
-        <nav
-          className="site-container flex h-16 items-center justify-between"
-          aria-label="Main navigation"
-        >
-          <Link
-            href="/"
-            className="font-display text-sm font-medium tracking-tight text-paper"
-            onClick={() => setMenuOpen(false)}
-          >
-            Jack Oliver Dev
-            <span className="text-electric">.</span>
+        Skip to content
+      </a>
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-300 ease-out",
+          "pt-[env(safe-area-inset-top)]",
+          scrolled || open
+            ? "border-b border-rule bg-canvas/[0.97]"
+            : "border-b border-transparent"
+        )}
+      >
+        <nav className="container-x flex h-[var(--nav-h)] items-center justify-between gap-6" aria-label="Main">
+          <Link href="/" className="-ml-1 flex items-center rounded-md p-1 text-[1.0625rem] leading-none" onClick={() => setOpen(false)}>
+            <Logo />
           </Link>
 
-          <div className="hidden items-center gap-8 md:flex">
-            {navLinks.map((link) => (
+          <div className="hidden items-center gap-1 md:flex">
+            {nav.map((item) => (
               <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm text-paper-dim transition-colors duration-300 hover:text-paper"
+                key={item.href}
+                href={item.href}
+                className="rounded-full px-3.5 py-2 text-small text-fg-muted transition-colors duration-200 ease-out hover:text-fg"
               >
-                {link.label}
+                {item.label}
               </Link>
             ))}
+            <span className="mx-2 h-5 w-px bg-rule" aria-hidden />
             <ThemeToggle />
-            <a
-              href={site.calendly}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary px-5 py-2 text-xs"
-            >
+            <Link href="/#contact" className="btn-brand ml-2 min-h-[2.5rem] px-4 text-small">
               Book a call
-              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
-            </a>
+            </Link>
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-1 md:hidden">
             <ThemeToggle />
             <button
               type="button"
-              onClick={() => setMenuOpen((open) => !open)}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-paper"
-              aria-expanded={menuOpen}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              onClick={() => setOpen((v) => !v)}
+              className="grid h-10 w-10 place-items-center rounded-full text-fg"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              aria-label={open ? "Close menu" : "Open menu"}
             >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              <span className="relative block h-3 w-5" aria-hidden>
+                <span
+                  className={cn(
+                    "absolute left-0 top-0 h-[1.5px] w-5 rounded bg-current transition-transform duration-300 ease-out",
+                    open && "translate-y-[5px] rotate-45"
+                  )}
+                />
+                <span
+                  className={cn(
+                    "absolute bottom-0 left-0 h-[1.5px] w-5 rounded bg-current transition-transform duration-300 ease-out",
+                    open && "-translate-y-[5.5px] -rotate-45"
+                  )}
+                />
+              </span>
             </button>
           </div>
         </nav>
       </header>
 
-      {/* Mobile menu overlay */}
       <div
-        className={`fixed inset-0 z-40 flex flex-col bg-background pt-24 transition-opacity duration-300 md:hidden ${
-          menuOpen ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
+        id="mobile-menu"
+        className={cn(
+          "fixed inset-0 z-40 bg-canvas transition-opacity duration-300 ease-out md:hidden",
+          open ? "opacity-100" : "pointer-events-none opacity-0"
+        )}
+        aria-hidden={!open}
       >
         <nav
-          className="site-container flex flex-col gap-2"
-          aria-label="Mobile navigation"
+          className="container-x flex h-full flex-col pb-[max(2rem,env(safe-area-inset-bottom))] pt-[calc(var(--nav-h)+env(safe-area-inset-top)+1.5rem)]"
+          aria-label="Mobile"
         >
-          {navLinks.map((link, index) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className="display-hairline border-b border-ink-700 py-5 text-display-sm text-paper"
-            >
-              <span className="mr-4 font-mono text-xs text-paper-faint">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              {link.label}
+          <ul className="flex flex-col">
+            {nav.map((item, i) => (
+              <li
+                key={item.href}
+                className={cn(
+                  "border-b border-rule transition-[opacity,transform] duration-500 ease-out",
+                  open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+                )}
+                style={{ transitionDelay: open ? `${60 + i * 40}ms` : "0ms" }}
+              >
+                <Link
+                  href={item.href}
+                  tabIndex={open ? 0 : -1}
+                  onClick={() => setOpen(false)}
+                  className="block py-5 font-display text-[2rem] font-semibold tracking-[-0.035em] text-fg"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto">
+            <Link href="/#contact" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)} className="btn-brand w-full">
+              Book a call
             </Link>
-          ))}
-          <a
-            href={site.calendly}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary mt-8 w-fit"
-            onClick={() => setMenuOpen(false)}
-          >
-            Book a call
-            <ArrowUpRight className="h-4 w-4" aria-hidden />
-          </a>
+          </div>
         </nav>
       </div>
     </>

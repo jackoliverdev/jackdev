@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Github, Chrome } from "lucide-react";
+import { Globe as Chrome } from "lucide-react";
+import { GitHubLogoIcon as Github } from "@radix-ui/react-icons";
 import { signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { useAuth } from "reactfire";
 import { useToast } from "@/components/ui/use-toast";

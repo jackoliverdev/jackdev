@@ -1,25 +1,43 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
+
+// Every colour points at a CSS variable in app/globals.css. Change it there.
+const rgb = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;
+const steps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+const scales = (names: string[]) =>
+  Object.fromEntries(names.map((n) => [n, Object.fromEntries(steps.map((s) => [s, rgb(`${n}-${s}`)]))]));
 
 const config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./lib/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      screens: { "2xl": "1400px" },
     },
     extend: {
       colors: {
-        // Semantic design system tokens
+        // --- Site palette ---
+        canvas: rgb("bg"),
+        raised: rgb("raised"),
+        well: rgb("well"),
+        rule: { DEFAULT: rgb("rule"), strong: rgb("rule-strong") },
+        fg: { DEFAULT: rgb("fg"), muted: rgb("fg-muted"), faint: rgb("fg-faint") },
+        brand: { DEFAULT: rgb("brand"), hover: rgb("brand-hover"), ink: rgb("brand-ink") },
+        "on-brand": rgb("on-brand"),
+        signal: rgb("signal"),
+        earth: { DEFAULT: rgb("earth"), ink: rgb("earth-ink") },
+
+        // --- The five nature scales, 50 to 950, for anything the roles don't cover ---
+        ...scales(["olive", "sage", "bone", "moss", "cocoa"]),
+
+        // --- shadcn semantic tokens (dashboard and components/ui) ---
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -58,7 +76,7 @@ const config = {
           border: "hsl(var(--card-border))",
         },
 
-        // Editorial ink palette
+        // --- Older names kept so the dashboard keeps working ---
         ink: {
           950: "hsl(var(--ink-950))",
           900: "hsl(var(--ink-900))",
@@ -77,8 +95,6 @@ const config = {
           bright: "hsl(var(--electric-bright))",
           deep: "hsl(var(--electric-deep))",
         },
-
-        // Legacy palette (dashboard/auth components)
         navy: {
           900: "hsl(var(--navy-900))",
           800: "hsl(var(--navy-800))",
@@ -100,36 +116,31 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
         xl: "var(--radius-xl)",
         "2xl": "calc(var(--radius-xl) + 0.5rem)",
+        frame: "var(--radius-frame)",
+        control: "var(--radius-control)",
       },
       fontFamily: {
-        sans: [
-          "var(--font-sans)",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "Segoe UI",
-          "Helvetica Neue",
-          "sans-serif",
-        ],
-        display: [
-          "var(--font-display)",
-          "var(--font-sans)",
-          "sans-serif",
-        ],
-        mono: [
-          "var(--font-mono)",
-          "SFMono-Regular",
-          "Menlo",
-          "Consolas",
-          "monospace",
-        ],
+        sans: ["var(--font-archivo)", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        display: ["var(--font-archivo)", "ui-sans-serif", "sans-serif"],
       },
       fontSize: {
-        // Editorial display scale — tight leading, negative tracking
-        "display-2xl": ["clamp(3.25rem, 8vw, 7rem)", { lineHeight: "0.95", letterSpacing: "-0.03em" }],
-        "display-xl": ["clamp(2.75rem, 6vw, 5rem)", { lineHeight: "1", letterSpacing: "-0.03em" }],
-        "display-lg": ["clamp(2.25rem, 4.5vw, 3.5rem)", { lineHeight: "1.05", letterSpacing: "-0.02em" }],
-        "display-md": ["clamp(1.75rem, 3vw, 2.5rem)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
-        "display-sm": ["clamp(1.375rem, 2vw, 1.75rem)", { lineHeight: "1.2", letterSpacing: "-0.01em" }],
+        // Fluid type scale. Headings get their tracking from globals.css.
+        display: ["clamp(2.25rem, 5vw, 4.25rem)", { lineHeight: "1.02", letterSpacing: "-0.035em" }],
+        h1: ["clamp(2rem, 4vw, 3.5rem)", { lineHeight: "1.04", letterSpacing: "-0.03em" }],
+        h2: ["clamp(1.625rem, 2.8vw, 2.5rem)", { lineHeight: "1.08", letterSpacing: "-0.025em" }],
+        h3: ["clamp(1.1875rem, 1.5vw, 1.375rem)", { lineHeight: "1.2", letterSpacing: "-0.015em" }],
+        lead: ["clamp(1.0625rem, 1.3vw, 1.1875rem)", { lineHeight: "1.55", letterSpacing: "-0.005em" }],
+        body: ["1rem", { lineHeight: "1.6" }],
+        small: ["0.875rem", { lineHeight: "1.5" }],
+        caption: ["0.8125rem", { lineHeight: "1.45" }],
+      },
+      maxWidth: {
+        prose: "62ch",
+        container: "var(--container)",
+      },
+      transitionTimingFunction: {
+        out: "var(--ease-out)",
+        "in-out": "var(--ease-in-out)",
       },
       keyframes: {
         "accordion-down": {
@@ -140,43 +151,14 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "fade-in": {
-          from: { opacity: "0" },
-          to: { opacity: "1" },
-        },
-        "slide-up": {
-          from: { opacity: "0", transform: "translateY(30px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-        marquee: {
-          from: { transform: "translateX(0)" },
-          to: { transform: "translateX(-50%)" },
-        },
-        "caret-blink": {
-          "0%, 60%": { opacity: "1" },
-          "61%, 100%": { opacity: "0" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.6s ease-out forwards",
-        "slide-up": "slide-up 0.6s ease-out forwards",
-        marquee: "marquee 40s linear infinite",
-        "caret-blink": "caret-blink 1.1s steps(1, end) infinite",
-      },
-      transitionTimingFunction: {
-        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
-      },
-      spacing: {
-        "18": "4.5rem",
-        "88": "22rem",
-        "112": "28rem",
-        "128": "32rem",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
-export default config
+export default config;

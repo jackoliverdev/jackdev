@@ -1,169 +1,193 @@
+// Every word on the homepage lives here. British English, sentence case, no em dashes.
+
 export const site = {
   name: "Jack Oliver Dev",
   personName: "Jack Oliver",
   legalName: "Jack Oliver Dev",
-  url: "https://www.jackoliverdev.co.uk",
-  title: "Jack Oliver Dev | Web & AI Developer, UK",
+  url: "https://www.jackodev.co.uk",
+  title: "Jack Oliver Dev | Websites, AI and web apps for UK businesses",
   description:
-    "UK developer building fast, search-ready websites and custom AI solutions. Websites for trades and small businesses, AI chatbots, automation and full web applications.",
+    "I design and build fast, search-ready websites, AI assistants and custom web applications for UK businesses. One developer, end to end.",
   email: "jackoliverdev@gmail.com",
-  calendly: "https://calendly.com/jackoliverdev/30min",
-  github: "https://github.com/jackoliverdev",
   linkedin: "https://www.linkedin.com/in/jack-melluish/",
   location: "United Kingdom",
 };
 
+export const nav = [
+  { label: "Services", href: "/#services" },
+  { label: "Work", href: "/#work" },
+  { label: "About", href: "/#about" },
+  { label: "Contact", href: "/#contact" },
+];
+
 export const hero = {
-  eyebrow: "Jack Oliver Dev · Web & AI Developer · UK",
-  headline: ["Websites and AI", "that win you work."],
-  sub: "I design and build fast, search-ready websites, custom AI chatbots and web applications for businesses across the UK.",
-  primaryCta: { label: "Book a call", href: "#contact" },
-  secondaryCta: { label: "See the work", href: "#work" },
+  headline: ["Websites, AI", "and software", "that win you work."],
+  // Two lines on desktop (1024px and up), broken exactly here; smaller screens wrap naturally.
+  sub: ["I'm Jack. I design and build websites, AI tools and custom software for", "UK businesses, from local trades to growing software companies."],
+  primaryCta: { label: "Book a call", href: "/#contact" },
+  secondaryCta: { label: "See the work", href: "/#work" },
+  availability: "Available for new projects",
 };
 
 export const services = [
   {
-    number: "01",
+    id: "websites",
+    tone: "sage",
     title: "Websites",
     summary:
-      "Marketing sites that load instantly, rank locally and turn visitors into enquiries.",
-    points: [
-      "Local SEO that wins page one",
-      "Conversion-first design",
-      "Launched in weeks, not months",
+      "Sites that load instantly, rank locally and turn visits into enquiries. Every one comes with a content system, so you change it yourself.",
+    includes: [
+      "Design and build",
+      "Your own content system",
+      "Local SEO and AI search",
+      "Analytics and enquiry tracking",
     ],
+    seenIn: ["imperial-build", "advanta-services", "hand-line", "jetnow-drainage"],
   },
   {
-    number: "02",
-    title: "AI Development",
+    id: "ai",
+    tone: "moss",
+    title: "AI development",
     summary:
-      "Custom chatbots, assistants wired into your systems and agents that do the admin for you.",
-    points: [
-      "Custom chatbots",
-      "System integrations",
-      "Workflow automations",
+      "Anything AI: assistants that answer customers, agents that do the admin, workflows that run themselves and AI features in your apps.",
+    includes: [
+      "Assistants and chatbots",
+      "Agents and automated workflows",
+      "AI features in your apps",
+      "Connected to your systems and data",
     ],
+    seenIn: ["centrus-ai", "gym-tours-ai", "excel-electrics"],
   },
   {
-    number: "03",
-    title: "Web Applications",
+    id: "apps",
+    tone: "olive",
+    title: "Web apps and SaaS",
     summary:
-      "Custom software in the browser: portals, booking systems, dashboards and full SaaS products.",
-    points: [
-      "Portals and dashboards",
-      "Booking systems",
-      "Full SaaS builds",
-    ],
+      "Custom software in the browser: admin panels, CRMs, portals and full products with billing, built to be used every day.",
+    includes: ["Admin panels and CRMs", "Customer portals", "Payments and subscriptions", "Dashboards and reporting"],
+    seenIn: ["centrus-ai", "gym-tours-ai", "imperial-build"],
   },
 ];
 
 export const process = [
   {
-    step: "01",
-    title: "Discovery",
-    copy: "A short call to understand what you need and whether I can deliver it. No sales team, just me.",
+    when: "Day one",
+    title: "A 30-minute call",
+    copy: "You tell me what you need and I tell you straight whether I'm the right person. No sales team, just me.",
   },
   {
-    step: "02",
-    title: "Design",
-    copy: "I design directly in the browser, so what you approve is what ships. Fast feedback, no surprises.",
+    when: "Within two days",
+    title: "A fixed price and plan",
+    copy: "Within a couple of days you get the scope, the timeline and one fixed price. No hourly surprises.",
   },
   {
-    step: "03",
-    title: "Build",
-    copy: "Clean, modern code with progress you can click, not screenshots. Most sites ship within weeks.",
+    when: "From week one",
+    title: "Design and build",
+    copy: "I design it first and you sign off the look. Then I build it, with updates along the way and a full preview before launch.",
   },
   {
-    step: "04",
-    title: "Launch & Support",
-    copy: "Deployment, analytics and search indexing handled. I stick around after launch.",
+    when: "Launch and beyond",
+    title: "Launch and look after",
+    copy: "Hosting, analytics, search and handover sorted. I stay on hand after launch for changes and support.",
   },
 ];
 
 export const about = {
-  headingLines: ["Builder first,", "agency never."],
+  heading: "Design, code, AI and everything that connects them.",
   paragraphs: [
-    "I'm Jack, a UK-based developer who ships. I build websites and web applications for companies that want serious results without agency overhead, and alongside client work I build and run my own AI products.",
-    "One person, end to end: design, build, SEO, AI. You talk to the person writing the code, decisions take minutes instead of meetings, and delivery is measured in weeks.",
+    "I'm Jack, a UK developer who takes a project from a first conversation to a live product, and keeps it running after. You talk to the person writing the code, so decisions take minutes, not meetings.",
+    "Most weeks I'm leading the build of Centrus AI, a platform field-service firms run their office on. Around it I build sites, AI assistants, admin systems and integrations for trades, manufacturers, contractors and founders, wired into the tools they already pay for.",
   ],
-  stats: [
-    { value: "25+", label: "Products & sites shipped" },
-    { value: "100%", label: "Built by me, end to end" },
-    { value: "UK", label: "Based and building here" },
+  facts: [
+    { label: "Based in", value: "United Kingdom" },
+    { label: "Works with", value: "Trades, manufacturers, contractors and SaaS founders" },
+    { label: "Ships", value: "Websites, AI assistants, admin systems, CRMs, integrations, SaaS" },
   ],
 };
 
+// Paraphrased from client feedback, two short paragraphs each.
+// Every client signs off their quote before it goes live.
 export const testimonials = [
   {
+    name: "Chris Hartney",
+    role: "Chief Operations Officer",
+    company: "Centrus AI",
+    project: "centrus-ai",
+    quote: [
+      "Jack has built Centrus with us from day one. Our website, the main application, every API and integration, customer support and payments: all of it is his work.",
+      "He also built the CRM we run the company on, from tasks and calendars to deals that update themselves after every call. Technically deep and built to a standard we rely on daily.",
+    ],
+  },
+  {
     name: "Mitchell Evans",
-    position: "Founder",
+    role: "Founder",
     company: "JetNow Drainage",
-    quote:
-      "The site started ranking within weeks and the phone hasn't stopped since. Jack understood exactly what an emergency trade business needs.",
+    project: "jetnow-drainage",
+    quote: [
+      "This was our first proper website, and Jack made the whole thing easy. He explained every step in plain English, kept it affordable, and the site looks as professional as anyone in the trade.",
+      "The SEO has been fantastic. We show up right across our area for the searches that matter, and we get a steady stream of local leads we would never have had before.",
+    ],
+  },
+  {
+    name: "Kieran Side",
+    role: "Director",
+    company: "Imperial Build",
+    project: "imperial-build",
+    quote: [
+      "We had outgrown our old website. Jack replaced it with a modern site that works properly on every device and finally reflects the size of the jobs we take on.",
+      "It gave us the credibility we needed to win work. Clients see our projects and quantities before they pick up the phone, and we rank well on Google and show up in AI answers like ChatGPT.",
+    ],
+  },
+  {
+    name: "Chris Martin",
+    role: "Director",
+    company: "Advanta Services",
+    project: "advanta-services",
+    quote: [
+      "Jack built us a site that finally shows the quality of our work: real jobs, real reviews and a clear picture of everything we do, from rewires to air conditioning.",
+      "It ranks really well for local trades searches around Spalding and Peterborough, and I update it myself whenever I finish a job worth showing. Clear, quick and no nonsense from start to finish.",
+    ],
   },
   {
     name: "Matt Digby",
-    position: "Director",
+    role: "Director",
     company: "Excel Electrics",
-    quote:
-      "A pleasure to work with throughout. The AI chatbot is genuinely impressive and already handles customer enquiries better than we expected.",
+    project: "excel-electrics",
+    quote: [
+      "Jack took our vision for the site and delivered exactly what we wanted, at a price that worked for a small business. It looks the part on every device, and customers tell us how easy it is to get in touch.",
+      "The AI assistant was custom-built around how we actually work. It answers questions, takes the details we need and hands over a proper enquiry, even when we're up a ladder on another job.",
+    ],
   },
-  // {
-  //   name: "Chris Martin",
-  //   position: "Director",
-  //   company: "ADVANTA Services",
-  //   quote:
-  //     "Clear, quick and no nonsense. Jack handled the lot so I could focus on the day job. Couldn't have asked for an easier process.",
-  // },
-  {
-    name: "Jack Rowley",
-    position: "Co-Founder",
-    company: "Gym Tours AI",
-    quote:
-      "Jack went above and beyond at every stage. The final platform was better than anything we'd imagined at the start.",
-  },
-  {
-    name: "Chris Hartney",
-    position: "Chief Operations Officer",
-    company: "Centrus AI",
-    quote:
-      "What Jack delivered for Centrus was an exceptional AI software application. Technically deep, fast to ship, and built to a standard we rely on daily.",
-  },
-  // Temporarily hidden while TourBots AI is paused. Uncomment to restore.
-  // {
-  //   name: "Mark Shepherd",
-  //   position: "Founder",
-  //   company: "TourBots AI",
-  //   quote:
-  //     "From idea to live platform in a matter of weeks. The quality of the build speaks for itself, and so does the product.",
-  // },
   {
     name: "Luca Castronuvo",
-    position: "Managing Director",
-    company: "Hand Line Company",
-    quote:
-      "The multilingual B2B storefront and CMS streamlined our operations and raised our online presence significantly.",
+    role: "Managing Director",
+    company: "Hand Line",
+    project: "hand-line",
+    quote: [
+      "We started with a site that listed our gloves. Jack grew it into a full range in five languages, with a portal where we upload products, brands and articles ourselves.",
+      "He understood the EN safety standards behind every product and built them in, so we manage certifications in one place. It has raised our profile and made life simpler.",
+    ],
   },
-  // {
-  //   name: "Kieran Side",
-  //   position: "Director",
-  //   company: "Imperial Build",
-  //   quote:
-  //     "Straightforward from start to finish. Exactly what we asked for, delivered when he said it would be.",
-  // },
+  {
+    name: "Jack Rowley",
+    role: "Co-founder",
+    company: "Gym Tours AI",
+    project: "gym-tours-ai",
+    quote: [
+      "Jack built our marketing website and the app our gym owners use every day. It's so intuitive that they pick it up without any training, and their members find it just as easy.",
+      "Behind it sits the admin system we run the business from: every account, every new gym and every payment. Better than anything we pictured at the start.",
+    ],
+  },
 ];
 
-export const techStack = [
-  { name: "Next.js", icon: "/logos/tech/mono/nextdotjs.svg" },
-  { name: "React", icon: "/logos/tech/mono/react.svg" },
-  { name: "TypeScript", icon: "/logos/tech/mono/typescript.svg" },
-  { name: "OpenAI", icon: "/logos/tech/mono/openai.svg" },
-  { name: "Three.js", icon: "/logos/tech/mono/threedotjs.svg" },
-  { name: "GSAP", icon: "/logos/tech/mono/gsap.svg" },
-  { name: "Tailwind CSS", icon: "/logos/tech/mono/tailwindcss.svg" },
-  { name: "Supabase", icon: "/logos/tech/mono/supabase.svg" },
-  { name: "Firebase", icon: "/logos/tech/mono/firebase.svg" },
-  { name: "Stripe", icon: "/logos/tech/mono/stripe.svg" },
-  { name: "Node.js", icon: "/logos/tech/mono/nodedotjs.svg" },
-  { name: "Vercel", icon: "/logos/tech/mono/vercel.svg" },
-];
+export const contact = {
+  heading: "Tell me what you're building.",
+  intro: [
+    "Send me a message about your project. I'd love to hear what you're working on, however early it is.",
+    "Or book a 30-minute call: pick a day and time in the form and I'll confirm it by email with a calendar invite, usually within one working day.",
+  ],
+  needs: ["Website", "AI development", "Web app or SaaS", "Admin system or CRM", "Something else"],
+  budgets: ["Under £2k", "£2k to £5k", "£5k to £15k", "£15k+", "Not sure yet"],
+  /** Call slots offered, 24-hour UK time. */
+  slots: ["09:30", "11:00", "13:30", "15:00", "16:30"],
+};

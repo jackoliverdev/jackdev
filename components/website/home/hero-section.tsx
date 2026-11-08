@@ -1,139 +1,67 @@
-"use client";
-
 import Link from "next/link";
-import { useRef } from "react";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
-import { gsap, useGSAP, prefersReducedMotion } from "@/lib/animations/gsap";
-import { hero, site } from "@/lib/content/site";
-import { HeroCanvasLoader } from "./hero-canvas-loader";
-import { HeroCodeEditor } from "./hero-code-editor";
+import type { CSSProperties } from "react";
+import { hero } from "@/lib/content/site";
+import { TopoMap } from "@/components/website/home/topo-map";
+import { LogoMarquee } from "@/components/website/home/logo-marquee";
 
+// Stagger index for the CSS entrance (see .hero-line and .hero-fade in globals.css).
+const order = (i: number) => ({ ["--i" as string]: i }) as CSSProperties;
+
+/**
+ * Server-rendered, no JavaScript. The entrance is CSS keyframes, so it plays from
+ * the first paint instead of waiting for the page to hydrate.
+ */
 export function HeroSection() {
-  const ref = useRef<HTMLElement>(null);
-
-  useGSAP(
-    () => {
-      if (prefersReducedMotion() || !ref.current) return;
-
-      const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-      tl.from("[data-hero-line] > span", {
-        yPercent: 115,
-        duration: 1.2,
-        stagger: 0.12,
-        delay: 0.15,
-      })
-        .from(
-          "[data-hero-fade]",
-          { autoAlpha: 0, y: 24, duration: 0.9, stagger: 0.1 },
-          "-=0.7"
-        );
-    },
-    { scope: ref }
-  );
-
   return (
-    <section
-      ref={ref}
-      className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden"
-      aria-label="Introduction"
-    >
-      <HeroCanvasLoader />
+    <section className="px-2 pt-[calc(var(--nav-h)+0.25rem)] sm:px-3">
+      <div className="forest relative isolate overflow-hidden rounded-frame">
+        <TopoMap drift className="hero-map absolute inset-0 -z-10" />
 
-      <div className="site-container pt-28 pb-20">
-        <p data-hero-fade className="eyebrow mb-8 hidden md:block">
-          {hero.eyebrow}
-        </p>
-        <p
-          data-hero-fade
-          className="eyebrow mb-8 whitespace-nowrap text-[0.625rem] tracking-[0.12em] md:hidden"
-        >
-          {hero.eyebrow}
-        </p>
-
-        <h1 className="display-hairline text-display-2xl max-w-5xl text-paper">
-          {hero.headline.map((line) => (
-            <span
-              key={line}
-              data-hero-line
-              className="hidden overflow-hidden pb-1 md:block"
-            >
-              <span className="block">{line}</span>
+        <div className="container-x flex min-h-[min(46rem,calc(100svh-var(--nav-h)-1rem))] flex-col justify-end pb-10 pt-20 sm:pb-12 md:pt-28">
+          <p
+            className="hero-fade mb-8 inline-flex w-fit items-center gap-2.5 rounded-full border border-rule bg-raised/70 px-3.5 py-1.5 text-small text-fg-muted"
+            style={order(0)}
+          >
+            <span className="relative flex h-2 w-2" aria-hidden>
+              <span className="absolute inset-0 animate-ping rounded-full bg-signal opacity-60 motion-reduce:hidden" />
+              <span className="relative h-2 w-2 rounded-full bg-signal" />
             </span>
-          ))}
-          <span
-            data-hero-line
-            className="block overflow-hidden pb-1 md:hidden"
-          >
-            <span className="block">Websites</span>
-          </span>
-          <span
-            data-hero-line
-            className="block overflow-hidden pb-1 md:hidden"
-          >
-            <span className="block">and AI</span>
-          </span>
-          <span
-            data-hero-line
-            className="block overflow-hidden pb-1 md:hidden"
-          >
-            <span className="block">that win</span>
-          </span>
-          <span
-            data-hero-line
-            className="block overflow-hidden pb-1 md:hidden"
-          >
-            <span className="block">work.</span>
-          </span>
-        </h1>
+            {hero.availability}
+          </p>
 
-        <div className="mt-8 grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,29rem)] lg:gap-16">
-          <div>
-            <p
-              data-hero-fade
-              className="max-w-xl text-base leading-relaxed text-paper-dim sm:text-lg"
-            >
-              {hero.sub}
+          <h1 className="text-[clamp(2.5rem,7vw,6.25rem)] leading-[0.98] tracking-[-0.04em] text-fg">
+            {hero.headline.map((line, i) => (
+              <span key={line} className="block overflow-hidden pb-[0.05em]">
+                <span className="hero-line block" style={order(i)}>
+                  {line}
+                </span>
+              </span>
+            ))}
+          </h1>
+
+          <div className="mt-10 grid grid-cols-1 gap-8 border-t border-rule pt-8 md:grid-cols-12 md:items-end">
+            <p className="hero-fade text-lead text-fg-muted md:col-span-8" style={order(1)}>
+              {hero.sub.map((line, i) => (
+                <span key={line} className="lg:block lg:whitespace-nowrap">
+                  {line}
+                  {i < hero.sub.length - 1 ? " " : ""}
+                </span>
+              ))}
             </p>
-
-            <div
-              data-hero-fade
-              className="mt-10 flex flex-wrap items-center gap-4"
-            >
-              <a
-                href={site.calendly}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-              >
+            <div className="hero-fade flex flex-wrap gap-3 md:col-span-4 md:justify-end" style={order(2)}>
+              <Link href={hero.primaryCta.href} className="btn-brand">
                 {hero.primaryCta.label}
-                <ArrowUpRight className="h-4 w-4" aria-hidden />
-              </a>
-              <Link href={hero.secondaryCta.href} className="btn-ghost">
+              </Link>
+              <Link href={hero.secondaryCta.href} className="btn-line">
                 {hero.secondaryCta.label}
               </Link>
             </div>
           </div>
-
-          <div data-hero-fade className="w-full lg:justify-self-end">
-            <HeroCodeEditor />
-          </div>
         </div>
 
-        <div
-          data-hero-fade
-          className="mt-16 flex items-center gap-6 text-sm text-paper-faint lg:mt-20"
-        >
-          <span className="inline-flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-electric opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-electric" />
-            </span>
-            Available for new projects
-          </span>
-          <ArrowDown
-            className="ml-auto h-4 w-4 animate-bounce text-paper-faint"
-            aria-hidden
-          />
+        <div className="hero-fade flex items-center gap-6 border-t border-rule bg-well/50 py-5 pl-[var(--gutter)]" style={order(3)}>
+          <p className="hidden shrink-0 text-small text-fg-faint sm:block">Built with</p>
+          <LogoMarquee className="min-w-0 flex-1" />
         </div>
       </div>
     </section>

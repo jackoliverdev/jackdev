@@ -2,137 +2,325 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ------------------------------------------------------------------
-   Jack Oliver Dev — Global Design System
-   Minimalist editorial theme in two modes. Light is the default:
-   white, blues and blacks. Dark flips the same ink/paper scale.
-------------------------------------------------------------------- */
+/* ==================================================================
+   Jack Oliver Dev design system. See docs/DESIGN.md.
+
+   Three layers, so the look is changed in one place:
+   1. Palette scales: five nature colours, 50 to 950 each.
+   2. Roles: what the site uses (--bg, --fg, --brand...), mapped to steps.
+   3. Components read roles only, never a scale step directly.
+
+   To swap palettes, change the class on <html> in app/layout.tsx:
+   "palette-nature" (current) or "palette-v1" (obsidian, ice and sky).
+   Colours are RGB channels so Tailwind can add opacity: bg-brand/20.
+   ================================================================== */
 
 @layer base {
   :root {
-    /* --- Core ink palette (LIGHT default) ---
-       ink = surfaces (lightest page bg to strongest UI)
-       paper = type (strongest text to faintest) */
-    --ink-950: 40 20% 99%;           /* page background, warm white */
-    --ink-900: 220 20% 97%;          /* raised surfaces */
-    --ink-800: 220 16% 94%;          /* cards */
-    --ink-700: 220 13% 89%;          /* borders */
-    --ink-600: 220 10% 80%;          /* hover borders */
-    --ink-500: 220 8% 62%;           /* subtle UI */
+    /* --- 1. Palette scales (OKLCH-even steps; each base hex is exact) --- */
+    /* olive: base #2F3A2E sits at 800 */
+    --olive-50: 241 250 240;   /* #F1FAF0 */
+    --olive-100: 232 242 231;  /* #E8F2E7 */
+    --olive-200: 220 230 219;  /* #DCE6DB */
+    --olive-300: 198 210 197;  /* #C6D2C5 */
+    --olive-400: 169 181 168;  /* #A9B5A8 */
+    --olive-500: 139 152 138;  /* #8B988A */
+    --olive-600: 110 122 108;  /* #6E7A6C */
+    --olive-700: 83 95 82;  /* #535F52 */
+    --olive-800: 47 58 46;  /* #2F3A2E */
+    --olive-900: 34 42 34;  /* #222A22 */
+    --olive-950: 18 24 18;  /* #121812 */
+    /* sage: base #8E9A86 sits at 500 */
+    --sage-50: 242 250 236;   /* #F2FAEC */
+    --sage-100: 233 242 227;  /* #E9F2E3 */
+    --sage-200: 221 231 215;  /* #DDE7D7 */
+    --sage-300: 199 210 192;  /* #C7D2C0 */
+    --sage-400: 170 181 162;  /* #AAB5A2 */
+    --sage-500: 142 154 134;  /* #8E9A86 */
+    --sage-600: 110 122 102;  /* #6E7A66 */
+    --sage-700: 84 95 76;  /* #545F4C */
+    --sage-800: 59 69 53;  /* #3B4535 */
+    --sage-900: 35 42 30;  /* #232A1E */
+    --sage-950: 19 24 15;  /* #13180F */
+    /* bone: base #ECE7DC sits at 200 */
+    --bone-50: 250 246 240;   /* #FAF6F0 */
+    --bone-100: 241 238 231;  /* #F1EEE7 */
+    --bone-200: 236 231 220;  /* #ECE7DC */
+    --bone-300: 210 205 196;  /* #D2CDC4 */
+    --bone-400: 181 177 166;  /* #B5B1A6 */
+    --bone-500: 152 147 137;  /* #989389 */
+    --bone-600: 122 117 107;  /* #7A756B */
+    --bone-700: 95 90 81;  /* #5F5A51 */
+    --bone-800: 68 65 57;  /* #444139 */
+    --bone-900: 42 39 33;  /* #2A2721 */
+    --bone-950: 24 22 17;  /* #181611 */
+    /* moss: base #BBC7A4 sits at 300 */
+    --moss-50: 243 251 228;   /* #F3FBE4 */
+    --moss-100: 234 243 218;  /* #EAF3DA */
+    --moss-200: 222 231 205;  /* #DEE7CD */
+    --moss-300: 187 199 164;  /* #BBC7A4 */
+    --moss-400: 171 183 149;  /* #ABB795 */
+    --moss-500: 142 153 118;  /* #8E9976 */
+    --moss-600: 112 123 89;  /* #707B59 */
+    --moss-700: 85 96 64;  /* #556040 */
+    --moss-800: 60 69 42;  /* #3C452A */
+    --moss-900: 36 43 22;  /* #242B16 */
+    --moss-950: 19 24 9;  /* #131809 */
+    /* cocoa: base #5D4538 sits at 800 */
+    --cocoa-50: 255 244 239;   /* #FFF4EF */
+    --cocoa-100: 254 234 223;  /* #FEEADF */
+    --cocoa-200: 244 222 210;  /* #F4DED2 */
+    --cocoa-300: 224 200 187;  /* #E0C8BB */
+    --cocoa-400: 197 171 157;  /* #C5AB9D */
+    --cocoa-500: 168 141 127;  /* #A88D7F */
+    --cocoa-600: 138 112 98;  /* #8A7062 */
+    --cocoa-700: 109 85 72;  /* #6D5548 */
+    --cocoa-800: 93 69 56;  /* #5D4538 */
+    --cocoa-900: 52 35 27;  /* #34231B */
+    --cocoa-950: 31 19 12;  /* #1F130C */
 
-    /* --- Type --- */
-    --paper: 228 16% 9%;             /* near-black blue ink */
-    --paper-dim: 228 8% 34%;         /* secondary text */
-    --paper-faint: 228 6% 50%;       /* tertiary text */
+    /* v1 brand colours, kept for palette-v1 */
+    --obsidian: 17 18 23;      /* #111217 */
+    --ice: 223 229 235;        /* #DFE5EB */
+    --sky-500: 5 147 198;      /* #0593C6 */
 
-    /* --- Accent: electric blue --- */
-    --electric: 226 83% 53%;         /* #2156E8 */
-    --electric-bright: 224 100% 62%; /* #3D78FF hover */
-    --electric-deep: 228 78% 42%;    /* #1841BE pressed */
-
-    /* --- Semantic tokens (shadcn-compatible; dashboard relies on these) --- */
-    --background: var(--ink-950);
-    --foreground: var(--paper);
-    --background-secondary: var(--ink-900);
-    --background-tertiary: var(--ink-800);
-
-    --card: var(--ink-900);
-    --card-foreground: var(--paper);
-    --card-border: var(--ink-700);
-
-    --primary: var(--electric);
-    --primary-foreground: var(--ink-950);
-    --primary-hover: var(--electric-bright);
-
-    --secondary: var(--ink-800);
-    --secondary-foreground: var(--paper);
-    --secondary-hover: var(--ink-700);
-
-    --accent: var(--electric);
-    --accent-foreground: var(--ink-950);
-    --accent-secondary: var(--electric-bright);
-
-    --muted: var(--ink-800);
-    --muted-foreground: var(--paper-dim);
-
-    --destructive: 0 72% 56%;
-    --destructive-foreground: var(--paper);
-
-    --popover: var(--ink-900);
-    --popover-foreground: var(--paper);
-
-    --border: var(--ink-700);
-    --input: var(--ink-800);
-    --ring: var(--electric);
-
+    /* --- Shape, rhythm, motion, type --- */
+    --radius-frame: 8px;       /* mats, panels, cards */
+    --radius-shot: 3px;        /* desktop screenshots: barely rounded */
+    --radius-phone: 9px;       /* phone screenshots */
+    --radius-control: 6px;
+    --container: 1280px;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+    --section-y: clamp(4rem, 8vw, 6.5rem);
+    --nav-h: 4rem;
+    --display-stretch: 118%;   /* Archivo width for headlines: 100% normal, 125% widest */
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
     --radius: 0.5rem;
-    --radius-sm: 0.375rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
-
-    /* --- Legacy palette (kept for dashboard/auth components) --- */
-    --navy-950: 225 35% 7%;
-    --navy-900: 225 32% 10%;
-    --navy-800: 225 28% 14%;
-    --navy-700: 225 25% 18%;
-    --navy-600: 225 22% 24%;
-    --navy-500: 225 20% 30%;
-    --blue-950: 235 45% 12%;
-    --blue-900: 235 42% 16%;
-    --blue-800: 235 40% 22%;
-    --blue-700: 238 38% 28%;
-    --blue-600: 240 42% 35%;
-    --blue-500: 242 48% 45%;
-    --blue-400: 244 52% 58%;
-    --blue-300: 246 60% 70%;
-    --purple-950: 265 40% 8%;
-    --purple-900: 265 38% 12%;
-    --purple-800: 268 36% 18%;
-    --purple-700: 270 38% 25%;
-    --purple-600: 272 42% 35%;
-    --purple-500: 275 48% 45%;
-    --purple-400: 278 55% 58%;
-    --purple-300: 280 65% 70%;
-    --white: 0 0% 100%;
-    --grey-50: 222 15% 98%;
-    --grey-100: 222 12% 95%;
-    --grey-200: 222 10% 88%;
-    --grey-300: 222 8% 75%;
-    --grey-400: 222 6% 60%;
-    --grey-500: 222 5% 45%;
-    --grey-600: 222 5% 35%;
-    --emerald-500: 160 50% 55%;
-    --emerald-400: 160 55% 65%;
-    --cyan-500: 190 70% 60%;
-    --cyan-400: 190 75% 70%;
-    --yellow-500: 48 95% 65%;
-    --yellow-400: 48 100% 75%;
-    --orange-500: 25 95% 60%;
-    --orange-400: 25 100% 70%;
-    --gradient-blue-start: 242 48% 45%;
-    --gradient-blue-mid: 260 55% 50%;
-    --gradient-blue-end: 275 48% 45%;
-    --gradient-purple-start: 275 48% 45%;
-    --gradient-purple-mid: 290 45% 50%;
-    --gradient-purple-end: 320 40% 55%;
+    --radius-xl: 0.75rem;
   }
 
-  /* Dark mode: same scale, flipped */
-  .dark {
-    --ink-950: 240 8% 3%;            /* page background */
-    --ink-900: 240 7% 5%;            /* raised surfaces */
-    --ink-800: 240 6% 8%;            /* cards */
-    --ink-700: 240 5% 12%;           /* borders */
-    --ink-600: 240 5% 16%;           /* hover borders */
-    --ink-500: 240 4% 28%;           /* subtle UI */
+  /* --- 2. Roles: Nature, light. Bone ground, olive ink, moss signal. --- */
+  :root,
+  .palette-nature {
+    --bg: var(--sage-100);             /* pale field green */
+    --raised: var(--sage-50);
+    --well: var(--sage-200);
+    --rule: var(--sage-300);
+    --rule-strong: var(--sage-400);
+    --fg: var(--olive-900);
+    --fg-muted: var(--olive-700);
+    --fg-faint: var(--sage-700);
+    --brand: var(--olive-800);         /* main button fill */
+    --brand-hover: var(--olive-700);
+    --on-brand: var(--bone-50);
+    --brand-ink: var(--moss-700);      /* links and highlighted text */
+    --signal: var(--moss-600);         /* the logo dot, bullets, focus */
+    --earth: var(--cocoa-800);         /* the palette brown #5D4538: underlines, quote marks, dots, bullets */
+    --earth-ink: var(--cocoa-800);     /* brown for small text: links, step numbers */
+    --bezel: var(--olive-900);
+    --frame-shadow: 0 1px 0 rgb(255 255 255 / 0.6) inset, 0 18px 40px -26px rgb(var(--olive-950) / 0.35);
 
-    --paper: 40 14% 96%;             /* warm off-white */
-    --paper-dim: 40 6% 72%;
-    --paper-faint: 240 4% 52%;
+    /* shadcn tokens (HSL) used by the dashboard and components/ui */
+    --background: 96 33% 92%;
+    --foreground: 120 11% 15%;
+    --card: 94 56% 95%;
+    --card-foreground: 120 11% 15%;
+    --card-border: 39 13% 80%;
+    --popover: 36 56% 96%;
+    --popover-foreground: 120 11% 15%;
+    --primary: 115 12% 20%;
+    --primary-foreground: 36 56% 96%;
+    --primary-hover: 115 7% 35%;
+    --secondary: 41 30% 89%;
+    --secondary-foreground: 120 11% 15%;
+    --secondary-hover: 39 13% 80%;
+    --muted: 41 30% 89%;
+    --muted-foreground: 115 7% 35%;
+    --accent: 81 23% 71%;
+    --accent-foreground: 120 11% 15%;
+    --accent-secondary: 81 30% 60%;
+    --destructive: 4 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 39 13% 80%;
+    --input: 39 13% 80%;
+    --ring: 81 15% 42%;
+    /* older dashboard names */
+    --ink-950: 41 26% 93%;
+    --ink-900: 36 56% 96%;
+    --ink-800: 41 30% 89%;
+    --ink-700: 39 13% 80%;
+    --ink-600: 42 7% 68%;
+    --ink-500: 95 9% 45%;
+    --paper: 120 11% 15%;
+    --paper-dim: 115 7% 35%;
+    --paper-faint: 95 11% 34%;
+    --electric: 81 15% 42%;
+    --electric-bright: 81 23% 60%;
+    --electric-deep: 115 12% 20%;
+    --navy-900: 120 14% 8%;
+    --navy-800: 120 11% 15%;
+    --navy-700: 115 12% 20%;
+    --navy-600: 115 7% 35%;
+    --grey-50: 36 56% 96%;
+    --grey-100: 41 26% 93%;
+    --grey-200: 41 30% 89%;
+    --grey-300: 39 13% 80%;
+    --grey-400: 95 11% 67%;
+    --grey-500: 115 7% 35%;
+    color-scheme: light;
+  }
 
-    --electric: 224 100% 64%;        /* #477CFF */
-    --electric-bright: 222 100% 72%;
-    --electric-deep: 226 80% 50%;
+  /* --- Nature, dark. Olive-black ground, bone ink, moss for the pop. --- */
+  .dark,
+  .palette-nature.dark {
+    --bg: var(--olive-950);
+    --raised: var(--olive-900);
+    --well: 12 16 12;                  /* #0C100C below olive-950 */
+    --rule: 44 53 43;                  /* #2C352B */
+    --rule-strong: var(--olive-700);
+    --fg: var(--bone-200);
+    --fg-muted: var(--sage-400);
+    --fg-faint: var(--sage-500);
+    --brand: var(--moss-300);
+    --brand-hover: var(--moss-200);
+    --on-brand: var(--olive-900);
+    --brand-ink: var(--moss-300);
+    --signal: var(--moss-300);
+    --earth: var(--cocoa-800);         /* the same palette brown in dark mode */
+    --earth-ink: var(--cocoa-500);     /* lighter step of the same brown so small text stays readable (5.8:1) */
+    --bezel: 52 62 51;
+    --frame-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 24px 50px -28px rgb(0 0 0 / 0.8);
+
+    --background: 120 14% 8%;
+    --foreground: 41 30% 89%;
+    --card: 120 11% 15%;
+    --card-foreground: 41 30% 89%;
+    --card-border: 114 10% 19%;
+    --popover: 120 11% 15%;
+    --popover-foreground: 41 30% 89%;
+    --primary: 81 23% 71%;
+    --primary-foreground: 120 11% 15%;
+    --primary-hover: 81 30% 85%;
+    --secondary: 114 10% 19%;
+    --secondary-foreground: 41 30% 89%;
+    --secondary-hover: 115 7% 35%;
+    --muted: 114 10% 19%;
+    --muted-foreground: 95 11% 67%;
+    --border: 114 10% 19%;
+    --input: 114 10% 19%;
+    --ring: 81 23% 71%;
+    --ink-950: 120 14% 8%;
+    --ink-900: 120 11% 15%;
+    --ink-800: 114 10% 17%;
+    --ink-700: 114 10% 19%;
+    --ink-600: 115 7% 35%;
+    --ink-500: 95 9% 50%;
+    --paper: 41 30% 89%;
+    --paper-dim: 95 11% 67%;
+    --paper-faint: 95 9% 56%;
+    --electric: 81 23% 71%;
+    color-scheme: dark;
+  }
+
+
+  /* --- Forest bands: deep green sections in light mode, a lifted olive in dark.
+     Add class="forest" to any section; everything inside reads the dark roles. --- */
+  .forest {
+    --bg: var(--olive-800);
+    --raised: 58 70 56;
+    --well: 38 47 37;
+    --rule: 72 85 70;
+    --rule-strong: var(--olive-600);
+    --fg: var(--bone-100);
+    --fg-muted: var(--sage-300);
+    --fg-faint: var(--sage-400);
+    --brand: var(--moss-300);
+    --brand-hover: var(--moss-200);
+    --on-brand: var(--olive-900);
+    --brand-ink: var(--moss-300);
+    --signal: var(--moss-300);
+    --earth: var(--cocoa-800);         /* the same palette brown in dark mode */
+    --bezel: 24 30 24;
+    color-scheme: dark;
+    background-color: rgb(var(--bg));
+    color: rgb(var(--fg));
+  }
+  .dark .forest {
+    --bg: var(--olive-900);
+    --raised: 44 54 43;
+    --well: 26 33 26;
+    --rule: 56 67 54;
+  }
+
+  /* --- Palette bands: swatch-coloured panels. Same fills in both modes, like the palette itself. --- */
+  .band-sage,
+  .band-moss,
+  .band-cocoa,
+  .band-olive {
+    background-color: rgb(var(--band-bg));
+    color: rgb(var(--fg));
+  }
+  .band-sage {
+    --band-bg: var(--sage-500);
+    --fg: var(--olive-950);
+    --fg-muted: 34 44 32;
+    --rule: 118 130 110;       /* #76826E */
+  }
+  .band-moss {
+    --band-bg: var(--moss-300);
+    --fg: var(--olive-950);
+    --fg-muted: var(--olive-800);
+    --rule: 157 169 133;       /* #9DA985 */
+  }
+  .band-cocoa {
+    --band-bg: var(--cocoa-800);
+    --fg: var(--bone-100);
+    --fg-muted: var(--cocoa-200);
+    --rule: 122 97 83;         /* #7A6153 */
+    --signal: var(--cocoa-400);
+    --bezel: 40 27 20;
+  }
+  .band-olive {
+    --band-bg: var(--olive-800);
+    --fg: var(--bone-100);
+    --fg-muted: var(--sage-300);
+    --rule: var(--olive-700);
+  }
+
+  /* --- v1: obsidian, ice and sky. Add class="palette-v1" on <html> to bring it back. --- */
+  .palette-v1 {
+    --bg: 238 241 244;
+    --raised: 247 248 250;
+    --well: 223 229 235;
+    --rule: 205 212 220;
+    --rule-strong: 168 178 189;
+    --fg: 17 18 23;
+    --fg-muted: 79 88 100;
+    --fg-faint: 107 116 128;
+    --brand: var(--sky-500);
+    --brand-hover: 4 124 168;
+    --on-brand: 17 18 23;
+    --brand-ink: 3 110 148;
+    --signal: var(--sky-500);
+    --earth: 3 110 148;
+    --bezel: 17 18 23;
+  }
+  .palette-v1.dark {
+    --bg: 17 18 23;
+    --raised: 24 26 33;
+    --well: 12 13 17;
+    --rule: 38 41 50;
+    --rule-strong: 62 67 80;
+    --fg: 223 229 235;
+    --fg-muted: 152 162 174;
+    --fg-faint: 120 129 141;
+    --brand-hover: 30 166 214;
+    --on-brand: 17 18 23;
+    --brand-ink: 56 182 232;
+    --signal: var(--sky-500);
+    --earth: 56 182 232;
+    --bezel: 52 56 66;
   }
 }
 
@@ -142,182 +330,347 @@
   }
 
   html {
-    scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Anchor jumps land exactly below the fixed nav (and the iPhone notch area). */
+    scroll-padding-top: calc(var(--nav-h) + 1px + env(safe-area-inset-top));
+    background: rgb(var(--bg));
   }
 
-  body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
-    text-rendering: optimizeLegibility;
-  }
-
-  @media (max-width: 767px) {
-    html,
-    body {
-      overflow-x: hidden;
-      max-width: 100%;
+  /* In-page links glide; instant for reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
     }
   }
 
+  body {
+    @apply bg-canvas font-sans text-fg antialiased;
+    font-size: 1rem;
+    line-height: 1.6;
+    font-feature-settings: "kern" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    font-weight: 650;
+    font-stretch: var(--display-stretch);
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
   ::selection {
-    background: hsl(var(--electric) / 0.9);
-    color: hsl(var(--ink-950));
+    background: rgb(var(--signal) / 0.45);
+    color: rgb(var(--fg));
   }
 
   :focus-visible {
-    outline: 2px solid hsl(var(--electric));
-    outline-offset: 2px;
+    outline: 2px solid rgb(var(--signal));
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 
-  /* Editorial display headings */
-  .font-display {
-    letter-spacing: -0.03em;
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  img,
+  video {
+    max-width: 100%;
   }
 }
 
 @layer components {
-  /* --- Layout primitives --- */
-  .site-container {
-    @apply mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-12;
+  /* --- Layout --- */
+  .container-x {
+    width: 100%;
+    max-width: calc(var(--container) + var(--gutter) * 2);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
   }
 
-  .section-pad {
-    @apply py-20 md:py-24 lg:py-28;
+  .section-y {
+    padding-block: var(--section-y);
   }
 
-  /* --- Type treatments --- */
-  .eyebrow {
-    @apply font-mono text-[0.6875rem] uppercase tracking-[0.25em] text-paper-faint;
+  /* --- Buttons: one primary per view --- */
+  .btn {
+    @apply inline-flex min-h-[2.75rem] items-center justify-center gap-2 whitespace-nowrap px-5 text-[0.9375rem] font-medium;
+    border-radius: var(--radius-control);
+    transition: background-color 180ms var(--ease-out), color 180ms var(--ease-out),
+      border-color 180ms var(--ease-out), transform 180ms var(--ease-out);
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-brand {
+    @apply btn bg-brand text-on-brand hover:bg-brand-hover;
+  }
+  .btn-line {
+    @apply btn border border-rule bg-transparent text-fg hover:border-rule-strong hover:bg-raised;
+  }
+  .btn-quiet {
+    @apply btn px-0 text-fg underline decoration-rule decoration-1 underline-offset-[6px] hover:decoration-signal;
   }
 
-  .display-hairline {
-    @apply font-display font-medium leading-[0.95] tracking-tight;
-  }
-
-  .text-accent-underline {
-    background-image: linear-gradient(hsl(var(--electric)), hsl(var(--electric)));
-    background-size: 100% 1px;
-    background-position: 0 100%;
+  /* --- Native select with a drawn chevron, so it matches the inputs --- */
+  .select-chevron {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' fill='none' stroke='%23889480' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-position: right 0.9rem center;
+    background-size: 12px;
     background-repeat: no-repeat;
   }
 
-  /* --- Surfaces --- */
-  .surface-card {
-    @apply rounded-lg border border-ink-700 bg-ink-900;
+  /* --- Text link with a sliding underline --- */
+  .link {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 320ms var(--ease-out), color 180ms var(--ease-out);
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-size: 100% 1px;
   }
 
-  .surface-card-hover {
-    @apply transition-colors duration-300 hover:border-ink-500;
+  /* --- Frames: every screenshot sits in one of these --- */
+  .frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-shot);
+    background: rgb(var(--raised));
+    box-shadow: var(--frame-shadow);
+    outline: 1px solid rgb(var(--rule));
+    outline-offset: -1px;
+  }
+  .frame-phone {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-phone);
+    background: rgb(var(--raised));
+    box-shadow: 0 0 0 1.5px rgb(var(--bezel)), var(--frame-shadow);
   }
 
-  .hairline-top {
-    @apply border-t border-ink-700;
+  /* --- Legacy helpers still used by the login page --- */
+  .eyebrow {
+    @apply text-sm text-fg-muted;
   }
-
-  /* --- Buttons --- */
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-paper px-6 py-3 text-sm font-medium text-ink-950 transition-all duration-300 hover:bg-electric hover:text-ink-950;
+  .display-hairline {
+    @apply font-display font-semibold leading-[1] tracking-tight;
   }
-
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink-600 px-6 py-3 text-sm font-medium text-paper transition-all duration-300 hover:border-paper/60 hover:bg-paper/5;
+    @apply btn-line;
   }
-
-  .link-arrow {
-    @apply inline-flex items-center gap-1.5 text-sm font-medium text-paper-dim transition-colors duration-300 hover:text-paper;
+  .btn-primary {
+    @apply btn-brand;
   }
-
-  /* --- Legacy classes (dashboard/auth still reference these) --- */
-  .glass {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
-    backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-  }
-
-  .glass-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-  }
-
-  .gradient-blue-purple {
-    background: linear-gradient(135deg, hsl(var(--gradient-blue-start)) 0%, hsl(var(--gradient-blue-mid)) 50%, hsl(var(--gradient-blue-end)) 100%);
-  }
-
-  .gradient-radial {
-    background: radial-gradient(ellipse at center, hsl(var(--ink-900)) 0%, hsl(var(--ink-950)) 100%);
-  }
-
+  .gradient-radial,
   .gradient-mesh {
-    background: radial-gradient(at 40% 20%, hsl(var(--ink-800) / 0.5) 0px, transparent 50%);
-  }
-
-  .text-gradient-blue,
-  .text-gradient-light-blue,
-  .text-gradient-purple,
-  .text-gradient-accent {
-    background: linear-gradient(135deg, hsl(var(--electric-bright)) 0%, hsl(var(--electric)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .glow-blue,
-  .glow-purple,
-  .glow-accent,
-  .shadow-glow-blue,
-  .shadow-glow-purple {
-    box-shadow: 0 0 24px hsl(var(--electric) / 0.18);
+    background: rgb(var(--well));
   }
 }
 
 @layer utilities {
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.001ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.001ms !important;
-      scroll-behavior: auto !important;
-    }
+  .text-balance {
+    text-wrap: balance;
   }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  .text-pretty {
+    text-wrap: pretty;
   }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
-
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-30px); }
-    to { opacity: 1; transform: translateX(0); }
+  .no-scrollbar {
+    scrollbar-width: none;
   }
-
-  @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(30px); }
-    to { opacity: 1; transform: translateX(0); }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
+}
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+/* Logo strip: two identical groups, each carrying its own trailing gap, slid by
+   exactly half the track. That makes the loop seamless at any size or gap. */
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
   }
+}
+.marquee-track {
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+  will-change: transform;
+}
+.marquee-reverse {
+  animation-direction: reverse;
+}
 
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+/* The contour map sways very slowly. Transform-only on one image layer, so it is
+   composited on the GPU and never repaints. */
+@keyframes topo-drift {
+  from {
+    transform: translate3d(-1.5%, -1%, 0) rotate(-3deg) scale(1);
   }
+  to {
+    transform: translate3d(1.5%, 1%, 0) rotate(3deg) scale(1.04);
+  }
+}
+.topo-drift {
+  animation: topo-drift 38s var(--ease-in-out) infinite alternate;
+  will-change: transform;
+}
 
-  .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
-  .animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
-  .animate-slide-in-left { animation: slideInLeft 0.8s ease-out forwards; }
-  .animate-slide-in-right { animation: slideInRight 0.8s ease-out forwards; }
-  .animate-float { animation: float 6s ease-in-out infinite; }
+/* Hero entrance in pure CSS: it starts on first paint, before any JavaScript
+   loads, so phones never see the content jump while the page hydrates. */
+@keyframes hero-rise {
+  from {
+    transform: translate3d(0, 105%, 0);
+  }
+}
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+}
+@keyframes hero-map {
+  from {
+    opacity: 0;
+  }
+}
+.hero-line {
+  animation: hero-rise 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(80ms + var(--i, 0) * 80ms);
+}
+.hero-fade {
+  animation: hero-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(450ms + var(--i, 0) * 60ms);
+}
+.hero-map {
+  animation: hero-map 1.6s ease-out both;
+}
 
-  .text-balance { text-wrap: balance; }
-  .text-pretty { text-wrap: pretty; }
+/* 3D work carousel (components/website/work/work-carousel.tsx).
+   --cw is the card width; --rf (set inline) turns it into the ring radius. */
+.work-stage {
+  --cw: min(74vw, 330px);
+  --r: calc(var(--cw) * var(--rf, 1));
+  height: calc(var(--cw) * 0.8 + 13rem);
+  perspective: 1500px;
+  perspective-origin: 50% 30%;
+}
+@media (min-width: 1024px) {
+  .work-stage {
+    --cw: 400px;
+    height: calc(var(--cw) * 0.85 + 14.5rem);
+    perspective: 2400px;
+  }
+}
+/* Before JavaScript places the cards on the oval, this shows them as a plain ring. */
+.work-ring {
+  transform: translateZ(calc(var(--r) * -1)) rotateX(-7deg);
+  will-change: transform;
+}
+.work-card {
+  width: var(--cw);
+  margin-left: calc(var(--cw) / -2);
+  -webkit-user-drag: none;
+}
+.work-card img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* Testimonial timer: a cocoa line that fills, then the next review flips in. */
+@keyframes review-timer {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.review-timer {
+  animation-name: review-timer;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* Process timeline (components/website/home/process-section.tsx).
+   Complete by default; once JavaScript is ready it starts empty and draws when the
+   list reaches the screen (.is-in). Desktop draws one line left to right; phones
+   draw a segment between each pair of stops, top to bottom, one after another. */
+.timeline-fill {
+  transform-origin: left;
+  transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.timeline-seg {
+  transform-origin: top;
+  transition: transform 0.45s linear;
+  transition-delay: calc(0.3s + var(--step, 0) * 0.45s);
+}
+.timeline-node {
+  border-color: rgb(var(--earth));
+  background: rgb(var(--earth));
+  color: rgb(var(--bone-50));
+  transition:
+    background-color 0.4s ease-out,
+    color 0.4s ease-out,
+    border-color 0.4s ease-out,
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: calc(0.15s + var(--step, 0) * 0.45s);
+}
+html.reveal-ready .timeline:not(.is-in) .timeline-fill {
+  transform: scaleX(0);
+}
+html.reveal-ready .timeline:not(.is-in) .timeline-seg {
+  transform: scaleY(0);
+}
+html.reveal-ready .timeline:not(.is-in) .timeline-node {
+  border-color: rgb(var(--rule-strong));
+  background: rgb(var(--well));
+  color: rgb(var(--fg-muted));
+  transform: scale(0.85);
+}
+
+/* Scroll reveals (see components/website/motion/reveal-observer.tsx).
+   Hidden only once JavaScript has marked what is already on screen, so nothing flashes.
+   data-reveal="" rises and fades; "fade" only fades; "zoom" settles from 97% scale.
+   --i staggers siblings by 70ms. */
+html.reveal-ready [data-reveal]:not(.is-in) {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+html.reveal-ready [data-reveal="fade"]:not(.is-in) {
+  transform: none;
+}
+html.reveal-ready [data-reveal="zoom"]:not(.is-in) {
+  transform: translate3d(0, 18px, 0) scale(0.97);
+}
+html.reveal-ready [data-reveal] {
+  transition:
+    opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

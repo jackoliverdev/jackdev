@@ -1,25 +1,24 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { getNextProject, getProject, projects } from "@/lib/content/projects";
-import { site } from "@/lib/content/site";
-import { Reveal } from "@/components/website/motion/reveal";
+import { site, testimonials } from "@/lib/content/site";
+import { DesktopFrame, PhoneFrame } from "@/components/website/work/frames";
+import { Showcase } from "@/components/website/work/showcase";
+import { TopoMap } from "@/components/website/home/topo-map";
+import { stagger } from "@/lib/reveal";
 
-type PageProps = {
-  params: { slug: string };
-};
+type PageProps = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
-  const project = getProject(params.slug);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const project = getProject(slug);
   if (!project) return {};
-
-  const title = `${project.name} Case Study | Jack Oliver Dev`;
+  const title = `${project.name} case study | Jack Oliver Dev`;
   return {
     title,
     description: project.seoDescription,
@@ -31,208 +30,197 @@ export function generateMetadata({ params }: PageProps): Metadata {
       siteName: site.legalName,
       locale: "en_GB",
       type: "article",
-      images: project.cover.src.endsWith(".svg")
-        ? undefined
-        : [{ url: project.cover.src, alt: project.cover.alt }],
+      images: [{ url: project.desktop[0].src, alt: project.desktop[0].alt }],
     },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description: project.seoDescription,
-    },
+    twitter: { card: "summary_large_image", title, description: project.seoDescription },
   };
 }
 
-export default function ProjectPage({ params }: PageProps) {
-  const project = getProject(params.slug);
+function Arrow({ className }: { className?: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden className={className}>
+      <path d="M1 7h11M8 3l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+export default async function ProjectPage({ params }: PageProps) {
+  const { slug } = await params;
+  const project = getProject(slug);
   if (!project) notFound();
 
-  const nextProject = getNextProject(project.slug);
+  const next = getNextProject(project.slug);
+  const quote = testimonials.find((t) => t.project === project.slug);
+  const gallery = project.desktop.slice(1);
+  const [, m2] = project.mobile;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
-    name: project.name,
+    name: `${project.name} case study`,
     description: project.seoDescription,
     url: `${site.url}/projects/${project.slug}`,
-    author: {
-      "@type": "Person",
-      name: site.name,
-      url: site.url,
-    },
-    ...(project.url ? { sameAs: project.url } : {}),
+    image: `${site.url}${project.desktop[0].src}`,
+    author: { "@type": "Person", name: site.personName, url: site.url },
+    about: { "@type": "Organization", name: project.name, url: project.url },
   };
 
+  const initials = quote ? quote.name.split(" ").map((p) => p[0]).join("").slice(0, 2) : "";
+  const facts = [
+    { label: "Sector", value: project.sector },
+    { label: "Year", value: project.year },
+    { label: "What I built", value: project.built.join(", ") },
+    { label: "Built with", value: project.stack.join(", ") },
+  ];
+
   return (
-    <main className="pt-28">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+    <main id="main" className="pb-2 pt-[calc(var(--nav-h)+clamp(1.5rem,4vw,3rem))] sm:pb-3">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <article>
-        {/* Header */}
-        <header className="site-container">
-          <Link href="/#work" className="link-arrow mb-10">
-            <ArrowLeft className="h-4 w-4" aria-hidden />
-            All work
-          </Link>
+      <article className="container-x">
+        <Link href="/#work" className="group inline-flex items-center gap-2 text-small text-fg-muted transition-colors hover:text-fg">
+          <Arrow className="rotate-180 transition-transform duration-300 ease-out group-hover:-translate-x-1" />
+          All work
+        </Link>
 
-          <p className="eyebrow mb-4">
-            {project.sector} · {project.year}
-          </p>
-          <h1 className="display-hairline text-display-xl max-w-4xl text-paper">
-            {project.name}
-          </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-paper-dim sm:text-lg">
-            {project.summary}
-          </p>
-
-          <dl className="mt-12 grid gap-8 border-t border-ink-700 pt-8 sm:grid-cols-3">
-            <div>
-              <dt className="text-xs text-paper-faint">Role</dt>
-              <dd className="mt-2 text-sm text-paper">{project.role}</dd>
+        {/* Header: name and pitch on the left, the facts in a panel on the right. */}
+        <header className="mt-6 grid grid-cols-1 gap-8 lg:mt-8 lg:grid-cols-12 lg:items-end lg:gap-10">
+          <div data-reveal className="min-w-0 lg:col-span-7">
+            <p className="text-small text-fg-muted">{project.client}</p>
+            <h1 className="mt-2 text-[clamp(2.25rem,5.4vw,4.5rem)] leading-[1] tracking-[-0.04em] text-fg">{project.name}</h1>
+            <p className="mt-5 max-w-[46ch] text-lead text-fg-muted">{project.tagline}</p>
+          </div>
+          <div data-reveal style={stagger(1)} className="min-w-0 rounded-frame border border-rule bg-raised lg:col-span-5">
+            <dl className="divide-y divide-rule">
+              {facts.map((fact) => (
+                <div key={fact.label} className="grid grid-cols-[7.5rem_1fr] gap-4 px-5 py-3 text-small">
+                  <dt className="text-fg-faint">{fact.label}</dt>
+                  <dd className="text-fg">{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="border-t border-rule p-4">
+              <a href={project.url} target="_blank" rel="noopener noreferrer" className="btn-brand w-full">
+                Visit {project.url.replace(/^https?:\/\/(www\.)?/, "")}
+                <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
+                  <path d="M3 9l6-6M4.5 3H9v4.5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                </svg>
+              </a>
             </div>
-            <div>
-              <dt className="text-xs text-paper-faint">Stack</dt>
-              <dd className="mt-2 text-sm text-paper">
-                {project.stack.join(" · ")}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-paper-faint">Status</dt>
-              <dd className="mt-2 text-sm text-paper">
-                {project.live && project.url ? (
-                  <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="link-arrow text-paper hover:text-electric-bright"
-                  >
-                    Visit live site
-                    <ArrowUpRight className="h-4 w-4" aria-hidden />
-                  </a>
-                ) : (
-                  "In build, launching soon"
-                )}
-              </dd>
-            </div>
-          </dl>
+          </div>
         </header>
 
-        {/* Cover */}
-        <div className="site-container mt-14">
-          <Reveal>
-            <div className="relative aspect-[16/10] overflow-hidden rounded-lg border border-ink-700 bg-ink-900 md:aspect-[21/10]">
-              <Image
-                src={project.cover.src}
-                alt={project.cover.alt}
-                fill
-                sizes="(max-width: 1320px) 100vw, 1320px"
-                className="object-cover object-top"
-                priority
-              />
-            </div>
-          </Reveal>
+        <div data-reveal="zoom" style={stagger(2)} className="mt-8 lg:mt-10">
+          <Showcase project={project} large priority caption={false} className="md:aspect-[16/9]" />
         </div>
 
-        {/* Challenge / Solution */}
-        <div className="site-container section-pad grid gap-12 md:grid-cols-2 md:gap-20">
-          <Reveal>
-            <h2 className="eyebrow mb-5">The Challenge</h2>
-            <p className="text-base leading-relaxed text-paper-dim">
-              {project.challenge}
-            </p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h2 className="eyebrow mb-5">The Solution</h2>
-            <p className="text-base leading-relaxed text-paper-dim">
-              {project.solution}
-            </p>
-          </Reveal>
-        </div>
-
-        {/* Features */}
-        <div className="site-container">
-          <Reveal>
-            <h2 className="eyebrow mb-8">What it does</h2>
-          </Reveal>
-          <Reveal
-            stagger="[data-feature]"
-            className="grid gap-px overflow-hidden rounded-lg border border-ink-700 bg-ink-700 sm:grid-cols-2"
-          >
-            {project.features.map((feature, index) => (
-              <div
-                key={feature}
-                data-feature
-                className="flex gap-4 bg-ink-900 p-6"
-              >
-                <span className="font-mono text-xs text-electric">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="text-sm leading-relaxed text-paper">{feature}</p>
-              </div>
-            ))}
-          </Reveal>
-        </div>
-
-        {/* Gallery */}
-        {project.shots.length > 0 && (
-          <div className="site-container mt-20 grid gap-6 md:grid-cols-3">
-            {project.shots.map((shot) => (
-              <Reveal key={shot.src}>
-                <div className="relative aspect-[16/10] overflow-hidden rounded-lg border border-ink-700 bg-ink-900">
-                  <Image
-                    src={shot.src}
-                    alt={shot.alt}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover object-top"
-                  />
-                </div>
-              </Reveal>
-            ))}
+        {/* The story in three short blocks. */}
+        <section aria-label="Overview" className="mt-10 grid grid-cols-1 gap-3 md:grid-cols-3 lg:mt-14">
+          <div data-reveal className="rounded-frame border border-rule bg-raised p-6">
+            <h2 className="text-h3 text-fg">The brief</h2>
+            <p className="mt-3 text-fg-muted">{project.challenge}</p>
           </div>
-        )}
-
-        {/* Results */}
-        <div className="site-container section-pad">
-          <Reveal>
-            <h2 className="eyebrow mb-8">The Result</h2>
-            <ul className="flex max-w-3xl flex-col gap-5">
-              {project.results.map((result) => (
-                <li
-                  key={result}
-                  className="display-hairline border-l border-electric pl-6 text-display-sm text-paper"
-                >
-                  {result}
+          <div data-reveal style={stagger(1)} className="rounded-frame border border-rule bg-raised p-6">
+            <h2 className="text-h3 text-fg">What I built</h2>
+            <p className="mt-3 text-fg-muted">{project.solution}</p>
+          </div>
+          <div data-reveal style={stagger(2)} className="rounded-frame border border-rule bg-raised p-6">
+            <h2 className="text-h3 text-fg">What changed</h2>
+            <ul className="mt-3 space-y-2.5">
+              {project.outcomes.map((outcome) => (
+                <li key={outcome} className="flex gap-3 text-fg">
+                  <span className="mt-[0.6em] h-1.5 w-1.5 shrink-0 rounded-full bg-earth" aria-hidden />
+                  {outcome}
                 </li>
               ))}
             </ul>
-          </Reveal>
-        </div>
+          </div>
+        </section>
 
-        {/* Next project */}
-        <div className="hairline-top">
-          <Link
-            href={`/projects/${nextProject.slug}`}
-            className="group block py-16 transition-colors duration-300 hover:bg-ink-900 md:py-20"
-          >
-            <div className="site-container flex items-end justify-between gap-6">
-              <div>
-                <p className="eyebrow mb-3">Next project</p>
-                <p className="display-hairline text-display-lg text-paper">
-                  {nextProject.name}
-                </p>
-              </div>
-              <ArrowRight
-                className="mb-2 h-8 w-8 shrink-0 text-paper-faint transition-all duration-300 group-hover:translate-x-2 group-hover:text-electric-bright"
-                aria-hidden
-              />
+        <section aria-labelledby="highlights" data-reveal className="mt-3 rounded-frame border border-rule bg-raised p-6 md:p-8">
+          <h2 id="highlights" className="text-h3 text-fg">
+            Highlights
+          </h2>
+          <ul className="mt-4 grid grid-cols-1 gap-x-10 gap-y-2.5 md:grid-cols-2">
+            {project.features.map((feature) => (
+              <li key={feature} className="flex gap-3 text-fg">
+                <svg width="14" height="14" viewBox="0 0 14 14" className="mt-[0.3em] shrink-0 text-earth" aria-hidden>
+                  <path d="M2.5 7.5l3 3 6-7" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                </svg>
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Gallery: every desktop shot at 16:10 and the phone shot on a matching forest mat. */}
+        <section aria-label="Screens" className="mt-10 grid grid-cols-1 gap-3 md:grid-cols-2 lg:mt-14">
+          {gallery.map((shot, i) => (
+            <div key={shot.src} data-reveal style={stagger(i % 2)}>
+              <DesktopFrame shot={shot} sizes="(min-width: 768px) 640px, 92vw" />
             </div>
+          ))}
+          {m2 && (
+            <div data-reveal style={stagger(1)} className="forest relative isolate flex aspect-[16/10] items-center justify-center overflow-hidden rounded-[var(--radius-shot)]">
+              <TopoMap className="absolute inset-0 -z-10 opacity-60" />
+              <PhoneFrame shot={m2} sizes="200px" className="h-[86%] w-auto" />
+            </div>
+          )}
+        </section>
+
+        {quote && (
+          <figure data-reveal className="mt-10 grid grid-cols-1 gap-6 rounded-frame border border-rule bg-raised p-6 md:grid-cols-12 md:gap-10 md:p-10 lg:mt-14">
+            <svg width="34" height="26" viewBox="0 0 34 26" aria-hidden className="text-earth md:col-span-1">
+              <path
+                fill="currentColor"
+                d="M0 26V15.6C0 6.9 4.6 1.7 13.6 0l1.6 3.6C10 5 7.6 7.8 7.3 11.8H14V26H0Zm19 0V15.6C19 6.9 23.6 1.7 32.6 0l1.4 3.6c-5.2 1.4-7.6 4.2-7.9 8.2H33V26H19Z"
+              />
+            </svg>
+            <blockquote className="space-y-4 md:col-span-7">
+              {quote.quote.map((para) => (
+                <p key={para} className="text-[clamp(1.0625rem,1.35vw,1.1875rem)] leading-[1.6] text-fg">
+                  {para}
+                </p>
+              ))}
+            </blockquote>
+            <figcaption className="flex items-center gap-3.5 border-t border-rule pt-5 md:col-span-4 md:items-start md:border-l md:border-t-0 md:pl-8 md:pt-0">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-well text-small font-semibold text-fg" aria-hidden>
+                {initials}
+              </span>
+              <span>
+                <span className="block font-medium text-fg">{quote.name}</span>
+                <span className="block text-small text-fg-muted">
+                  {quote.role}, {quote.company}
+                </span>
+              </span>
+            </figcaption>
+          </figure>
+        )}
+      </article>
+
+      {/* Close: next project and a call to action, side by side. */}
+      <section className="container-x mt-10 grid grid-cols-1 gap-3 pb-[var(--section-y)] md:grid-cols-2 lg:mt-14">
+        <Link href={`/projects/${next.slug}`} data-reveal className="group flex flex-col gap-4 rounded-frame border border-rule bg-raised p-4">
+          <Showcase project={next} caption={false} />
+          <span className="flex items-center justify-between gap-4 px-1 pb-1">
+            <span>
+              <span className="block text-caption text-fg-faint">Next project</span>
+              <span className="mt-0.5 block font-display text-h3 font-semibold tracking-[-0.02em] text-fg [font-stretch:var(--display-stretch)]">
+                {next.name}
+              </span>
+            </span>
+            <Arrow className="h-5 w-5 text-earth-ink transition-transform duration-300 ease-out group-hover:translate-x-1" />
+          </span>
+        </Link>
+        <div data-reveal style={stagger(1)} className="forest relative isolate flex flex-col justify-end overflow-hidden rounded-frame p-6 md:p-10">
+          <TopoMap className="absolute inset-0 -z-10" />
+          <h2 className="max-w-[14ch] text-h1 text-fg">Want something like this?</h2>
+          <p className="mt-4 max-w-[38ch] text-fg-muted">Tell me what you need. You get a straight answer and a fixed price, with no surprises along the way.</p>
+          <Link href="/#contact" className="btn-brand mt-7 w-fit">
+            Book a call
           </Link>
         </div>
-      </article>
+      </section>
     </main>
   );
 }
