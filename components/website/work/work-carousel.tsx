@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { clamp, onScrollFrame } from "@/lib/scroll";
 import type { Project } from "@/lib/content/projects";
 import { Showcase } from "@/components/website/work/showcase";
 import { TopoMap } from "@/components/website/home/topo-map";
@@ -17,10 +18,17 @@ import { Logo, LogoIcon } from "@/components/brand/logo";
  *
  * Interaction: drag or swipe to spin (with momentum and snap), click a side card
  * to bring it to the front, click the front card to open the case study, arrow
- * buttons and arrow keys step through. It spins in the first time it scrolls into
- * view and then turns slowly on its own, pausing for hover, focus, touch and
- * whenever it is off screen or the tab is hidden. Reduced motion: no spin-in,
- * no autoplay, instant moves.
+ * buttons and arrow keys step through.
+ *
+ * Scroll: as the ring scrolls into view the scroll itself turns it, half a turn
+ * from the moment it appears to the moment it is centred on screen (scroll back
+ * and it turns back). Once it has been centred it stays put.
+ *
+ * Timer: from then on a line fills under the counter and the ring steps to the
+ * next card when it completes. Hover, focus and being off screen pause it. Any
+ * manual move (drag, arrows, dots, keys, clicking a card) hands control to the
+ * visitor and the timer stops for good. Reduced motion: no spin-in, no timer,
+ * instant moves.
  */
 
 const TILT = -7; // degrees: looking down on the ring slightly
@@ -30,6 +38,10 @@ const FACE_TURN = 0.82; // cards turn a little less than their angle round the r
 
 const easeOutExpo = (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+const SPIN_IN = 180; // degrees the scroll turns the ring through on the way in
+const AUTO_MS = 5000; // how long each card stays at the front while the timer runs
+
+const easeOutQuad = (t: number) => 1 - (1 - t) * (1 - t);
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 export function WorkCarousel({ items }: { items: Project[] }) {
@@ -47,6 +59,9 @@ export function WorkCarousel({ items }: { items: Project[] }) {
   const paused = useRef(false);
   const inView = useRef(false);
   const dragged = useRef(false);
+  const entered = useRef(false); // the scroll spin-in is done (or the visitor took over)
+  const timerRef = useRef<HTMLSpanElement | null>(null);
+  const [auto, setAuto] = useState(false);
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
   const geo = useRef({ rx: 0, rz: 0 }); // ring radii in px, measured from the card width
@@ -123,8 +138,32 @@ export function WorkCarousel({ items }: { items: Project[] }) {
     },
     [animateTo, step]
   );
-  const next = useCallback(() => go(activeRef.current + 1), [go]);
-  const prev = useCallback(() => go(activeRef.current - 1), [go]);
+  // The timer line runs only while nothing is holding it.
+  const syncTimer = useCallback(() => {
+    const t = timerRef.current;
+    if (t) t.style.animationPlayState = paused.current || !inView.current ? "paused" : "running";
+  }, []);
+  const hold = useCallback(
+    (on: boolean) => {
+      paused.current = on;
+      syncTimer();
+    },
+    [syncTimer]
+  );
+  // Any manual move: the visitor is driving now, so the spin-in and timer stop.
+  const takeOver = useCallback(() => {
+    entered.current = true;
+    setAuto(false);
+  }, []);
+
+  const next = useCallback(() => {
+    takeOver();
+    go(activeRef.current + 1);
+  }, [go, takeOver]);
+  const prev = useCallback(() => {
+    takeOver();
+    go(activeRef.current - 1);
+  }, [go, takeOver]);
 
   // Set up: initial paint, spin-in on first view, autoplay while visible.
   useEffect(() => {
@@ -139,35 +178,42 @@ export function WorkCarousel({ items }: { items: Project[] }) {
     const stage = stageRef.current;
     if (!stage) return;
 
-    let spun = false;
     const io = new IntersectionObserver(
       ([entry]) => {
         inView.current = entry.isIntersecting;
-        if (entry.isIntersecting && !spun) {
-          spun = true;
-          if (!reduced.current) {
-            rot.current = -step * 1.5; // a quarter turn back, then a long, soft glide into place
-            apply();
-            animateTo(0, 2600, easeOutCubic);
-          }
-        }
+        syncTimer();
       },
       { threshold: 0.35 }
     );
     io.observe(stage);
 
-    const timer = window.setInterval(() => {
-      if (reduced.current || paused.current || !inView.current || document.hidden) return;
-      goSmooth(activeRef.current + 1);
-    }, 4500);
+    // The spin-in, driven by the scroll: 0 as the stage's top meets the bottom of
+    // the screen, 1 when the stage is centred. Then it hands over to the timer.
+    let stopScroll = () => {};
+    if (reduced.current) entered.current = true;
+    else
+      stopScroll = onScrollFrame(() => {
+        if (entered.current) return;
+        const r = stage.getBoundingClientRect();
+        const vh = window.innerHeight;
+        // Done a whisker before exactly centred, so any scroll that reaches centre counts.
+        const e = clamp((vh - r.top) / (vh / 2 + r.height / 2) / 0.97);
+        rot.current = -SPIN_IN * (1 - easeOutQuad(e));
+        apply();
+        if (e >= 1) {
+          entered.current = true;
+          setAuto(true);
+          queueMicrotask(() => stopScroll());
+        }
+      });
 
     return () => {
       window.removeEventListener("resize", onResize);
       io.disconnect();
-      window.clearInterval(timer);
+      stopScroll();
       cancelAnimationFrame(frame.current);
     };
-  }, [animateTo, apply, goSmooth, measure, n, step]);
+  }, [apply, measure, syncTimer]);
 
   // Drag and swipe, with momentum, snapping to the nearest card.
   useEffect(() => {
@@ -186,7 +232,7 @@ export function WorkCarousel({ items }: { items: Project[] }) {
       if (e.button !== 0) return;
       down = true;
       dragged.current = false;
-      paused.current = true;
+      hold(true);
       cancelAnimationFrame(frame.current);
       startX = lastX = e.clientX;
       startRot = rot.current;
@@ -198,6 +244,7 @@ export function WorkCarousel({ items }: { items: Project[] }) {
       const dx = e.clientX - startX;
       if (!dragged.current && Math.abs(dx) > 6) {
         dragged.current = true;
+        takeOver();
         stage.setPointerCapture(e.pointerId);
       }
       if (!dragged.current) return;
@@ -217,7 +264,7 @@ export function WorkCarousel({ items }: { items: Project[] }) {
         const target = Math.round(projected / step) * step;
         animateTo(target, 1000);
       }
-      window.setTimeout(() => (paused.current = stage.matches(":hover")), 1200);
+      window.setTimeout(() => hold(stage.matches(":hover")), 1200);
     };
 
     stage.addEventListener("pointerdown", onDown);
@@ -230,7 +277,7 @@ export function WorkCarousel({ items }: { items: Project[] }) {
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
     };
-  }, [animateTo, apply, step]);
+  }, [animateTo, apply, hold, step, takeOver]);
 
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowRight") {
@@ -250,10 +297,10 @@ export function WorkCarousel({ items }: { items: Project[] }) {
       role="region"
       aria-roledescription="carousel"
       aria-label="More projects"
-      onPointerEnter={() => (paused.current = true)}
-      onPointerLeave={() => (paused.current = false)}
-      onFocus={() => (paused.current = true)}
-      onBlur={() => (paused.current = false)}
+      onPointerEnter={() => hold(true)}
+      onPointerLeave={() => hold(false)}
+      onFocus={() => hold(true)}
+      onBlur={() => hold(false)}
       onKeyDown={onKey}
     >
       {/* The stage: perspective lives here; the ring inside turns. */}
@@ -286,7 +333,7 @@ export function WorkCarousel({ items }: { items: Project[] }) {
                 }
                 if (i !== activeRef.current) {
                   e.preventDefault();
-                  paused.current = true;
+                  takeOver();
                   go(i);
                 }
               }}
@@ -333,8 +380,23 @@ export function WorkCarousel({ items }: { items: Project[] }) {
       {/* Controls: step through, see where you are. */}
       <div className="relative z-10 mt-6 flex items-center justify-between gap-4 sm:mt-8">
         <p className="min-w-0 text-small text-fg-muted" aria-live="polite">
-          <span className="tabular text-earth-ink">
+          <span className="relative inline-block pb-2 tabular text-earth-ink">
             {String(active + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+            {/* The timer: fills while this card is at the front, then turns to the next. */}
+            {auto && (
+              <span aria-hidden className="absolute inset-x-0 bottom-0 h-[2px] overflow-hidden rounded-full bg-rule">
+                <span
+                  key={active}
+                  ref={(el) => {
+                    timerRef.current = el;
+                    if (el) syncTimer();
+                  }}
+                  onAnimationEnd={() => goSmooth(activeRef.current + 1)}
+                  className="review-timer block h-full origin-left scale-x-0 bg-earth"
+                  style={{ animationDuration: `${AUTO_MS}ms` }}
+                />
+              </span>
+            )}
           </span>
           <span className="ml-3 hidden text-fg sm:inline">{current.name}</span>
           <span className="ml-3 hidden text-fg-faint md:inline">Drag to spin, or tap a card</span>
@@ -345,7 +407,7 @@ export function WorkCarousel({ items }: { items: Project[] }) {
               key={project.slug}
               type="button"
               onClick={() => {
-                paused.current = true;
+                takeOver();
                 go(i);
               }}
               className="hidden h-2 w-2 rounded-full transition-[transform,background-color] duration-300 sm:block data-[on=true]:scale-125 data-[on=true]:bg-earth bg-rule"

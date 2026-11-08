@@ -131,46 +131,48 @@ export const projects: Project[] = [
     seoDescription:
       "Case study: JetNow Drainage, an emergency drainage website with fixed pricing, two-hour response and WhatsApp contact. Built by Jack Oliver Dev.",
   },
-  {
-    slug: "imperial-build",
-    name: "Imperial Build",
-    client: "Commercial groundworks and building contractor",
-    clientShort: "Groundworks and building contractor",
-    sector: "Construction",
-    year: "2026",
-    url: "https://imperialbuildlimited.com",
-    status: "live",
-    tagline: "A contractor's site that reads like a tender: services, sectors and real project quantities, with an admin console the team uses to publish new work.",
-    built: ["Website", "Content system", "Analytics", "SEO and AI search"],
-    summary:
-      "Imperial Build works as a package subcontractor for principal contractors, developers, housing providers, schools and public sector clients across London, Essex and Hertfordshire. The rebuild gives them a site buyers can check in a minute and a back office they run themselves.",
-    challenge:
-      "Commercial clients check a contractor online before they return a call. They had outgrown their old site: a single page with a video and no proof of work, so it did nothing for tenders.",
-    solution:
-      "A full rebuild around how buyers assess a contractor: services, sectors, accreditations and project case studies with the quantities delivered. Behind it sits an admin console for projects, services, sectors, media, enquiries and analytics, so the team publishes new work without me.",
-    features: [
-      "Project case studies with location, sector and quantities delivered",
-      "Services, sectors and accreditations pages written for procurement checks",
-      "Admin console: projects, pages, media, enquiries, users and settings",
-      "Built-in analytics alongside Google Analytics and Search Console",
-      "Structured data for search engines and AI answers",
-      "Tender enquiry flow that routes straight to the estimators",
-    ],
-    outcomes: [
-      "The credibility to win work, on every device",
-      "Ranking on Google and appearing in AI answers like ChatGPT",
-      "New projects published by the team the day they finish",
-    ],
-    stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Playwright"],
-    ...shots(
-      "imperial-build",
-      "Imperial Build",
-      ["homepage", "services from enquiry to completion", "project case studies with quantities", "sectors"],
-      ["homepage", "services"]
-    ),
-    seoDescription:
-      "Case study: Imperial Build, a website and admin console for a commercial groundworks and building contractor in London, Essex and Hertfordshire. Built by Jack Oliver Dev.",
-  },
+  // Hidden for now. To bring Imperial Build back, uncomment this block (and its
+  // testimonial and "seen in" links in lib/content/site.ts).
+  // {
+  //   slug: "imperial-build",
+  //   name: "Imperial Build",
+  //   client: "Commercial groundworks and building contractor",
+  //   clientShort: "Groundworks and building contractor",
+  //   sector: "Construction",
+  //   year: "2026",
+  //   url: "https://imperialbuildlimited.com",
+  //   status: "live",
+  //   tagline: "A contractor's site that reads like a tender: services, sectors and real project quantities, with an admin console the team uses to publish new work.",
+  //   built: ["Website", "Content system", "Analytics", "SEO and AI search"],
+  //   summary:
+  //     "Imperial Build works as a package subcontractor for principal contractors, developers, housing providers, schools and public sector clients across London, Essex and Hertfordshire. The rebuild gives them a site buyers can check in a minute and a back office they run themselves.",
+  //   challenge:
+  //     "Commercial clients check a contractor online before they return a call. They had outgrown their old site: a single page with a video and no proof of work, so it did nothing for tenders.",
+  //   solution:
+  //     "A full rebuild around how buyers assess a contractor: services, sectors, accreditations and project case studies with the quantities delivered. Behind it sits an admin console for projects, services, sectors, media, enquiries and analytics, so the team publishes new work without me.",
+  //   features: [
+  //     "Project case studies with location, sector and quantities delivered",
+  //     "Services, sectors and accreditations pages written for procurement checks",
+  //     "Admin console: projects, pages, media, enquiries, users and settings",
+  //     "Built-in analytics alongside Google Analytics and Search Console",
+  //     "Structured data for search engines and AI answers",
+  //     "Tender enquiry flow that routes straight to the estimators",
+  //   ],
+  //   outcomes: [
+  //     "The credibility to win work, on every device",
+  //     "Ranking on Google and appearing in AI answers like ChatGPT",
+  //     "New projects published by the team the day they finish",
+  //   ],
+  //   stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Playwright"],
+  //   ...shots(
+  //     "imperial-build",
+  //     "Imperial Build",
+  //     ["homepage", "services from enquiry to completion", "project case studies with quantities", "sectors"],
+  //     ["homepage", "services"]
+  //   ),
+  //   seoDescription:
+  //     "Case study: Imperial Build, a website and admin console for a commercial groundworks and building contractor in London, Essex and Hertfordshire. Built by Jack Oliver Dev.",
+  // },
   {
     slug: "advanta-services",
     name: "Advanta Services",

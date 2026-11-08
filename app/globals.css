@@ -607,41 +607,42 @@
   animation-fill-mode: forwards;
 }
 
-/* Process timeline (components/website/home/process-section.tsx).
-   Complete by default; once JavaScript is ready it starts empty and draws when the
-   list reaches the screen (.is-in). Desktop draws one line left to right; phones
-   draw a segment between each pair of stops, top to bottom, one after another. */
+/* Process timeline (components/website/home/process-timeline.tsx).
+   Complete by default. Once JavaScript is running ([data-scrub]) the scroll drives
+   it: --p (0..1) draws the desktop line, --s (0..1) each phone segment, and a stop
+   lights up when it gets [data-on]. The short transitions only smooth out wheel
+   steps; the position always comes from the scroll. */
 .timeline-fill {
   transform-origin: left;
-  transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1);
+  transform: translateY(-0.5px) scaleX(var(--p, 1));
+  transition: transform 0.15s linear;
 }
 .timeline-seg {
   transform-origin: top;
-  transition: transform 0.45s linear;
-  transition-delay: calc(0.3s + var(--step, 0) * 0.45s);
+  transform: translateX(-0.5px) scaleY(var(--s, 1));
+  transition: transform 0.15s linear;
 }
 .timeline-node {
   border-color: rgb(var(--earth));
   background: rgb(var(--earth));
   color: rgb(var(--bone-50));
   transition:
-    background-color 0.4s ease-out,
-    color 0.4s ease-out,
-    border-color 0.4s ease-out,
+    background-color 0.35s ease-out,
+    color 0.35s ease-out,
+    border-color 0.35s ease-out,
     transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transition-delay: calc(0.15s + var(--step, 0) * 0.45s);
 }
-html.reveal-ready .timeline:not(.is-in) .timeline-fill {
-  transform: scaleX(0);
+.timeline-copy {
+  transition: opacity 0.5s ease-out;
 }
-html.reveal-ready .timeline:not(.is-in) .timeline-seg {
-  transform: scaleY(0);
-}
-html.reveal-ready .timeline:not(.is-in) .timeline-node {
+.timeline[data-scrub] [data-step]:not([data-on]) .timeline-node {
   border-color: rgb(var(--rule-strong));
   background: rgb(var(--well));
   color: rgb(var(--fg-muted));
   transform: scale(0.85);
+}
+.timeline[data-scrub] [data-step]:not([data-on]) .timeline-copy {
+  opacity: 0.4;
 }
 
 /* Scroll reveals (see components/website/motion/reveal-observer.tsx).

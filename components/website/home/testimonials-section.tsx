@@ -142,9 +142,11 @@ export function TestimonialsSection() {
                   d="M0 26V15.6C0 6.9 4.6 1.7 13.6 0l1.6 3.6C10 5 7.6 7.8 7.3 11.8H14V26H0Zm19 0V15.6C19 6.9 23.6 1.7 32.6 0l1.4 3.6c-5.2 1.4-7.6 4.2-7.9 8.2H33V26H19Z"
                 />
               </svg>
+              {/* Phones get the short version, about four lines; md and up the full quote. */}
               <blockquote className="mt-6 flex-1 space-y-4">
+                <p className="text-[1.0625rem] leading-[1.6] text-fg md:hidden">{t.short}</p>
                 {t.quote.map((para) => (
-                  <p key={para} className="text-[clamp(1.0625rem,1.35vw,1.1875rem)] leading-[1.6] text-fg">
+                  <p key={para} className="hidden text-[clamp(1.0625rem,1.35vw,1.1875rem)] leading-[1.6] text-fg md:block">
                     {para}
                   </p>
                 ))}

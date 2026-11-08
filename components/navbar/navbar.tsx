@@ -152,8 +152,16 @@ export const NavBar = () => {
             ))}
           </ul>
           <div className="mt-auto">
-            <Link href="/#contact" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)} className="btn-brand w-full">
+            <Link
+              href="/#contact"
+              tabIndex={open ? 0 : -1}
+              onClick={() => setOpen(false)}
+              className="btn-brand min-h-[3.75rem] w-full gap-3 text-[1.125rem]"
+            >
               Book a call
+              <svg width="16" height="16" viewBox="0 0 14 14" aria-hidden>
+                <path d="M1 7h11M8 3l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+              </svg>
             </Link>
           </div>
         </nav>
