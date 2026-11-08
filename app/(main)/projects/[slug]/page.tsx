@@ -51,7 +51,7 @@ export default async function ProjectPage({ params }: PageProps) {
 
   const next = getNextProject(project.slug);
   const quote = testimonials.find((t) => t.project === project.slug);
-  const [, d2, d3, d4] = project.desktop;
+  const gallery = project.desktop.slice(1);
   const [, m2] = project.mobile;
 
   const jsonLd = {
@@ -155,7 +155,7 @@ export default async function ProjectPage({ params }: PageProps) {
 
         {/* Gallery: every desktop shot at 16:10 and the phone shot on a matching forest mat. */}
         <section aria-label="Screens" className="mt-10 grid grid-cols-1 gap-3 md:grid-cols-2 lg:mt-14">
-          {[d2, d3, d4].filter(Boolean).map((shot, i) => (
+          {gallery.map((shot, i) => (
             <div key={shot.src} data-reveal style={stagger(i % 2)}>
               <DesktopFrame shot={shot} sizes="(min-width: 768px) 640px, 92vw" />
             </div>
@@ -215,7 +215,7 @@ export default async function ProjectPage({ params }: PageProps) {
         <div data-reveal style={stagger(1)} className="forest relative isolate flex flex-col justify-end overflow-hidden rounded-frame p-6 md:p-10">
           <TopoMap className="absolute inset-0 -z-10" />
           <h2 className="max-w-[14ch] text-h1 text-fg">Want something like this?</h2>
-          <p className="mt-4 max-w-[38ch] text-fg-muted">Tell me what you need. You get a straight answer, a fixed price and a live link from week one.</p>
+          <p className="mt-4 max-w-[38ch] text-fg-muted">Tell me what you need. You get a straight answer and a fixed price, with no surprises along the way.</p>
           <Link href="/#contact" className="btn-brand mt-7 w-fit">
             Book a call
           </Link>

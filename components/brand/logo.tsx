@@ -20,11 +20,11 @@ export function LogoIcon({ className, title }: { className?: string; title?: str
   );
 }
 
-export function Logo({ className }: { className?: string }) {
+export function Logo({ className, icon = true }: { className?: string; icon?: boolean }) {
   const [x, y, w, h] = logoWordmark.box;
   return (
     <span className={cn("inline-flex items-center gap-2.5 text-fg", className)}>
-      <LogoIcon className="h-[1.9em]" />
+      {icon && <LogoIcon className="h-[1.9em]" />}
       <svg viewBox={`${x} ${y} ${w} ${h}`} className="h-[1.05em] w-auto" aria-hidden>
         <path d={logoWordmark.body} fill="currentColor" />
         <path d={logoWordmark.dots} className="fill-signal" />

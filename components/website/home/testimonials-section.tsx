@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { testimonials } from "@/lib/content/site";
 import { getProject } from "@/lib/content/projects";
 import { DesktopFrame } from "@/components/website/work/frames";
@@ -15,12 +15,47 @@ const initials = (name: string) =>
     .join("")
     .slice(0, 2);
 
-/** One quote at a time, in a card tied to the project it's about. */
+const FLIP_MS = 7000; // how long each review stays up before flipping to the next
+
+/**
+ * One quote at a time, in a card tied to the project it's about.
+ *
+ * Auto-flip: while the section is on screen, a thin cocoa bar fills under the
+ * active client and flips to the next review when it completes. The timing is a
+ * CSS animation (transform only), so there is no JavaScript timer. It always
+ * keeps rolling while the section is on screen (clicking a client restarts it from
+ * that review), pauses only when the section is out of view, and is off for
+ * reduced motion.
+ */
 export function TestimonialsSection() {
   const [active, setActive] = useState(0);
+  const [inView, setInView] = useState(false);
+  const [motion, setMotion] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const id = useId();
   const t = testimonials[active];
   const project = getProject(t.project);
+  const playing = motion && inView;
+
+  useEffect(() => {
+    setMotion(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.35 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Keep the active client in view in the scrolling row on phones (horizontal only).
+  useEffect(() => {
+    const list = listRef.current;
+    const tab = document.getElementById(`${id}-tab-${active}`);
+    if (!list || !tab || list.scrollWidth <= list.clientWidth) return;
+    list.scrollTo({ left: tab.offsetLeft - 16, behavior: motion ? "smooth" : "auto" });
+  }, [active, id, motion]);
+
+  const advance = () => setActive((a) => (a + 1) % testimonials.length);
 
   const onKey = (e: React.KeyboardEvent) => {
     const keys = ["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft"];
@@ -33,7 +68,11 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section aria-labelledby={`${id}-title`} className="border-t border-rule py-[var(--section-y)]">
+    <section
+      ref={sectionRef}
+      aria-labelledby={`${id}-title`}
+      className="border-t border-rule py-[var(--section-y)]"
+    >
       {/* Heading, switcher and card are separate grid items, so the switcher can stay
           pinned under the nav (sticky) while the quote and screenshots scroll past. */}
       <div className="container-x grid grid-cols-1 lg:grid-cols-12 lg:gap-x-10">
@@ -45,6 +84,7 @@ export function TestimonialsSection() {
             role="tablist"
             aria-label="Clients"
             onKeyDown={onKey}
+            ref={listRef}
             className="no-scrollbar -mx-[var(--gutter)] flex gap-6 overflow-x-auto border-b border-rule px-[var(--gutter)] pt-3 lg:mx-0 lg:flex-col lg:gap-0 lg:overflow-visible lg:border-b-0 lg:px-0 lg:pt-0"
           >
             {testimonials.map((item, i) => (
@@ -58,12 +98,25 @@ export function TestimonialsSection() {
                 tabIndex={i === active ? 0 : -1}
                 onClick={() => setActive(i)}
                 className={cn(
-                  "shrink-0 whitespace-nowrap border-b-2 pb-2 pt-1 text-small transition-colors duration-200 ease-out",
+                  "relative shrink-0 whitespace-nowrap border-b-2 pb-2 pt-1 text-small transition-colors duration-200 ease-out",
                   "lg:flex lg:items-center lg:justify-between lg:border-b lg:border-rule lg:py-3 lg:text-body",
-                  i === active ? "border-earth font-medium text-fg lg:border-rule" : "border-transparent text-fg-muted hover:text-fg"
+                  i === active ? "border-rule font-medium text-fg" : "border-transparent text-fg-muted hover:text-fg"
                 )}
               >
                 {item.company}
+                {/* The timer: fills while this review is up, then flips to the next one. */}
+                {i === active && (
+                  <span
+                    key={active}
+                    aria-hidden
+                    onAnimationEnd={advance}
+                    className={cn(
+                      "pointer-events-none absolute -bottom-[2px] left-0 h-[2px] w-full origin-left scale-x-0 bg-earth lg:-bottom-px",
+                      motion ? "review-timer" : "scale-x-100"
+                    )}
+                    style={{ animationDuration: `${FLIP_MS}ms`, animationPlayState: playing ? "running" : "paused" }}
+                  />
+                )}
                 <span
                   className={cn("hidden h-1.5 w-1.5 rounded-full bg-earth transition-opacity duration-200 lg:block", i === active ? "opacity-100" : "opacity-0")}
                   aria-hidden

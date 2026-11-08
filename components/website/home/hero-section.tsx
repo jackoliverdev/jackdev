@@ -40,10 +40,15 @@ export function HeroSection() {
           </h1>
 
           <div className="mt-10 grid grid-cols-1 gap-8 border-t border-rule pt-8 md:grid-cols-12 md:items-end">
-            <p className="hero-fade max-w-[48ch] text-lead text-fg-muted md:col-span-7" style={order(1)}>
-              {hero.sub}
+            <p className="hero-fade text-lead text-fg-muted md:col-span-8" style={order(1)}>
+              {hero.sub.map((line, i) => (
+                <span key={line} className="lg:block lg:whitespace-nowrap">
+                  {line}
+                  {i < hero.sub.length - 1 ? " " : ""}
+                </span>
+              ))}
             </p>
-            <div className="hero-fade flex flex-wrap gap-3 md:col-span-5 md:justify-end" style={order(2)}>
+            <div className="hero-fade flex flex-wrap gap-3 md:col-span-4 md:justify-end" style={order(2)}>
               <Link href={hero.primaryCta.href} className="btn-brand">
                 {hero.primaryCta.label}
               </Link>

@@ -1,8 +1,9 @@
+// Featured work: Centrus as the feature, the rest on a 3D carousel.
 import Link from "next/link";
 import { projects, type Project } from "@/lib/content/projects";
 import { Showcase } from "@/components/website/work/showcase";
 import { cn } from "@/lib/utils";
-import { stagger } from "@/lib/reveal";
+import { WorkCarousel } from "@/components/website/work/work-carousel";
 
 function Title({ project, className }: { project: Project; className?: string }) {
   return (
@@ -29,10 +30,10 @@ export function SelectedWork() {
   const [feature, ...rest] = projects;
 
   return (
-    <section id="work" className="py-[var(--section-y)]">
+    <section id="work" className="overflow-x-clip py-[var(--section-y)]">
       <div className="container-x">
         <div data-reveal className="grid grid-cols-1 gap-5 md:grid-cols-12 md:items-end">
-          <h2 className="text-h1 text-fg md:col-span-6">Selected work</h2>
+          <h2 className="text-h1 text-fg md:col-span-6">Featured work</h2>
           <p className="max-w-[44ch] text-fg-muted md:col-span-6 md:justify-self-end">
             AI platforms, SaaS products and the websites that keep local firms busy. All live, all built by me.
           </p>
@@ -52,23 +53,9 @@ export function SelectedWork() {
           </div>
         </Link>
 
-        <div className="mt-16 grid grid-cols-1 gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-          {rest.map((project, i) => (
-            <Link
-              key={project.slug}
-              href={`/projects/${project.slug}`}
-              data-reveal
-              style={stagger(i % 3)}
-              className="group flex min-w-0 flex-col"
-            >
-              <Showcase project={project} />
-              <Title project={project} className="mt-5 text-h3" />
-              <p className="mt-2 text-fg-muted">{project.tagline}</p>
-              <span className="mt-4">
-                <ViewLink label="View project" />
-              </span>
-            </Link>
-          ))}
+        {/* The other projects on a 3D ring. */}
+        <div data-reveal="fade" className="mt-20 lg:mt-36">
+          <WorkCarousel items={rest} />
         </div>
       </div>
     </section>

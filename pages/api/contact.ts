@@ -2,11 +2,18 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { Resend } from "resend";
 import { z } from "zod";
 
+import { site } from "@/lib/content/site";
+
 // Enquiries and call requests from the contact form.
-// RESEND_FROM must be an address on a domain verified in Resend for the visitor's
-// confirmation to send; onboarding@resend.dev can only email the account owner.
-const TO = process.env.CONTACT_TO || "jackoliverdev@gmail.com";
-const FROM = process.env.RESEND_FROM || "Jack Oliver Dev <onboarding@resend.dev>";
+// Enquiries go to the inbox the Resend account is registered to (CONTACT_TO).
+// Mail is sent from jackodev.co.uk once that domain is verified in Resend; until
+// then Resend rejects it and we fall back to its test sender, which can only
+// deliver to the account owner. So the visitor's confirmation only goes out once
+// the domain is verified. Visitors reply to the public address on the site.
+const TO = process.env.CONTACT_TO || "jackmelluish123@icloud.com";
+const FROM = process.env.RESEND_FROM || "Jack Oliver Dev <hello@jackodev.co.uk>";
+const FALLBACK_FROM = "Jack Oliver Dev <onboarding@resend.dev>";
+const PUBLIC_EMAIL = site.email;
 
 const schema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -112,43 +119,53 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   ];
   const text = lines.join("\n");
 
+  const enquiry = {
+    to: [TO],
+    replyTo: data.email,
+    subject: when ? `Call request: ${data.name}, ${when}` : `New enquiry from ${data.name}`,
+    text,
+    attachments: start
+      ? [{ filename: "call.ics", content: Buffer.from(buildIcs(start, data.name, data.email, text)).toString("base64") }]
+      : undefined,
+  };
+
+  // Try the real domain first; if Resend rejects it (domain not verified yet), use the test sender.
+  let domainVerified = true;
   try {
-    const { error } = await resend.emails.send({
-      from: FROM,
-      to: [TO],
-      replyTo: data.email,
-      subject: when ? `Call request: ${data.name}, ${when}` : `New enquiry from ${data.name}`,
-      text,
-      attachments: start
-        ? [{ filename: "call.ics", content: Buffer.from(buildIcs(start, data.name, data.email, text)).toString("base64") }]
-        : undefined,
-    });
+    let { error } = await resend.emails.send({ from: FROM, ...enquiry });
+    if (error) {
+      domainVerified = false;
+      console.warn("contact: domain sender rejected, using fallback", error.message);
+      ({ error } = await resend.emails.send({ from: FALLBACK_FROM, ...enquiry }));
+    }
     if (error) throw new Error(error.message);
   } catch (err) {
     console.error("contact: send failed", err);
     return res.status(502).json({ error: "The message didn't send." });
   }
 
-  // Confirmation to the visitor. Only works once RESEND_FROM is on a verified domain.
-  try {
-    await resend.emails.send({
-      from: FROM,
-      to: [data.email],
-      replyTo: TO,
-      subject: when ? "Your call request with Jack Oliver Dev" : "Thanks for getting in touch",
-      text: [
-        `Hi ${data.name.split(" ")[0]},`,
-        "",
-        when
-          ? `Thanks for booking in. I've got your request for ${when} (UK time). I'll confirm it with a calendar invite within one working day.`
-          : "Thanks for your message. I'll reply within one working day.",
-        "",
-        "Jack",
-        "jackodev.co.uk",
-      ].join("\n"),
-    });
-  } catch {
-    // Not fatal: Jack still has the enquiry.
+  // Confirmation to the visitor: only possible from the verified domain.
+  if (domainVerified) {
+    try {
+      await resend.emails.send({
+        from: FROM,
+        to: [data.email],
+        replyTo: PUBLIC_EMAIL,
+        subject: when ? "Your call request with Jack Oliver Dev" : "Thanks for getting in touch",
+        text: [
+          `Hi ${data.name.split(" ")[0]},`,
+          "",
+          when
+            ? `Thanks for booking in. I've got your request for ${when} (UK time). I'll confirm it with a calendar invite within one working day.`
+            : "Thanks for your message. I'll reply within one working day.",
+          "",
+          "Jack",
+          "jackodev.co.uk",
+        ].join("\n"),
+      });
+    } catch {
+      // Not fatal: Jack still has the enquiry.
+    }
   }
 
   return res.status(200).json({ ok: true });

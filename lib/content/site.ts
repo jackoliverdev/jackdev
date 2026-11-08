@@ -22,7 +22,8 @@ export const nav = [
 
 export const hero = {
   headline: ["Websites, AI", "and software", "that win you work."],
-  sub: "I'm Jack. I design and build websites, AI assistants and web apps for UK businesses, from a one-van electrician to an AI platform firms run their office on.",
+  // Two lines on desktop (1024px and up), broken exactly here; smaller screens wrap naturally.
+  sub: ["I'm Jack. I design and build websites, AI tools and custom software for", "UK businesses, from local trades to growing software companies."],
   primaryCta: { label: "Book a call", href: "/#contact" },
   secondaryCta: { label: "See the work", href: "/#work" },
   availability: "Available for new projects",
@@ -48,7 +49,7 @@ export const services = [
     tone: "moss",
     title: "AI development",
     summary:
-      "Anything AI, built properly: assistants that answer customers, agents that do the admin, workflows that run themselves, and AI features inside your own apps.",
+      "Anything AI: assistants that answer customers, agents that do the admin, workflows that run themselves and AI features in your apps.",
     includes: [
       "Assistants and chatbots",
       "Agents and automated workflows",
@@ -70,18 +71,22 @@ export const services = [
 
 export const process = [
   {
+    when: "Day one",
     title: "A 30-minute call",
     copy: "You tell me what you need and I tell you straight whether I'm the right person. No sales team, just me.",
   },
   {
+    when: "Within two days",
     title: "A fixed price and plan",
     copy: "Within a couple of days you get the scope, the timeline and one fixed price. No hourly surprises.",
   },
   {
-    title: "Design and build in the open",
-    copy: "You get a live link from the first week and watch it come together. Feedback goes straight into the build.",
+    when: "From week one",
+    title: "Design and build",
+    copy: "I design it first and you sign off the look. Then I build it, with updates along the way and a full preview before launch.",
   },
   {
+    when: "Launch and beyond",
     title: "Launch and look after",
     copy: "Hosting, analytics, search and handover sorted. I stay on hand after launch for changes and support.",
   },
@@ -119,7 +124,7 @@ export const testimonials = [
     company: "JetNow Drainage",
     project: "jetnow-drainage",
     quote: [
-      "This was our first proper website, and Jack made the whole thing easy. He explained every step in plain English, kept it affordable for a small firm, and the site looks as professional as anyone in the trade.",
+      "This was our first proper website, and Jack made the whole thing easy. He explained every step in plain English, kept it affordable, and the site looks as professional as anyone in the trade.",
       "The SEO has been fantastic. We show up right across our area for the searches that matter, and we get a steady stream of local leads we would never have had before.",
     ],
   },
@@ -169,7 +174,7 @@ export const testimonials = [
     company: "Gym Tours AI",
     project: "gym-tours-ai",
     quote: [
-      "Jack built our marketing website and the app our gyms use every day. It's so intuitive that owners pick it up without training.",
+      "Jack built our marketing website and the app our gym owners use every day. It's so intuitive that they pick it up without any training, and their members find it just as easy.",
       "Behind it sits the admin system we run the business from: every account, every new gym and every payment. Better than anything we pictured at the start.",
     ],
   },

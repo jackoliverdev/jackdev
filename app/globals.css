@@ -561,6 +561,89 @@
   animation: hero-map 1.6s ease-out both;
 }
 
+/* 3D work carousel (components/website/work/work-carousel.tsx).
+   --cw is the card width; --rf (set inline) turns it into the ring radius. */
+.work-stage {
+  --cw: min(74vw, 330px);
+  --r: calc(var(--cw) * var(--rf, 1));
+  height: calc(var(--cw) * 0.8 + 13rem);
+  perspective: 1500px;
+  perspective-origin: 50% 30%;
+}
+@media (min-width: 1024px) {
+  .work-stage {
+    --cw: 400px;
+    height: calc(var(--cw) * 0.85 + 14.5rem);
+    perspective: 2400px;
+  }
+}
+/* Before JavaScript places the cards on the oval, this shows them as a plain ring. */
+.work-ring {
+  transform: translateZ(calc(var(--r) * -1)) rotateX(-7deg);
+  will-change: transform;
+}
+.work-card {
+  width: var(--cw);
+  margin-left: calc(var(--cw) / -2);
+  -webkit-user-drag: none;
+}
+.work-card img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* Testimonial timer: a cocoa line that fills, then the next review flips in. */
+@keyframes review-timer {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.review-timer {
+  animation-name: review-timer;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* Process timeline (components/website/home/process-section.tsx).
+   Complete by default; once JavaScript is ready it starts empty and draws when the
+   list reaches the screen (.is-in). Desktop draws one line left to right; phones
+   draw a segment between each pair of stops, top to bottom, one after another. */
+.timeline-fill {
+  transform-origin: left;
+  transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.timeline-seg {
+  transform-origin: top;
+  transition: transform 0.45s linear;
+  transition-delay: calc(0.3s + var(--step, 0) * 0.45s);
+}
+.timeline-node {
+  border-color: rgb(var(--earth));
+  background: rgb(var(--earth));
+  color: rgb(var(--bone-50));
+  transition:
+    background-color 0.4s ease-out,
+    color 0.4s ease-out,
+    border-color 0.4s ease-out,
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: calc(0.15s + var(--step, 0) * 0.45s);
+}
+html.reveal-ready .timeline:not(.is-in) .timeline-fill {
+  transform: scaleX(0);
+}
+html.reveal-ready .timeline:not(.is-in) .timeline-seg {
+  transform: scaleY(0);
+}
+html.reveal-ready .timeline:not(.is-in) .timeline-node {
+  border-color: rgb(var(--rule-strong));
+  background: rgb(var(--well));
+  color: rgb(var(--fg-muted));
+  transform: scale(0.85);
+}
+
 /* Scroll reveals (see components/website/motion/reveal-observer.tsx).
    Hidden only once JavaScript has marked what is already on screen, so nothing flashes.
    data-reveal="" rises and fades; "fade" only fades; "zoom" settles from 97% scale.

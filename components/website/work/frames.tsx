@@ -13,6 +13,7 @@ export function DesktopFrame({
   hover,
   sizes,
   priority,
+  loading,
   className,
 }: {
   shot: ProjectShot;
@@ -20,6 +21,7 @@ export function DesktopFrame({
   hover?: ProjectShot;
   sizes: string;
   priority?: boolean;
+  loading?: "eager" | "lazy";
   className?: string;
 }) {
   return (
@@ -30,6 +32,7 @@ export function DesktopFrame({
         fill
         sizes={sizes}
         priority={priority}
+        loading={priority ? undefined : loading}
         quality={70}
         {...blurProps(shot.src)}
         className="object-cover object-top"
@@ -56,11 +59,13 @@ export function PhoneFrame({
   shot,
   sizes,
   priority,
+  loading,
   className,
 }: {
   shot: ProjectShot;
   sizes: string;
   priority?: boolean;
+  loading?: "eager" | "lazy";
   className?: string;
 }) {
   return (
@@ -71,6 +76,7 @@ export function PhoneFrame({
         fill
         sizes={sizes}
         priority={priority}
+        loading={priority ? undefined : loading}
         quality={70}
         {...blurProps(shot.src)}
         className="object-cover object-top"

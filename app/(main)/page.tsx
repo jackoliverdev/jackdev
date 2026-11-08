@@ -36,7 +36,7 @@ const jsonLd = {
     },
     {
       "@type": "ItemList",
-      name: "Selected work",
+      name: "Featured work",
       itemListElement: projects.map((project, i) => ({
         "@type": "ListItem",
         position: i + 1,

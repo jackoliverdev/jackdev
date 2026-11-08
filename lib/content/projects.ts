@@ -9,6 +9,8 @@ export type Project = {
   name: string;
   /** Who the client is, in a few words. */
   client: string;
+  /** A shorter version for narrow cards on phones, where `client` would run to three lines. */
+  clientShort?: string;
   sector: string;
   year: string;
   url: string;
@@ -29,10 +31,14 @@ export type Project = {
   seoDescription: string;
 };
 
-const shots = (slug: string, name: string, desktop: string[], mobile: string[]) => ({
-  desktop: desktop.map((alt, i) => ({ src: `/work/${slug}/desktop-${i + 1}.webp`, alt: `${name}: ${alt}` })),
-  mobile: mobile.map((alt, i) => ({ src: `/work/${slug}/mobile-${i + 1}.webp`, alt: `${name} on a phone: ${alt}` })),
-});
+// `version` goes in the file name (desktop-1-v3.webp) so a reshoot never shows a cached old image.
+const shots = (slug: string, name: string, desktop: string[], mobile: string[], version?: number) => {
+  const v = version ? `-v${version}` : "";
+  return {
+    desktop: desktop.map((alt, i) => ({ src: `/work/${slug}/desktop-${i + 1}${v}.webp`, alt: `${name}: ${alt}` })),
+    mobile: mobile.map((alt, i) => ({ src: `/work/${slug}/mobile-${i + 1}${v}.webp`, alt: `${name} on a phone: ${alt}` })),
+  };
+};
 
 export const projects: Project[] = [
   {
@@ -69,8 +75,19 @@ export const projects: Project[] = [
     ...shots(
       "centrus-ai",
       "Centrus AI",
-      ["homepage with the live chat product", "Agent Builder and Front Desk", "WhatsApp use case at the boiler", "integrations wall"],
-      ["homepage", "Agent Builder on mobile"]
+      [
+        "homepage, with the product answering from live job data",
+        "the app: an answer from the contract and rate card, with sources",
+        "the app: describing an agent in chat and getting its plan",
+        "the app: the Agent Builder canvas",
+        "the app: an agent's runs, step by step",
+        "Chat on the marketing site, with the WhatsApp demo",
+        "Front Desk, the website assistant, on the marketing site",
+        "the integrations wall",
+        "the hours and ROI calculator",
+      ],
+      ["homepage", "use cases: portal mail raised as a job"],
+      3
     ),
     seoDescription:
       "Case study: Centrus AI, an AI and automation platform for UK field service with an admin CRM, Agent Builder and integrations with BigChange, Joblogic and Xero. Built by Jack Oliver Dev.",
@@ -79,6 +96,7 @@ export const projects: Project[] = [
     slug: "jetnow-drainage",
     name: "JetNow Drainage",
     client: "Family-run emergency drainage firm, London and Essex",
+    clientShort: "Emergency drainage, London and Essex",
     sector: "Trades",
     year: "2025",
     url: "https://www.jetnowdrainage.co.uk",
@@ -117,6 +135,7 @@ export const projects: Project[] = [
     slug: "imperial-build",
     name: "Imperial Build",
     client: "Commercial groundworks and building contractor",
+    clientShort: "Groundworks and building contractor",
     sector: "Construction",
     year: "2026",
     url: "https://imperialbuildlimited.com",
@@ -156,6 +175,7 @@ export const projects: Project[] = [
     slug: "advanta-services",
     name: "Advanta Services",
     client: "Electrical and air conditioning, Spalding and Peterborough",
+    clientShort: "Electrics and air con, Peterborough",
     sector: "Trades",
     year: "2026",
     url: "https://www.advantaservices.co.uk",
@@ -194,6 +214,7 @@ export const projects: Project[] = [
     slug: "excel-electrics",
     name: "Excel Electrics",
     client: "Electrical and fire safety specialist, Essex and London",
+    clientShort: "Electrical and fire safety, Essex",
     sector: "Trades",
     year: "2025",
     url: "https://excelelectrics.com",
@@ -232,6 +253,7 @@ export const projects: Project[] = [
     slug: "hand-line",
     name: "Hand Line",
     client: "Industrial safety glove manufacturer, 40 years trading",
+    clientShort: "Safety glove maker, 40 years trading",
     sector: "B2B e-commerce",
     year: "2025",
     url: "https://www.handlineco.com",
@@ -270,6 +292,7 @@ export const projects: Project[] = [
     slug: "gym-tours-ai",
     name: "Gym Tours AI",
     client: "VR tours and lead generation for independent UK gyms",
+    clientShort: "VR tours and leads for UK gyms",
     sector: "SaaS",
     year: "2025",
     url: "https://www.gymtours.ai",
