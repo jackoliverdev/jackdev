@@ -9,8 +9,14 @@ export function AboutSection() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
           <h2 data-reveal className="max-w-[18ch] text-h1 text-fg lg:col-span-5">{about.heading}</h2>
           <div data-reveal style={stagger(1)} className="space-y-4 text-fg lg:col-span-7">
+            {/* Phones: the shorter version. */}
+            {about.mobileParagraphs.map((p) => (
+              <p key={p} className="text-lead md:hidden">
+                {p}
+              </p>
+            ))}
             {about.paragraphs.map((p) => (
-              <p key={p} className="text-lead">
+              <p key={p} className="hidden text-lead md:block">
                 {p}
               </p>
             ))}
